@@ -43,7 +43,7 @@ class Advisory:
     insight: Optional[str] = None
     affected: Optional[str] = None
     impact: Optional[str] = None
-    cve_list: List[str] = field(default_factory=list)
+    cves: List[str] = field(default_factory=list)
     xrefs: List[str] = field(default_factory=list)
 
     def __hash__(self) -> int:

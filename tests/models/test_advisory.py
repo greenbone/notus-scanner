@@ -65,8 +65,8 @@ class AdvisoryTestCase(TestCase):
         self.assertIsNone(advisory.affected)
         self.assertIsNone(advisory.impact)
 
-        self.assertIsInstance(advisory.cve_list, list)
-        self.assertEqual(len(advisory.cve_list), 0)
+        self.assertIsInstance(advisory.cves, list)
+        self.assertEqual(len(advisory.cves), 0)
         self.assertIsInstance(advisory.xrefs, list)
         self.assertEqual(len(advisory.xrefs), 0)
 

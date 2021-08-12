@@ -80,7 +80,7 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             # pylint: disable=line-too-long
             'https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008',
         )
-        self.assertEqual(advisory.cve_list, ['CVE-2016-1908', 'CVE-2016-3115'])
+        self.assertEqual(advisory.cves, ['CVE-2016-1908', 'CVE-2016-3115'])
         self.assertEqual(advisory.severity.origin, 'NVD')
         self.assertEqual(
             advisory.severity.cvss_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'
