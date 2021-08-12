@@ -43,6 +43,9 @@ def _get_os_name(operating_system: str):
     name and afterwards a version follows. This should be true for the current
     supported operating systems.
     """
+    operating_system = operating_system.strip()
+    if " " not in operating_system:
+        return operating_system
     return operating_system[: operating_system.find(" ")]
 
 
