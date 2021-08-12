@@ -28,6 +28,7 @@ from ..models.advisory import (
     OperatingSystemAdvisories,
     Advisory,
     PackageAdvisories,
+    Severity,
 )
 from ..models.package import parse_rpm_package
 
@@ -116,6 +117,12 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         )
                     )
 
+                    severity = Severity(
+                        origin=advisory_dict['SEVERITY_ORIGIN'],
+                        date=severity_date,
+                        cvss_v2=advisory_dict['SEVERITY_VECTOR_V2'],
+                        cvss_v3=advisory_dict['SEVERITY_VECTOR_V3'],
+                    )
                     advisory = Advisory(
                         oid=advisory_dict['OID'],
                         title=advisory_dict['TITLE'],
@@ -123,10 +130,7 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         last_modification=last_modification,
                         advisory_id=advisory_dict['ADVISORY_ID'],
                         advisory_xref=advisory_dict['ADVISORY_XREF'],
-                        severity_origin=advisory_dict['SEVERITY_ORIGIN'],
-                        severity_date=severity_date,
-                        severity_vector_v2=advisory_dict['SEVERITY_VECTOR_V2'],
-                        severity_vector_v3=advisory_dict['SEVERITY_VECTOR_V3'],
+                        severity=severity,
                         summary=advisory_dict['SUMMARY'],
                         insight=advisory_dict['INSIGHT'],
                         affected=advisory_dict['AFFECTED'],

@@ -24,6 +24,7 @@ from notus.scanner.models.advisory import (
     OperatingSystemAdvisories,
     PackageAdvisories,
     PackageAdvisory,
+    Severity,
 )
 from notus.scanner.models.package import Architecture, Package
 
@@ -34,6 +35,11 @@ class AdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -41,9 +47,7 @@ class AdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         self.assertEqual(advisory.oid, '1.2.3.4.5')
@@ -52,10 +56,10 @@ class AdvisoryTestCase(TestCase):
         self.assertEqual(advisory.last_modification, last_modification)
         self.assertEqual(advisory.advisory_id, '1234')
         self.assertEqual(advisory.advisory_xref, 'http://foo/1234')
-        self.assertEqual(advisory.severity_origin, 'foo')
-        self.assertEqual(advisory.severity_date, severity_date)
-        self.assertIsNone(advisory.severity_vector_v2)
-        self.assertEqual(advisory.severity_vector_v3, cvss_v3)
+        self.assertEqual(advisory.severity.origin, 'foo')
+        self.assertEqual(advisory.severity.date, severity_date)
+        self.assertIsNone(advisory.severity.cvss_v2)
+        self.assertEqual(advisory.severity.cvss_v3, cvss_v3)
         self.assertIsNone(advisory.summary)
         self.assertIsNone(advisory.insight)
         self.assertIsNone(advisory.affected)
@@ -71,6 +75,11 @@ class AdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -78,9 +87,7 @@ class AdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.5",
@@ -89,9 +96,7 @@ class AdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="4321",
             advisory_xref="http://bar/4321",
-            severity_origin="bar",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory3 = Advisory(
             oid="1.2.3.4.6",
@@ -100,9 +105,7 @@ class AdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         self.assertEqual(hash(advisory1), hash(advisory2))
@@ -113,6 +116,11 @@ class AdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -120,9 +128,7 @@ class AdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         with self.assertRaises(FrozenInstanceError):
@@ -132,7 +138,7 @@ class AdvisoryTestCase(TestCase):
             advisory.title = 'Ipsum'
 
         with self.assertRaises(FrozenInstanceError):
-            advisory.severity_date = datetime.now()
+            advisory.last_modification = datetime.now()
 
 
 class PackageAdvisoryTestCase(TestCase):
@@ -144,6 +150,11 @@ class PackageAdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -151,9 +162,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         package_advisory = PackageAdvisory(package=package, advisory=advisory)
@@ -172,6 +181,11 @@ class PackageAdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -179,9 +193,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.6",
@@ -190,9 +202,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="4321",
             advisory_xref="http://bar/4321",
-            severity_origin="bar",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         package_advisory = PackageAdvisory(package=package1, advisory=advisory1)
@@ -217,6 +227,11 @@ class PackageAdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -224,9 +239,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.6",
@@ -235,9 +248,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="4321",
             advisory_xref="http://bar/4321",
-            severity_origin="bar",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         package_advisory1 = PackageAdvisory(
@@ -271,6 +282,11 @@ class PackageAdvisoryTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -278,9 +294,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.6",
@@ -289,9 +303,7 @@ class PackageAdvisoryTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="4321",
             advisory_xref="http://bar/4321",
-            severity_origin="bar",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         package_advisory1 = PackageAdvisory(
@@ -331,6 +343,11 @@ class PackageAdvisoriesTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -338,9 +355,7 @@ class PackageAdvisoriesTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         self.assertEqual(len(package_advisories), 0)
@@ -361,6 +376,11 @@ class PackageAdvisoriesTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -368,9 +388,7 @@ class PackageAdvisoriesTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.5",
@@ -379,9 +397,7 @@ class PackageAdvisoriesTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         self.assertEqual(len(package_advisories), 0)
@@ -416,6 +432,11 @@ class PackageAdvisoriesTestCase(TestCase):
         creation_date = datetime(year=2021, month=3, day=21, hour=10, minute=0)
         last_modification = datetime.now()
         cvss_v3 = "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+        severity = Severity(
+            origin="foo",
+            date=severity_date,
+            cvss_v3=cvss_v3,
+        )
         advisory1 = Advisory(
             oid="1.2.3.4.5",
             title="Foo Bar",
@@ -423,9 +444,7 @@ class PackageAdvisoriesTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
         advisory2 = Advisory(
             oid="1.2.3.4.6",
@@ -434,9 +453,7 @@ class PackageAdvisoriesTestCase(TestCase):
             last_modification=last_modification,
             advisory_id="1234",
             advisory_xref="http://foo/1234",
-            severity_origin="foo",
-            severity_date=severity_date,
-            severity_vector_v3=cvss_v3,
+            severity=severity,
         )
 
         self.assertEqual(len(package_advisories), 0)

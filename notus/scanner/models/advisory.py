@@ -23,6 +23,14 @@ from .package import Package
 
 
 @dataclass(frozen=True)
+class Severity:
+    origin: str
+    date: datetime
+    cvss_v2: Optional[str] = None
+    cvss_v3: Optional[str] = None
+
+
+@dataclass(frozen=True)
 class Advisory:
     oid: str
     title: str
@@ -30,10 +38,7 @@ class Advisory:
     last_modification: datetime
     advisory_id: str
     advisory_xref: str
-    severity_origin: str
-    severity_date: datetime
-    severity_vector_v2: Optional[str] = None
-    severity_vector_v3: Optional[str] = None
+    severity: Severity
     summary: Optional[str] = None
     insight: Optional[str] = None
     affected: Optional[str] = None

@@ -81,12 +81,12 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             'https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008',
         )
         self.assertEqual(advisory.cve_list, ['CVE-2016-1908', 'CVE-2016-3115'])
-        self.assertEqual(advisory.severity_origin, 'NVD')
+        self.assertEqual(advisory.severity.origin, 'NVD')
         self.assertEqual(
-            advisory.severity_vector_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'
+            advisory.severity.cvss_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'
         )
         self.assertEqual(
-            advisory.severity_vector_v3,
+            advisory.severity.cvss_v3,
             'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
         )
         self.assertEqual(
@@ -111,6 +111,6 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             datetime(2021, 7, 22, 2, 24, 2, tzinfo=timezone.utc),
         )
         self.assertEqual(
-            advisory.severity_date,
+            advisory.severity.date,
             datetime(2018, 9, 11, 10, 29, tzinfo=timezone.utc),
         )
