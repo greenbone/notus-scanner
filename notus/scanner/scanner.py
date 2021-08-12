@@ -43,6 +43,13 @@ class NotusScan:
         installed_packages: List[Package],
     ) -> Generator[PackageVulnerability, None, None]:
         package_advisories = self._advisories_loader.load(operating_system)
+        if not package_advisories:
+            logger.info(
+                'No advisories found for %s %s with %s',
+                host_ip,
+                host_name or '',
+                operating_system,
+            )
 
         for package in installed_packages:
             package_advisory_list = (
