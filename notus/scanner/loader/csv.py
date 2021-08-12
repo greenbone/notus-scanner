@@ -58,7 +58,7 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
         csv_file_path = self._advisories_directory_path / f"{os_name}.csv"
         if not csv_file_path.exists():
             raise AdvisoriesLoadingError(
-                f'Could not load advisories from {csv_file_path}. '
+                f'Could not load advisories from {csv_file_path.absolute()}. '
                 'File does not exist.'
             )
 
