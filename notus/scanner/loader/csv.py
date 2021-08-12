@@ -131,6 +131,9 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         insight=advisory_dict['INSIGHT'],
                         affected=advisory_dict['AFFECTED'],
                         impact=advisory_dict['IMPACT'],
+                        cve_list=ast.literal_eval(
+                            advisory_dict.get('CVE_LIST', '[]')
+                        ),
                     )
 
                     for package_name in package_names:
