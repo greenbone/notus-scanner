@@ -39,7 +39,7 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
     def __init__(self, csv_file: Path):
         self._csv_file = csv_file
 
-    def load(self) -> OperatingSystemAdvisories:
+    def load(self, operating_system: str) -> PackageAdvisories:
         with self._csv_file.open() as raw_csv_file:
             # Skip the license header, so the actual
             # content can be parsed by the DictReader
@@ -108,4 +108,6 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         os_name, package_advisories
                     )
 
-                return operating_system_advisories
+                return operating_system_advisories.get_package_advisories(
+                    operating_system
+                )

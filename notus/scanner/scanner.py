@@ -41,10 +41,7 @@ class NotusScan:
         operating_system: str,
         installed_packages: List[Package],
     ) -> Generator[PackageVulnerability, None, None]:
-        operating_system_advisories = self._advisories_loader.load()
-        package_advisories = operating_system_advisories.get_package_advisories(
-            operating_system
-        )
+        package_advisories = self._advisories_loader.load(operating_system)
 
         for package in installed_packages:
             package_advisory_list = (
