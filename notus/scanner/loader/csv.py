@@ -110,7 +110,11 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                     continue
 
                 for os_name, package_names in vuln_info_dict.items():
-                    package_advisories = PackageAdvisories()
+                    package_advisories = (
+                        operating_system_advisories.get_package_advisories(
+                            os_name
+                        )
+                    )
 
                     advisory = Advisory(
                         oid=advisory_dict['OID'],
