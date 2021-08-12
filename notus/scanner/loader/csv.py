@@ -35,13 +35,23 @@ from .loader import AdvisoriesLoader
 logger = logging.getLogger(__name__)
 
 
+def _get_os_name(operating_system: str):
+    """Simple helper function to get the OS name from a full os release
+
+    The function just assumes that the OS name is the first string in the full
+    name and afterwards a version follows. This should be true for the current
+    supported operating systems.
+    """
+    return operating_system[: operating_system.find(" ")]
+
+
 class CsvAdvisoriesLoader(AdvisoriesLoader):
     def __init__(self, advisories_directory_path: Path):
         self._advisories_directory_path = advisories_directory_path
 
     def load(self, operating_system: str) -> PackageAdvisories:
-        # hardcode CSV file for now because we don't support other OS yet
-        csv_file_path = self._advisories_directory_path / "EulerOS.csv"
+        os_name = _get_os_name(operating_system)
+        csv_file_path = self._advisories_directory_path / f"{os_name}.csv"
         if not csv_file_path.is_file():
             logger.error(
                 'Could not load advisories from %s. File does not exist.',
