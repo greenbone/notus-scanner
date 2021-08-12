@@ -80,8 +80,8 @@ class OperatingSystemAdvisories:
 
     def get_package_advisories(
         self, operating_system: str
-    ) -> Optional[PackageAdvisories]:
-        return self.advisories.get(operating_system)
+    ) -> PackageAdvisories:
+        return self.advisories.get(operating_system) or PackageAdvisories()
 
     def set_package_advisories(
         self, operating_system: str, package_advisories: PackageAdvisories

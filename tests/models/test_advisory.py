@@ -492,7 +492,8 @@ class OperatingSystemAdvisoriesTestCase(TestCase):
 
         self.assertEqual(len(os_advisories), 0)
 
-        self.assertIsNone(os_advisories.get_package_advisories('BarOS 1.0'))
+        advisories = os_advisories.get_package_advisories('BarOS 1.0')
+        self.assertEqual(len(advisories), 0)
 
         advisories1 = PackageAdvisories()
         advisories2 = PackageAdvisories()
