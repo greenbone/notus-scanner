@@ -87,18 +87,27 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                     )
                     continue
 
-                creation_date = datetime.fromtimestamp(
-                    int(advisory_dict['CREATION_DATA'])
-                )
-                last_modification = datetime.fromtimestamp(
-                    int(advisory_dict['LAST_MODIFICATION'])
-                )
-                severity_date = datetime.fromtimestamp(
-                    int(advisory_dict['SEVERITY_DATE'])
-                )
-                vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
-                    advisory_dict["VULN_INFO_DICT"]
-                )
+                try:
+                    creation_date = datetime.fromtimestamp(
+                        int(advisory_dict['CREATION_DATE'])
+                    )
+                    last_modification = datetime.fromtimestamp(
+                        int(advisory_dict['LAST_MODIFICATION'])
+                    )
+                    severity_date = datetime.fromtimestamp(
+                        int(advisory_dict['SEVERITY_DATE'])
+                    )
+                    vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
+                        advisory_dict["VULN_INFO_DICT"]
+                    )
+                except (KeyError, TypeError) as e:
+                    logger.warning(
+                        'Error while parsing %s from %s. Error was %s',
+                        advisory_dict,
+                        str(csv_file_path.absolute()),
+                        e,
+                    )
+                    continue
 
                 for os_name, package_names in vuln_info_dict.items():
                     package_advisories = PackageAdvisories()
