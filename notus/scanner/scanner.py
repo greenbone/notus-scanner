@@ -20,6 +20,7 @@ import logging
 from pathlib import Path
 from typing import Generator, List
 
+from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader, CsvAdvisoriesLoader
 from .messages.result import ResultMessage
 from .messages.status import ScanStatus, ScanStatusMessage
@@ -122,15 +123,25 @@ Fixed version: {vulnerability.fixed_package.full_name}
         installed_packages = [Package(name) for name in package_list]
         scan = NotusScan(advisories_loader=self._loader)
         i = 0
-        for vulnerability in scan.start_scan(
-            host_ip=host_ip,
-            host_name=host_name,
-            operating_system=os_release,
-            installed_packages=installed_packages,
-        ):
-            i += 1
-            self._publish_result(scan_id, vulnerability)
+        try:
+            for vulnerability in scan.start_scan(
+                host_ip=host_ip,
+                host_name=host_name,
+                operating_system=os_release,
+                installed_packages=installed_packages,
+            ):
+                i += 1
+                self._publish_result(scan_id, vulnerability)
 
-        logger.info("Total number of vulnerable packages -> %d", i)
+            logger.info("Total number of vulnerable packages -> %d", i)
 
-        self._finish_host(scan_id, host_ip)
+            self._finish_host(scan_id, host_ip)
+
+        except AdvisoriesLoadingError as e:
+            logger.error(
+                'Scan for %s %s with %s could not be started. Error was %s',
+                host_ip,
+                host_name or '',
+                os_release,
+                e,
+            )

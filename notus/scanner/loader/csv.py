@@ -23,6 +23,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 
+from ..errors import AdvisoriesLoadingError
 from ..models.advisory import (
     OperatingSystemAdvisories,
     Advisory,
@@ -52,12 +53,11 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
     def load(self, operating_system: str) -> PackageAdvisories:
         os_name = _get_os_name(operating_system)
         csv_file_path = self._advisories_directory_path / f"{os_name}.csv"
-        if not csv_file_path.is_file():
-            logger.error(
-                'Could not load advisories from %s. File does not exist.',
-                str(csv_file_path),
+        if not csv_file_path.exists():
+            raise AdvisoriesLoadingError(
+                f'Could not load advisories from {csv_file_path}. '
+                'File does not exist.'
             )
-            return
 
         with csv_file_path.open('r') as raw_csv_file:
             # Skip the license header, so the actual
