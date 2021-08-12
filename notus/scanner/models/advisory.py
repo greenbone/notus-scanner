@@ -70,6 +70,9 @@ class PackageAdvisories:
         advisories.add(PackageAdvisory(package, advisory))
         self.advisories[package.name] = advisories
 
+    def __len__(self) -> int:
+        return len(self.advisories)
+
 
 @dataclass(frozen=True)
 class OperatingSystemAdvisories:
@@ -84,3 +87,6 @@ class OperatingSystemAdvisories:
         self, operating_system: str, package_advisories: PackageAdvisories
     ) -> None:
         self.advisories[operating_system] = package_advisories
+
+    def __len__(self) -> int:
+        return len(self.advisories)

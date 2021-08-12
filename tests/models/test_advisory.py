@@ -320,7 +320,7 @@ class PackageAdvisoriesTestCase(TestCase):
         package_advisories = PackageAdvisories()
 
         self.assertIsInstance(package_advisories.advisories, dict)
-        self.assertEqual(len(package_advisories.advisories), 0)
+        self.assertEqual(len(package_advisories), 0)
 
     def test_add_advisory_for_package(self):
         package_advisories = PackageAdvisories()
@@ -343,11 +343,11 @@ class PackageAdvisoriesTestCase(TestCase):
             severity_vector_v3=cvss_v3,
         )
 
-        self.assertEqual(len(package_advisories.advisories), 0)
+        self.assertEqual(len(package_advisories), 0)
 
         package_advisories.add_advisory_for_package(package, advisory)
 
-        self.assertEqual(len(package_advisories.advisories), 1)
+        self.assertEqual(len(package_advisories), 1)
 
     def test_add_duplicate_advisory_for_package(self):
         package_advisories = PackageAdvisories()
@@ -384,23 +384,23 @@ class PackageAdvisoriesTestCase(TestCase):
             severity_vector_v3=cvss_v3,
         )
 
-        self.assertEqual(len(package_advisories.advisories), 0)
+        self.assertEqual(len(package_advisories), 0)
 
         package_advisories.add_advisory_for_package(package1, advisory1)
 
-        self.assertEqual(len(package_advisories.advisories), 1)
+        self.assertEqual(len(package_advisories), 1)
 
         package_advisories.add_advisory_for_package(package1, advisory1)
 
-        self.assertEqual(len(package_advisories.advisories), 1)
+        self.assertEqual(len(package_advisories), 1)
 
         package_advisories.add_advisory_for_package(package1, advisory2)
 
-        self.assertEqual(len(package_advisories.advisories), 1)
+        self.assertEqual(len(package_advisories), 1)
 
         package_advisories.add_advisory_for_package(package2, advisory1)
 
-        self.assertEqual(len(package_advisories.advisories), 1)
+        self.assertEqual(len(package_advisories), 1)
 
         package_advisories.add_advisory_for_package(package2, advisory2)
 
@@ -439,7 +439,7 @@ class PackageAdvisoriesTestCase(TestCase):
             severity_vector_v3=cvss_v3,
         )
 
-        self.assertEqual(len(package_advisories.advisories), 0)
+        self.assertEqual(len(package_advisories), 0)
 
         package_advisories.add_advisory_for_package(package1, advisory1)
         package_advisories.add_advisory_for_package(package1, advisory2)
@@ -460,7 +460,7 @@ class OperatingSystemAdvisoriesTestCase(TestCase):
         os_advisories = OperatingSystemAdvisories()
 
         self.assertIsInstance(os_advisories.advisories, dict)
-        self.assertEqual(len(os_advisories.advisories), 0)
+        self.assertEqual(len(os_advisories), 0)
 
     def test_immutability(self):
         os_advisories = OperatingSystemAdvisories()
@@ -471,26 +471,26 @@ class OperatingSystemAdvisoriesTestCase(TestCase):
     def test_set_package_advisory(self):
         os_advisories = OperatingSystemAdvisories()
 
-        self.assertEqual(len(os_advisories.advisories), 0)
+        self.assertEqual(len(os_advisories), 0)
 
         advisories1 = PackageAdvisories()
         os_advisories.set_package_advisories('BarOS 1.0', advisories1)
 
-        self.assertEqual(len(os_advisories.advisories), 1)
+        self.assertEqual(len(os_advisories), 1)
 
         advisories2 = PackageAdvisories()
         os_advisories.set_package_advisories('BarOS 1.0', advisories2)
 
-        self.assertEqual(len(os_advisories.advisories), 1)
+        self.assertEqual(len(os_advisories), 1)
 
         advisories3 = PackageAdvisories()
         os_advisories.set_package_advisories('FooOS 2.0', advisories3)
-        self.assertEqual(len(os_advisories.advisories), 2)
+        self.assertEqual(len(os_advisories), 2)
 
     def test_get_package_advisory(self):
         os_advisories = OperatingSystemAdvisories()
 
-        self.assertEqual(len(os_advisories.advisories), 0)
+        self.assertEqual(len(os_advisories), 0)
 
         self.assertIsNone(os_advisories.get_package_advisories('BarOS 1.0'))
 
