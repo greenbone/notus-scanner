@@ -64,16 +64,9 @@ class NotusScanner:
         metadata_directory: Path,
         publisher: Publisher,
     ):
-        # hardcode CSV file for now because we don't support other OS yet
-        csv_file_path = metadata_directory / "EulerOS.csv"
-        if not csv_file_path.is_file():
-            logger.error(
-                'Could not load advisories from %s. File does not exist.',
-                str(csv_file_path),
-            )
-            return
-
-        self._loader = CsvAdvisoriesLoader(csv_file_path)
+        self._loader = CsvAdvisoriesLoader(
+            advisories_directory_path=metadata_directory
+        )
         self._publisher = publisher
 
     def _finish_host(self, scan_id: str, host_ip: str):

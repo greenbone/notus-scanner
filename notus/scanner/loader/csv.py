@@ -36,16 +36,27 @@ logger = logging.getLogger(__name__)
 
 
 class CsvAdvisoriesLoader(AdvisoriesLoader):
-    def __init__(self, csv_file: Path):
-        self._csv_file = csv_file
+    def __init__(self, advisories_directory_path: Path):
+        self._advisories_directory_path = advisories_directory_path
 
     def load(self, operating_system: str) -> PackageAdvisories:
-        with self._csv_file.open() as raw_csv_file:
+        # hardcode CSV file for now because we don't support other OS yet
+        csv_file_path = self._advisories_directory_path / "EulerOS.csv"
+        if not csv_file_path.is_file():
+            logger.error(
+                'Could not load advisories from %s. File does not exist.',
+                str(csv_file_path),
+            )
+            return
+
+        with csv_file_path.open('r') as raw_csv_file:
             # Skip the license header, so the actual
             # content can be parsed by the DictReader
             for line_string in raw_csv_file:
                 if line_string.startswith("{"):
                     break
+
+            operating_system_advisories = OperatingSystemAdvisories()
 
             reader = csv.DictReader(raw_csv_file)
             for advisory_dict in reader:
@@ -75,8 +86,6 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                 vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
                     advisory_dict["VULN_INFO_DICT"]
                 )
-
-                operating_system_advisories = OperatingSystemAdvisories()
 
                 for os_name, package_names in vuln_info_dict.items():
                     package_advisories = PackageAdvisories()
@@ -108,6 +117,6 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         os_name, package_advisories
                     )
 
-                return operating_system_advisories.get_package_advisories(
-                    operating_system
-                )
+            return operating_system_advisories.get_package_advisories(
+                operating_system
+            )
