@@ -23,6 +23,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 
+from ..errors import AdvisoriesLoadingError
 from ..models.advisory import (
     OperatingSystemAdvisories,
     Advisory,
@@ -35,17 +36,37 @@ from .loader import AdvisoriesLoader
 logger = logging.getLogger(__name__)
 
 
-class CsvAdvisoriesLoader(AdvisoriesLoader):
-    def __init__(self, csv_file: Path):
-        self._csv_file = csv_file
+def _get_os_name(operating_system: str):
+    """Simple helper function to get the OS name from a full os release
 
-    def load(self) -> OperatingSystemAdvisories:
-        with self._csv_file.open() as raw_csv_file:
+    The function just assumes that the OS name is the first string in the full
+    name and afterwards a version follows. This should be true for the current
+    supported operating systems.
+    """
+    return operating_system[: operating_system.find(" ")]
+
+
+class CsvAdvisoriesLoader(AdvisoriesLoader):
+    def __init__(self, advisories_directory_path: Path):
+        self._advisories_directory_path = advisories_directory_path
+
+    def load(self, operating_system: str) -> PackageAdvisories:
+        os_name = _get_os_name(operating_system)
+        csv_file_path = self._advisories_directory_path / f"{os_name}.csv"
+        if not csv_file_path.exists():
+            raise AdvisoriesLoadingError(
+                f'Could not load advisories from {csv_file_path}. '
+                'File does not exist.'
+            )
+
+        with csv_file_path.open('r') as raw_csv_file:
             # Skip the license header, so the actual
             # content can be parsed by the DictReader
             for line_string in raw_csv_file:
                 if line_string.startswith("{"):
                     break
+
+            operating_system_advisories = OperatingSystemAdvisories()
 
             reader = csv.DictReader(raw_csv_file)
             for advisory_dict in reader:
@@ -75,8 +96,6 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                 vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
                     advisory_dict["VULN_INFO_DICT"]
                 )
-
-                operating_system_advisories = OperatingSystemAdvisories()
 
                 for os_name, package_names in vuln_info_dict.items():
                     package_advisories = PackageAdvisories()
@@ -108,4 +127,6 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         os_name, package_advisories
                     )
 
-                return operating_system_advisories
+            return operating_system_advisories.get_package_advisories(
+                operating_system
+            )
