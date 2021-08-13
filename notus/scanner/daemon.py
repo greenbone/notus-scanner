@@ -82,7 +82,8 @@ def main():
         foreground=args.foreground,
     )
 
-    go_to_background()
+    if not args.foreground:
+        go_to_background()
 
     if not create_pid(args.pid_file):
         sys.exit()
