@@ -75,6 +75,7 @@ class CliParser:
             '(default: %(default)s)',
         )
         parser.add_argument(
+            '-l',
             '--log-file',
             nargs='?',
             default=None,
