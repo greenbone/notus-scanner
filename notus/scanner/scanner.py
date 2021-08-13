@@ -20,6 +20,7 @@ import logging
 from pathlib import Path
 from typing import Generator, List
 
+from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader, CsvAdvisoriesLoader
 from .messages.result import ResultMessage
 from .messages.status import ScanStatus, ScanStatusMessage
@@ -41,10 +42,7 @@ class NotusScan:
         operating_system: str,
         installed_packages: List[Package],
     ) -> Generator[PackageVulnerability, None, None]:
-        operating_system_advisories = self._advisories_loader.load()
-        package_advisories = operating_system_advisories.get_package_advisories(
-            operating_system
-        )
+        package_advisories = self._advisories_loader.load(operating_system)
 
         for package in installed_packages:
             package_advisory_list = (
@@ -67,16 +65,9 @@ class NotusScanner:
         metadata_directory: Path,
         publisher: Publisher,
     ):
-        # hardcode CSV file for now because we don't support other OS yet
-        csv_file_path = metadata_directory / "EulerOS.csv"
-        if not csv_file_path.is_file():
-            logger.error(
-                'Could not load advisories from %s. File does not exist.',
-                str(csv_file_path),
-            )
-            return
-
-        self._loader = CsvAdvisoriesLoader(csv_file_path)
+        self._loader = CsvAdvisoriesLoader(
+            advisories_directory_path=metadata_directory
+        )
         self._publisher = publisher
 
     def _finish_host(self, scan_id: str, host_ip: str):
@@ -132,15 +123,25 @@ Fixed version: {vulnerability.fixed_package.full_name}
         installed_packages = [Package(name) for name in package_list]
         scan = NotusScan(advisories_loader=self._loader)
         i = 0
-        for vulnerability in scan.start_scan(
-            host_ip=host_ip,
-            host_name=host_name,
-            operating_system=os_release,
-            installed_packages=installed_packages,
-        ):
-            i += 1
-            self._publish_result(scan_id, vulnerability)
+        try:
+            for vulnerability in scan.start_scan(
+                host_ip=host_ip,
+                host_name=host_name,
+                operating_system=os_release,
+                installed_packages=installed_packages,
+            ):
+                i += 1
+                self._publish_result(scan_id, vulnerability)
 
-        logger.info("Total number of vulnerable packages -> %d", i)
+            logger.info("Total number of vulnerable packages -> %d", i)
 
-        self._finish_host(scan_id, host_ip)
+            self._finish_host(scan_id, host_ip)
+
+        except AdvisoriesLoadingError as e:
+            logger.error(
+                'Scan for %s %s with %s could not be started. Error was %s',
+                host_ip,
+                host_name or '',
+                os_release,
+                e,
+            )
