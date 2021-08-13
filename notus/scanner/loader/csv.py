@@ -19,7 +19,7 @@ import ast
 import csv
 import logging
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -43,6 +43,9 @@ def _get_os_name(operating_system: str):
     name and afterwards a version follows. This should be true for the current
     supported operating systems.
     """
+    operating_system = operating_system.strip()
+    if " " not in operating_system:
+        return operating_system
     return operating_system[: operating_system.find(" ")]
 
 
@@ -55,7 +58,7 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
         csv_file_path = self._advisories_directory_path / f"{os_name}.csv"
         if not csv_file_path.exists():
             raise AdvisoriesLoadingError(
-                f'Could not load advisories from {csv_file_path}. '
+                f'Could not load advisories from {csv_file_path.absolute()}. '
                 'File does not exist.'
             )
 
@@ -84,21 +87,34 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                     )
                     continue
 
-                creation_date = datetime.fromtimestamp(
-                    int(advisory_dict['CREATION_DATA'])
-                )
-                last_modification = datetime.fromtimestamp(
-                    int(advisory_dict['LAST_MODIFICATION'])
-                )
-                severity_date = datetime.fromtimestamp(
-                    int(advisory_dict['SEVERITY_DATE'])
-                )
-                vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
-                    advisory_dict["VULN_INFO_DICT"]
-                )
+                try:
+                    creation_date = datetime.fromtimestamp(
+                        int(advisory_dict['CREATION_DATE']), timezone.utc
+                    )
+                    last_modification = datetime.fromtimestamp(
+                        int(advisory_dict['LAST_MODIFICATION']), timezone.utc
+                    )
+                    severity_date = datetime.fromtimestamp(
+                        int(advisory_dict['SEVERITY_DATE']), timezone.utc
+                    )
+                    vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
+                        advisory_dict["VULN_INFO_DICT"]
+                    )
+                except (KeyError, TypeError) as e:
+                    logger.warning(
+                        'Error while parsing %s from %s. Error was %s',
+                        advisory_dict,
+                        str(csv_file_path.absolute()),
+                        e,
+                    )
+                    continue
 
                 for os_name, package_names in vuln_info_dict.items():
-                    package_advisories = PackageAdvisories()
+                    package_advisories = (
+                        operating_system_advisories.get_package_advisories(
+                            os_name
+                        )
+                    )
 
                     advisory = Advisory(
                         oid=advisory_dict['OID'],
@@ -115,6 +131,9 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         insight=advisory_dict['INSIGHT'],
                         affected=advisory_dict['AFFECTED'],
                         impact=advisory_dict['IMPACT'],
+                        cve_list=ast.literal_eval(
+                            advisory_dict.get('CVE_LIST', '[]')
+                        ),
                     )
 
                     for package_name in package_names:

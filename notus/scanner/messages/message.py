@@ -17,7 +17,7 @@
 
 import json
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Union, Optional
 from uuid import UUID, uuid4
@@ -58,7 +58,9 @@ class Message:
         return {
             'message_id': UUID(data.get("message_id")),
             'group_id': UUID(data.get("group_id")),
-            'created': datetime.fromtimestamp(float(data.get("created"))),
+            'created': datetime.fromtimestamp(
+                float(data.get("created")), timezone.utc
+            ),
         }
 
     def serialize(self) -> Dict[str, Union[int, str]]:
