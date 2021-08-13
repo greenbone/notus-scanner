@@ -17,11 +17,10 @@
 
 import logging
 
-from pathlib import Path
 from typing import Generator, List
 
 from .errors import AdvisoriesLoadingError
-from .loader import AdvisoriesLoader, CsvAdvisoriesLoader
+from .loader import AdvisoriesLoader
 from .messages.result import ResultMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
@@ -69,12 +68,10 @@ class NotusScan:
 class NotusScanner:
     def __init__(
         self,
-        metadata_directory: Path,
+        loader: AdvisoriesLoader,
         publisher: Publisher,
     ):
-        self._loader = CsvAdvisoriesLoader(
-            advisories_directory_path=metadata_directory
-        )
+        self._loader = loader
         self._publisher = publisher
 
     def _finish_host(self, scan_id: str, host_ip: str):
