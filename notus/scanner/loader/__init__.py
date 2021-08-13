@@ -17,3 +17,4 @@
 
 from .loader import AdvisoriesLoader
 from .csv import CsvAdvisoriesLoader
+from .json import JSONAdvisoriesLoader
