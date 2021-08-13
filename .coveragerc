@@ -1,0 +1,8 @@
+# Configuration for coverage.py
+[run]
+branch = True
+omit =
+    tests/*
+    */__init__.py
+source =
+    notus
