@@ -108,18 +108,6 @@ class CliParser:
             type=str,
             help="Hostname for to connect to MQTT broker.",
         )
-        parser.add_argument(
-            "--host",
-            dest="host",
-            type=str,
-            help="the IP address of the host to be scanned.",
-        )
-        parser.add_argument(
-            "--hostname",
-            dest="hostname",
-            type=str,
-            help="the name of the host to be scanned.",
-        )
 
         self.parser = parser
 
