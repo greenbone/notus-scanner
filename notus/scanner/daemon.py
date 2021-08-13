@@ -36,12 +36,29 @@ from .__version__ import __version__
 logger = logging.getLogger(__name__)
 
 
-def run_daemon(mqtt_broker_address: str, metadata_directory: Path):
+def run_daemon(
+    mqtt_broker_address: str,
+    mqtt_broker_port: int,
+    advisories_directory_path: Path,
+):
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
-    loader = JSONAdvisoriesLoader(advisories_directory_path=metadata_directory)
-    client = MQTTClient(mqtt_broker_address=mqtt_broker_address)
+    loader = JSONAdvisoriesLoader(
+        advisories_directory_path=advisories_directory_path
+    )
+    try:
+        client = MQTTClient(
+            mqtt_broker_address=mqtt_broker_address,
+            mqtt_broker_port=mqtt_broker_port,
+        )
+    except ConnectionRefusedError:
+        logger.error(
+            'Could not connect to MQTT broker at %s. Connection refused.',
+            mqtt_broker_address,
+        )
+        sys.exit(1)
+
     publisher = MQTTPublisher(client)
     scanner = NotusScanner(loader=loader, publisher=publisher)
     MQTTHandler(
@@ -74,7 +91,11 @@ def main():
 
     logger.info("Starting notus-scanner version %s.", __version__)
 
-    run_daemon(args.mqtt, args.metadata_directory)
+    run_daemon(
+        args.mqtt_broker_address,
+        args.mqtt_broker_port,
+        args.advisories_directory,
+    )
 
 
 if __name__ == "__main__":
