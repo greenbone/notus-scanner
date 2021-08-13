@@ -104,9 +104,18 @@ class CliParser:
             ),
         )
         parser.add_argument(
-            "--mqtt",
+            "-b",
+            "--mqtt-broker-address",
             type=str,
-            help="Hostname for to connect to MQTT broker.",
+            required=True,
+            help="Hostname or IP address of the MQTT broker.",
+        )
+        parser.add_argument(
+            "-p",
+            "--mqtt-broker-port",
+            type=int,
+            default=1883,
+            help="Port of the MQTT broker. (default: %(default)s)",
         )
 
         self.parser = parser
