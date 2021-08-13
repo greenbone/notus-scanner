@@ -30,22 +30,6 @@ Arguments = argparse.Namespace
 
 logger = logging.getLogger(__name__)
 
-_SUPPORTED_MODULES = ["EulerOS"]
-
-
-def _supported_module(module_name_string: str) -> str:
-    """Checks if the given module name is supported by the scanner.
-
-    Arguments:
-        module_name_string: A module name from the Notus Generator.
-
-    Returns:
-        The unmodified module name if it is supported by the scanner else None.
-    """
-    return (
-        module_name_string if module_name_string in _SUPPORTED_MODULES else None
-    )
-
 
 def _dir_path(directory: str) -> Path:
     """Check if a given string is a valid path to a directory,
@@ -100,15 +84,6 @@ class CliParser:
             default='INFO',
             type=self.log_level,
             help='Wished level of logging (default: %(default)s)',
-        )
-        parser.add_argument(
-            "--module",
-            type=_supported_module,
-            default=None,
-            help=(
-                "the module name that should be used to scan the host "
-                "for vulnerabilities."
-            ),
         )
         parser.add_argument(
             '-f',
