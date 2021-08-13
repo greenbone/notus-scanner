@@ -163,7 +163,7 @@ class CliParser:
         # Load the defaults from the config file if it exists.
         # This also override what was passed as cmd option.
         self._set_defaults(_args.config)
-        args, _ = self.parser.parse_known_args(args)
+        args = self.parser.parse_args(args)
 
         return args
 
