@@ -72,7 +72,7 @@ jobs:
       - name: Install poetry and dependencies
         uses: greenbone/actions/poetry@v1
       - name: Enable dist-packages in venv
-        run: echo "/usr/lib/python3/dist-packages" > .venv/lib/python${{ matrix.python-version }}/site-packages/dist-packages.pth
+        run: echo "/usr/lib/python3/dist-packages" > .venv/lib/python3.8/site-packages/dist-packages.pth
       - name: Calculate and upload coverage to codecov.io
         uses: greenbone/actions/coverage-python@v1
 
