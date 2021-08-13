@@ -81,6 +81,7 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             'https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008',
         )
         self.assertEqual(advisory.cves, ['CVE-2016-1908', 'CVE-2016-3115'])
+        self.assertEqual(advisory.xrefs, [])
         self.assertEqual(advisory.severity.origin, 'NVD')
         self.assertEqual(
             advisory.severity.cvss_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'

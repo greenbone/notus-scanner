@@ -138,6 +138,9 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                         cves=ast.literal_eval(
                             advisory_dict.get('CVE_LIST', '[]')
                         ),
+                        xrefs=ast.literal_eval(
+                            advisory_dict.get('XREFS', '[]')
+                        ),
                     )
 
                     for package_name in package_names:
