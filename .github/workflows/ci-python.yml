@@ -62,6 +62,8 @@ jobs:
     needs: test
     runs-on: 'ubuntu-latest'
     steps:
+      - name: Install python3-rpm
+        run: sudo apt-get install python3-rpm
       - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -69,6 +71,8 @@ jobs:
           python-version: 3.8
       - name: Install poetry and dependencies
         uses: greenbone/actions/poetry@v1
+      - name: Enable dist-packages in venv
+        run: echo "/usr/lib/python3/dist-packages" > .venv/lib/python3.8/site-packages/dist-packages.pth
       - name: Calculate and upload coverage to codecov.io
         uses: greenbone/actions/coverage-python@v1
 
