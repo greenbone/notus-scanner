@@ -20,27 +20,27 @@ from pathlib import Path
 from unittest import TestCase
 
 from notus.scanner.errors import AdvisoriesLoadingError
-from notus.scanner.loader.csv import CsvAdvisoriesLoader
+from notus.scanner.loader.json import JSONAdvisoriesLoader
 from notus.scanner.models.package import parse_rpm_package
 
 _here = Path(__file__).parent
 
 
-class CsvAdvisoriesLoaderTestCase(TestCase):
+class JSONAdvisoriesLoaderTestCase(TestCase):
     def test_unknown_file(self):
-        loader = CsvAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
         with self.assertRaises(AdvisoriesLoadingError):
             loader.load('foo')
 
     def test_empty_file(self):
-        loader = CsvAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
         advisories = loader.load('EmptyOS')
         self.assertEqual(len(advisories), 0)
 
     def test_example(self):
-        loader = CsvAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
         advisories = loader.load('EulerOS V2.0SP1')
 
@@ -81,7 +81,6 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             'https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008',
         )
         self.assertEqual(advisory.cves, ['CVE-2016-1908', 'CVE-2016-3115'])
-        self.assertEqual(advisory.xrefs, [])
         self.assertEqual(advisory.severity.origin, 'NVD')
         self.assertEqual(
             advisory.severity.cvss_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'
@@ -102,7 +101,7 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
             # pylint: disable=line-too-long
             'An access flaw was discovered in OpenSSH, the OpenSSH client did not correctly handle failures to generate authentication cookies for untrusted X11 forwarding. A malicious or compromised remote X application could possibly use this flaw to establish a trusted connection to the local X server, even if only untrusted X11 forwarding was requested. (CVE-2016-1908)',
         )
-        self.assertEqual(advisory.impact, '')
+        self.assertIsNone(advisory.impact)
         self.assertEqual(
             advisory.creation_date,
             datetime(2021, 5, 27, 7, 3, 13, tzinfo=timezone.utc),

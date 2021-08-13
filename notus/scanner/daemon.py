@@ -21,14 +21,15 @@ import sys
 from pathlib import Path
 
 from .cli import create_parser
+from .loader import JSONAdvisoriesLoader
+from .messaging.mqtt import MQTTHandler, MQTTPublisher, MQTTClient
+from .scanner import NotusScanner
 from .utils import (
     go_to_background,
     create_pid,
     init_signal_handler,
     init_logging,
 )
-from .messaging.mqtt import MQTTHandler, MQTTPublisher, MQTTClient
-from .scanner import NotusScanner
 
 from .__version__ import __version__
 
@@ -39,11 +40,10 @@ def run_daemon(mqtt_broker_address: str, metadata_directory: Path):
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
+    loader = JSONAdvisoriesLoader(advisories_directory_path=metadata_directory)
     client = MQTTClient(mqtt_broker_address=mqtt_broker_address)
     publisher = MQTTPublisher(client)
-    scanner = NotusScanner(
-        metadata_directory=metadata_directory, publisher=publisher
-    )
+    scanner = NotusScanner(loader=loader, publisher=publisher)
     MQTTHandler(
         client=client,
         start_scan_function=scanner.run_scan,
