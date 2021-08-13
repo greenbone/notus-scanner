@@ -19,7 +19,7 @@ import ast
 import csv
 import logging
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -89,13 +89,13 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
 
                 try:
                     creation_date = datetime.fromtimestamp(
-                        int(advisory_dict['CREATION_DATE'])
+                        int(advisory_dict['CREATION_DATE']), timezone.utc
                     )
                     last_modification = datetime.fromtimestamp(
-                        int(advisory_dict['LAST_MODIFICATION'])
+                        int(advisory_dict['LAST_MODIFICATION']), timezone.utc
                     )
                     severity_date = datetime.fromtimestamp(
-                        int(advisory_dict['SEVERITY_DATE'])
+                        int(advisory_dict['SEVERITY_DATE']), timezone.utc
                     )
                     vuln_info_dict: Dict[str, List[str]] = ast.literal_eval(
                         advisory_dict["VULN_INFO_DICT"]

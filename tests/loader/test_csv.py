@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest import TestCase
 
@@ -103,9 +103,14 @@ class CsvAdvisoriesLoaderTestCase(TestCase):
         )
         self.assertEqual(advisory.impact, '')
         self.assertEqual(
-            advisory.creation_date, datetime(2021, 5, 27, 9, 3, 13)
+            advisory.creation_date,
+            datetime(2021, 5, 27, 7, 3, 13, tzinfo=timezone.utc),
         )
         self.assertEqual(
-            advisory.last_modification, datetime(2021, 7, 22, 4, 24, 2)
+            advisory.last_modification,
+            datetime(2021, 7, 22, 2, 24, 2, tzinfo=timezone.utc),
         )
-        self.assertEqual(advisory.severity_date, datetime(2018, 9, 11, 12, 29))
+        self.assertEqual(
+            advisory.severity_date,
+            datetime(2018, 9, 11, 10, 29, tzinfo=timezone.utc),
+        )

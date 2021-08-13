@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
 from unittest import TestCase
@@ -66,7 +66,10 @@ class MessageTestCase(TestCase):
         self.assertEqual(
             message.group_id, UUID('866350e8-1492-497e-b12b-c079287d51dd')
         )
-        self.assertEqual(message.created, datetime.fromtimestamp(1628512774.0))
+        self.assertEqual(
+            message.created,
+            datetime.fromtimestamp(1628512774.0, tz=timezone.utc),
+        )
 
         Message.message_type = None
 
@@ -128,6 +131,9 @@ class MessageTestCase(TestCase):
         self.assertEqual(
             message.group_id, UUID('866350e8-1492-497e-b12b-c079287d51dd')
         )
-        self.assertEqual(message.created, datetime.fromtimestamp(1628512774.0))
+        self.assertEqual(
+            message.created,
+            datetime.fromtimestamp(1628512774.0, tz=timezone.utc),
+        )
 
         Message.message_type = None
