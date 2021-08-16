@@ -80,7 +80,7 @@ class MQTTHandler:
         func.__name__ = start_scan_function.__name__
 
         logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
-        self._client.subscribe(ScanStartMessage.topic, qs=QOS_AT_LEAST_ONCE)
+        self._client.subscribe(ScanStartMessage.topic, qos=QOS_AT_LEAST_ONCE)
         self._client.message_callback_add(ScanStartMessage.topic, func)
 
         client.loop_forever()
