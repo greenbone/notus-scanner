@@ -24,7 +24,7 @@ from .loader import AdvisoriesLoader
 from .messages.result import ResultMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.package import Package
+from .models.package import Package, parse_rpm_package
 from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
@@ -124,7 +124,7 @@ Fixed version: {vulnerability.fixed_package.full_name}
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        installed_packages = [Package(name) for name in package_list]
+        installed_packages = [parse_rpm_package(name) for name in package_list]
         scan = NotusScan(advisories_loader=self._loader)
         i = 0
         try:
