@@ -98,8 +98,8 @@ Fixed version: {vulnerability.fixed_package.full_name}
 """
         message = ResultMessage(
             scan_id=scan_id,
-            host_ip=vulnerability.host,
-            host_name=vulnerability.hostname,
+            host_ip=vulnerability.host_ip,
+            host_name=vulnerability.host_name,
             oid=vulnerability.advisory.oid,
             value=report,
         )
