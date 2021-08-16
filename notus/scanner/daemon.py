@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 def run_daemon(
+    log_level: str,
     mqtt_broker_address: str,
     mqtt_broker_port: int,
     advisories_directory_path: Path,
@@ -58,6 +59,9 @@ def run_daemon(
             mqtt_broker_address,
         )
         sys.exit(1)
+
+    if log_level == 'DEBUG':
+        client.enable_logger()
 
     publisher = MQTTPublisher(client)
     scanner = NotusScanner(loader=loader, publisher=publisher)
@@ -93,6 +97,7 @@ def main():
     logger.info("Starting notus-scanner version %s.", __version__)
 
     run_daemon(
+        args.log_level,
         args.mqtt_broker_address,
         args.mqtt_broker_port,
         args.advisories_directory,
