@@ -88,10 +88,8 @@ class MQTTHandler:
         logger.debug("Message with mid value %d has been published", mid)
 
     @staticmethod
-    def on_disconnect(
-        client, _userdata, rc=0
-    ):  # pylint: disable=unused-argument
-        logger.info("Disconnected result code %s", str(rc))
+    def on_disconnect(client, _userdata, rc=0):
+        logger.info("Disconnected result code %s", rc)
         client.loop_stop()
 
     @staticmethod
