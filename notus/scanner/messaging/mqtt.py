@@ -46,10 +46,13 @@ ScanFunction = Callable[
 
 class MQTTClient(mqtt.Client):
     def __init__(
-        self, mqtt_broker_address: str, client_id=NOTUS_MQTT_CLIENT_ID
+        self,
+        mqtt_broker_address: str,
+        mqtt_broker_port: int,
+        client_id=NOTUS_MQTT_CLIENT_ID,
     ):
         super().__init__(client_id=client_id, protocol=mqtt.MQTTv5)
-        self.connect(mqtt_broker_address)
+        self.connect(mqtt_broker_address, port=mqtt_broker_port)
 
 
 class MQTTPublisher:
