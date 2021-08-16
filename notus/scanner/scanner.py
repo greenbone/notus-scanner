@@ -78,9 +78,10 @@ class NotusScanner:
         """Send a message to the broker to inform a host is done."""
 
         try:
-            self._publisher.publish_status(
-                scan_id=scan_id, host_ip=host_ip, status="done"
+            scan_status_message = ScanStatusMessage(
+                scan_id=scan_id, host_ip=host_ip, status=ScanStatus.FINISHED
             )
+            self._publisher.publish(scan_status_message)
         except Exception as e:  # pylint: disable=broad-except
             logger.error(
                 "An error occurred while pushing the 'host done' message. "
@@ -102,15 +103,6 @@ Fixed version: {vulnerability.fixed_package.full_name}
             oid=vulnerability.advisory.oid,
             value=report,
         )
-        self._publisher.publish(message)
-
-    def _publish_status(self, scan_id: str, host_ip: str, status: str):
-        message = ScanStatusMessage(
-            scan_id=scan_id,
-            host_ip=host_ip,
-            status=ScanStatus(status),
-        )
-
         self._publisher.publish(message)
 
     def run_scan(
