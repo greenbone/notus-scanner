@@ -19,6 +19,7 @@
 """
 
 import unittest
+
 from unittest.mock import patch
 
 
@@ -27,6 +28,8 @@ from pathlib import Path
 from typing import List
 
 from notus.scanner.cli.parser import (
+    DEFAULT_MQTT_BROKER_PORT,
+    DEFAULT_PID_PATH,
     create_parser,
     Arguments,
     DEFAULT_CONFIG_PATH,
@@ -40,46 +43,72 @@ class CliParserTestCase(unittest.TestCase):
     def parse_args(self, args: List[str]) -> Arguments:
         return self.parser.parse_arguments(args)
 
-    @patch('sys.stderr', new_callable=StringIO)
-    def test_parse_args_no_module(self, _mock_stderr):
-        args = self.parse_args([])
-        self.assertEqual(None, args.module)
-
-    @patch('sys.stderr', new_callable=StringIO)
-    def test_parse_args_unsupported_module(self, _mock_stderr):
-        args = self.parse_args(['AnyModule'])
-        self.assertEqual(None, args.module)
+    def parse_args_with_required_args(self, args: List[str]) -> Arguments:
+        required_args = ['--mqtt-broker-address=localhost']
+        required_args.extend(args)
+        return self.parse_args(required_args)
 
     def test_mqtt_broker(self):
-        args = self.parse_args(['EulerOS', '--mqtt=localhost'])
-        self.assertEqual('localhost', args.mqtt)
+        args = self.parse_args(['--mqtt-broker-address=localhost'])
+        self.assertEqual('localhost', args.mqtt_broker_address)
+
+        args = self.parse_args(['-b', 'localhost'])
+        self.assertEqual('localhost', args.mqtt_broker_address)
+
+    def test_mqtt_broker_port(self):
+        args = self.parse_args_with_required_args(['--mqtt-broker-port=12345'])
+        self.assertEqual(args.mqtt_broker_port, 12345)
+
+        args = self.parse_args_with_required_args(['-p', '12345'])
+        self.assertEqual(args.mqtt_broker_port, 12345)
 
     def test_correct_upper_case_log_level(self):
-        args = self.parse_args(['EulerOS', '--log-level=ERROR'])
+        args = self.parse_args_with_required_args(['--log-level=ERROR'])
         self.assertEqual('ERROR', args.log_level)
 
     def test_correct_lower_case_log_level(self):
-        args = self.parse_args(['EulerOS', '-L info'.split()])
+        args = self.parse_args_with_required_args(['-L', 'info'])
         self.assertEqual('INFO', args.log_level)
 
-    def test_metadata_directory(self):
-        args = self.parse_args(['EulerOS', '--metadata-directory=/tmp'])
-        self.assertEqual(Path('/tmp'), args.metadata_directory)
+    def test_advisories_directory(self):
+        args = self.parse_args_with_required_args(
+            ['--advisories-directory=/tmp']
+        )
+        self.assertEqual(Path('/tmp'), args.advisories_directory)
 
-    def test_arg_host(self):
-        args = self.parse_args(['EulerOS', '--host=192.168.1.1'])
-        self.assertEqual('192.168.1.1', args.host)
-
-    def test_arg_hostname(self):
-        args = self.parse_args(['EulerOS', '--hostname=localhost'])
-        self.assertEqual('localhost', args.hostname)
+        args = self.parse_args_with_required_args(['-a', '/tmp'])
+        self.assertEqual(Path('/tmp'), args.advisories_directory)
 
     @patch('sys.stderr', new_callable=StringIO)
-    def test_no_dir(self, _mock_stderr):
+    def test_advisories_directory_not_exists(self, _mock_stderr):
         with self.assertRaises(SystemExit):
-            self.parse_args(['EulerOS', '--metadata-directory=/foobarbaz'])
+            self.parse_args_with_required_args(
+                ['--advisories-directory=/foobarbaz']
+            )
+
+    def test_pid_file(self):
+        args = self.parse_args_with_required_args(['--pid-file=/foo/bar'])
+        self.assertEqual(args.pid_file, '/foo/bar')
+
+    def test_log_file(self):
+        args = self.parse_args_with_required_args(['--log-file=/foo/bar'])
+        self.assertEqual(args.log_file, '/foo/bar')
+
+        args = self.parse_args_with_required_args(['-l', '/foo/bar'])
+        self.assertEqual(args.log_file, '/foo/bar')
+
+    def test_foreground(self):
+        args = self.parse_args_with_required_args(['--foreground'])
+        self.assertTrue(args.foreground)
+
+        args = self.parse_args_with_required_args(['-f'])
+        self.assertTrue(args.foreground)
 
     def test_defaults(self):
-        args = self.parse_args(['EulerOS'])
+        args = self.parse_args_with_required_args([])
 
         self.assertEqual(args.config, DEFAULT_CONFIG_PATH)
+        self.assertEqual(args.mqtt_broker_port, DEFAULT_MQTT_BROKER_PORT)
+        self.assertEqual(args.pid_file, DEFAULT_PID_PATH)
+        self.assertEqual(args.log_level, 'INFO')
+        self.assertFalse(args.foreground)
