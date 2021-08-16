@@ -57,6 +57,7 @@ class MQTTPublisher:
         self._client = client
 
     def publish(self, message: Message) -> None:
+        logger.debug('Publish message %s', message)
         self._client.publish(message.topic, str(message), qos=QOS_AT_LEAST_ONCE)
 
 
@@ -72,25 +73,32 @@ class MQTTHandler:
 
         self._client.on_publish = self.on_publish
         self._client.on_disconnect = self.on_disconnect
+        self._client.on_connect = self.on_connect
+
+        func = partial(self._handle_start_scan, start_scan_function)
+        # partial doesn't set a name and paho seems to require it
+        func.__name__ = start_scan_function.__name__
 
         logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
-
-        self._client.message_callback_add(
-            ScanStartMessage.topic,
-            partial(self._handle_start_scan, start_scan_function),
-        )
+        self._client.subscribe(ScanStartMessage.topic, qs=QOS_AT_LEAST_ONCE)
+        self._client.message_callback_add(ScanStartMessage.topic, func)
 
         client.loop_forever()
+
+    @staticmethod
+    def on_connect(_client, _userdata, _flags, rc, _properties):
+        if rc == 0:
+            logger.debug("Connected to broker %s successfully")
+        else:
+            logger.error('Failed to connect to broker. Reason Code %s', rc)
 
     @staticmethod
     def on_publish(_client, _userdata, mid):  # pylint: disable=unused-argument
         logger.debug("Message with mid value %d has been published", mid)
 
     @staticmethod
-    def on_disconnect(
-        client, _userdata, rc=0
-    ):  # pylint: disable=unused-argument
-        logger.info("Disconnected result code %s", str(rc))
+    def on_disconnect(client, _userdata, rc=0):
+        logger.info("Disconnected result code %s", rc)
         client.loop_stop()
 
     @staticmethod
