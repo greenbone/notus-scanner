@@ -75,11 +75,12 @@ class MQTTHandler:
         self._client.on_disconnect = self.on_disconnect
         self._client.on_connect = self.on_connect
 
-        logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
         func = partial(self._handle_start_scan, start_scan_function)
         # partial doesn't set a name and paho seems to require it
         func.__name__ = start_scan_function.__name__
 
+        logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
+        self._client.subscribe(ScanStartMessage.topic, qs=QOS_AT_LEAST_ONCE)
         self._client.message_callback_add(ScanStartMessage.topic, func)
 
         client.loop_forever()
