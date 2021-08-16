@@ -37,7 +37,7 @@ Besides Python Notus Scanner also needs to have
 
 installed.
 
-The `rpm` is package is not available via pip. Therefore must be installed via
+The `rpm` is package is not available via pip. Therefore it must be installed via
 your distribution. For example via apt for our reference system Debian 10
 Buster.
 
@@ -48,11 +48,11 @@ process.
 
 First install poetry via pip
 
-  python3 -m pip install --user poetry
+    python3 -m pip install --user poetry
 
 Afterwards run
 
-  poetry install
+    poetry install
 
 in the checkout directory of **notus-scanner** (the directory containing the
 `pyproject.toml` file) to install all dependencies including the packages only
@@ -77,7 +77,7 @@ environment created by poetry aware of the system wide Python packages.
 
     python3 -m venv --system-site-packages .venv
 
-## ​Support
+## Support
 
 For any question on the usage of Notus Scanner please use the
 [Greenbone Community Portal]. If you found a problem with the software, please
