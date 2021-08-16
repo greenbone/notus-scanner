@@ -25,7 +25,7 @@ import logging
 from functools import partial
 from logging.handlers import SysLogHandler, WatchedFileHandler
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import psutil
 
@@ -120,7 +120,7 @@ def init_signal_handler(pid_file: str):
 
 def init_logging(
     name: str,
-    log_level: int,
+    log_level: Union[int, str],
     *,
     log_file: Optional[str] = None,
     foreground: Optional[bool] = False,
