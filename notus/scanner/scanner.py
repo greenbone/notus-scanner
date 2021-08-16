@@ -61,7 +61,7 @@ class NotusScan:
                         host_name=host_name,
                         package=package,
                         fixed_package=package_advisory.package,
-                        advisory=package_advisory.package,
+                        advisory=package_advisory.advisory,
                     )
 
 
