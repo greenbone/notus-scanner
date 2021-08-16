@@ -44,9 +44,12 @@ def _dir_path(directory: str) -> Path:
         returned otherwise an ArgumentTypeError is raised
     """
     path = Path(directory)
+    if not path.exists():
+        raise argparse.ArgumentTypeError(f"{path.absolute()} does not exist.")
+
     if not path.is_dir():
         raise argparse.ArgumentTypeError(
-            f"{directory.absolute()} does not exist."
+            f"{path.absolute()} is not a directory."
         )
 
     return path
