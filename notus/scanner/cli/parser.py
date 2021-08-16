@@ -160,16 +160,14 @@ class CliParser:
 
         return config
 
-    def parse_arguments(self, args=None):
+    def parse_arguments(self, args=None) -> Arguments:
         # Parse args to get the config file path passed as option
         _args, _ = self.parser.parse_known_args(args)
 
         # Load the defaults from the config file if it exists.
         # This also override what was passed as cmd option.
         self._set_defaults(_args.config)
-        args = self.parser.parse_args(args)
-
-        return args
+        return self.parser.parse_args(args)
 
 
 def create_parser(description: str) -> CliParser:
