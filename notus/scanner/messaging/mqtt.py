@@ -73,6 +73,7 @@ class MQTTHandler:
 
         self._client.on_publish = self.on_publish
         self._client.on_disconnect = self.on_disconnect
+        self._client.on_connect = self.on_connect
 
         logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
 
@@ -82,6 +83,13 @@ class MQTTHandler:
         )
 
         client.loop_forever()
+
+    @staticmethod
+    def on_connect(_client, _userdata, _flags, rc, _properties):
+        if rc == 0:
+            logger.debug("Connected to broker %s successfully")
+        else:
+            logger.error('Failed to connect to broker. Reason Code %s', rc)
 
     @staticmethod
     def on_publish(_client, _userdata, mid):  # pylint: disable=unused-argument
