@@ -57,6 +57,7 @@ class MQTTPublisher:
         self._client = client
 
     def publish(self, message: Message) -> None:
+        logger.debug('Publish message %s', message)
         self._client.publish(message.topic, str(message), qos=QOS_AT_LEAST_ONCE)
 
 
