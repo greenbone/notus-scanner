@@ -24,6 +24,7 @@ from ..config import Config
 
 DEFAULT_CONFIG_PATH = "/etc/gvm/notus.conf"
 DEFAULT_PID_PATH = "/run/gvm/notus.pid"
+DEFAULT_MQTT_BROKER_PORT = 1883
 
 ParserType = argparse.ArgumentParser
 Arguments = argparse.Namespace
@@ -114,7 +115,7 @@ class CliParser:
             "-p",
             "--mqtt-broker-port",
             type=int,
-            default=1883,
+            default=DEFAULT_MQTT_BROKER_PORT,
             help="Port of the MQTT broker. (default: %(default)s)",
         )
 
