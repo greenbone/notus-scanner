@@ -19,7 +19,7 @@ import json
 import logging
 
 from functools import partial
-from typing import Callable, List
+from typing import Callable, List, Type
 
 import paho.mqtt.client as mqtt
 
@@ -27,6 +27,7 @@ from ..messages.message import Message
 from ..messages.start import ScanStartMessage
 
 from .publisher import Publisher
+from .subscriber import Subscriber
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +94,52 @@ class MQTTPublisher(Publisher):
     def publish(self, message: Message) -> None:
         logger.debug('Publish message %s', message)
         self._client.publish(message.topic, str(message), qos=QOS_AT_LEAST_ONCE)
+
+
+class MQTTSubscriber(Subscriber):
+    def __init__(self, client: MQTTClient):
+        self._client = client
+
+    def subscribe(
+        self, message_class: Type[Message], callback: Callable[[Message], None]
+    ) -> None:
+        func = partial(self._handle_message, message_class, callback)
+        func.__name__ = callback.__name__
+
+        logger.debug("Subscribing to topic %s", message_class.topic)
+
+        self._client.subscribe(message_class.topic, qos=QOS_AT_LEAST_ONCE)
+        self._client.message_callback_add(message_class.topic, func)
+
+    @staticmethod
+    def _handle_message(
+        message_class: Type[Message],
+        callback: Callable[[Message], None],
+        _client,
+        _userdata,
+        msg: mqtt.MQTTMessage,
+    ) -> None:
+        logger.debug("Incoming message for topic %s", msg.topic)
+
+        try:
+            # Load message from payload
+            message = message_class.load(msg.payload)
+        except json.JSONDecodeError:
+            logger.error(
+                "Got MQTT message in non-json format for topic %s.", msg.topic
+            )
+            logger.debug("Got: %s", msg.payload)
+            return
+        except ValueError as e:
+            logger.error(
+                "Could not parse message for topic %s. Error was %s",
+                msg.topic,
+                e,
+            )
+            logger.debug("Got: %s", msg.payload)
+            return
+
+        callback(message)
 
 
 class MQTTHandler:
