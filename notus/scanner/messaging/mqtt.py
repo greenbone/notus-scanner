@@ -19,12 +19,11 @@ import json
 import logging
 
 from functools import partial
-from typing import Callable, List, Type
+from typing import Callable, Type
 
 import paho.mqtt.client as mqtt
 
 from ..messages.message import Message
-from ..messages.start import ScanStartMessage
 
 from .publisher import Publisher
 from .subscriber import Subscriber
@@ -34,17 +33,6 @@ logger = logging.getLogger(__name__)
 NOTUS_MQTT_CLIENT_ID = "notus-scanner"
 
 QOS_AT_LEAST_ONCE = 1
-
-ScanFunction = Callable[
-    [
-        str,  # scan_id
-        str,  # host_ip
-        str,  # host_name
-        str,  # os_release
-        List[str],  # package_list
-    ],
-    None,
-]
 
 
 class MQTTClient(mqtt.Client):
@@ -142,71 +130,30 @@ class MQTTSubscriber(Subscriber):
         callback(message)
 
 
-class MQTTHandler:
-    """MQTT Handler for notus scanner related messages."""
+class MQTTDaemon:
+    """A class to start and stop the MQTT client"""
 
     def __init__(
         self,
         client: MQTTClient,
-        start_scan_function: ScanFunction,
     ):
         self._client = client
-
-        self._client.on_publish = self.on_publish
         self._client.on_disconnect = self.on_disconnect
         self._client.on_connect = self.on_connect
 
-        func = partial(self._handle_start_scan, start_scan_function)
-        # partial doesn't set a name and paho seems to require it
-        func.__name__ = start_scan_function.__name__
-
-        logger.debug("Subscribing to topic %s", ScanStartMessage.topic)
-        self._client.subscribe(ScanStartMessage.topic, qos=QOS_AT_LEAST_ONCE)
-        self._client.message_callback_add(ScanStartMessage.topic, func)
-
-        client.loop_forever()
+        self._client.connect()
 
     @staticmethod
     def on_connect(_client, _userdata, _flags, rc, _properties):
         if rc == 0:
-            logger.debug("Connected to broker %s successfully")
+            logger.info("Connected to broker successfully")
         else:
-            logger.error('Failed to connect to broker. Reason Code %s', rc)
-
-    @staticmethod
-    def on_publish(_client, _userdata, mid):  # pylint: disable=unused-argument
-        logger.debug("Message with mid value %d has been published", mid)
+            logger.error('Failed to connect to broker. Reason code %s', rc)
 
     @staticmethod
     def on_disconnect(client, _userdata, rc=0):
-        logger.info("Disconnected result code %s", rc)
+        logger.info("Disconnected from broker. Reason code %s", rc)
         client.loop_stop()
 
-    @staticmethod
-    def _handle_start_scan(
-        start_scan_function: ScanFunction,
-        _client,
-        _userdata,
-        msg: mqtt.MQTTMessage,
-    ):
-        logger.debug("Got MQTT start scan message")
-
-        try:
-            # Load start_data as dictionary
-            message = ScanStartMessage.load(msg.payload)
-        except json.JSONDecodeError:
-            logger.error("Got MQTT message in non-json format.")
-            logger.debug("Got: %s", msg.payload)
-            return
-        except ValueError as e:
-            logger.error("Could not parse start scan message %s", e)
-            logger.debug("Got: %s", msg.payload)
-            return
-
-        start_scan_function(
-            message.scan_id,
-            message.host_ip,
-            message.host_name,
-            message.os_release,
-            message.package_list,
-        )
+    def run(self):
+        self._client.loop_forever()
