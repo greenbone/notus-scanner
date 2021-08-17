@@ -16,17 +16,20 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from abc import ABC, abstractmethod
+from typing import Callable, Type
 
 from ..messages.message import Message
 
 
-class Publisher(ABC):
-    """An Abstract Base Class (ABC) for publishing Messages
+class Subscriber(ABC):
+    """An Abstract Base Class (ABC) for subscribing to messages
 
     When updating to Python > 3.7 this should be converted into a
     typing.Protocol
     """
 
     @abstractmethod
-    def publish(self, message: Message) -> None:
+    def subscribe(
+        self, message_class: Type[Message], callback: Callable[[Message], None]
+    ) -> None:
         raise NotImplementedError()

@@ -22,6 +22,7 @@ from typing import Generator, List
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
 from .messages.result import ResultMessage
+from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
 from .models.package import Package, parse_rpm_package
@@ -107,37 +108,35 @@ Fixed version: {vulnerability.fixed_package.full_name}
 
     def run_scan(
         self,
-        scan_id: str,
-        host_ip: str,
-        host_name: str,
-        os_release: str,
-        package_list: List[str],
-    ):
+        message: ScanStartMessage,
+    ) -> None:
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        installed_packages = [parse_rpm_package(name) for name in package_list]
+        installed_packages = [
+            parse_rpm_package(name) for name in message.package_list
+        ]
         scan = NotusScan(advisories_loader=self._loader)
         i = 0
         try:
             for vulnerability in scan.start_scan(
-                host_ip=host_ip,
-                host_name=host_name,
-                operating_system=os_release,
+                host_ip=message.host_ip,
+                host_name=message.host_name,
+                operating_system=message.os_release,
                 installed_packages=installed_packages,
             ):
                 i += 1
-                self._publish_result(scan_id, vulnerability)
+                self._publish_result(message.scan_id, vulnerability)
 
             logger.info("Total number of vulnerable packages -> %d", i)
 
-            self._finish_host(scan_id, host_ip)
+            self._finish_host(message.scan_id, message.host_ip)
 
         except AdvisoriesLoadingError as e:
             logger.error(
                 'Scan for %s %s with %s could not be started. Error was %s',
-                host_ip,
-                host_name or '',
-                os_release,
+                message.host_ip,
+                message.host_name or '',
+                message.os_release,
                 e,
             )
