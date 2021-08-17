@@ -26,6 +26,8 @@ import paho.mqtt.client as mqtt
 from ..messages.message import Message
 from ..messages.start import ScanStartMessage
 
+from .publisher import Publisher
+
 logger = logging.getLogger(__name__)
 
 NOTUS_MQTT_CLIENT_ID = "notus-scanner"
@@ -84,7 +86,7 @@ class MQTTClient(mqtt.Client):
         )
 
 
-class MQTTPublisher:
+class MQTTPublisher(Publisher):
     def __init__(self, client: MQTTClient):
         self._client = client
 
