@@ -22,7 +22,13 @@ from pathlib import Path
 
 from .cli import create_parser
 from .loader import JSONAdvisoriesLoader
-from .messaging.mqtt import MQTTHandler, MQTTPublisher, MQTTClient
+from .messaging.mqtt import (
+    MQTTDaemon,
+    MQTTPublisher,
+    MQTTClient,
+    MQTTSubscriber,
+)
+from .messages.start import ScanStartMessage
 from .scanner import NotusScanner
 from .utils import (
     go_to_background,
@@ -37,7 +43,6 @@ logger = logging.getLogger(__name__)
 
 
 def run_daemon(
-    log_level: str,
     mqtt_broker_address: str,
     mqtt_broker_port: int,
     advisories_directory_path: Path,
@@ -60,15 +65,15 @@ def run_daemon(
         )
         sys.exit(1)
 
-    if log_level == 'DEBUG':
-        client.enable_logger()
+    daemon = MQTTDaemon(client)
 
     publisher = MQTTPublisher(client)
     scanner = NotusScanner(loader=loader, publisher=publisher)
-    MQTTHandler(
-        client=client,
-        start_scan_function=scanner.run_scan,
-    )
+
+    subscriber = MQTTSubscriber(client)
+    subscriber.subscribe(ScanStartMessage, scanner.run_scan)
+
+    daemon.run()
 
 
 def main():
@@ -97,7 +102,6 @@ def main():
     logger.info("Starting notus-scanner version %s.", __version__)
 
     run_daemon(
-        args.log_level,
         args.mqtt_broker_address,
         args.mqtt_broker_port,
         args.advisories_directory,
