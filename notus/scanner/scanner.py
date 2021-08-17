@@ -21,6 +21,7 @@ from typing import Generator, List
 
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
+from .messages.message import Message
 from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
@@ -75,20 +76,27 @@ class NotusScanner:
         self._loader = loader
         self._publisher = publisher
 
+    def _publish(self, message: Message):
+        """Try to publish a message
+
+        Ensures that a failure during publishing doesn't stop the scan or daemon
+        """
+        try:
+            self._publisher.publish(message)
+        except Exception as e:  # pylint: disable=broad-except
+            logger.error(
+                "An error occurred while publishing a %s message. Reason %s",
+                type(message),
+                str(e),
+            )
+
     def _finish_host(self, scan_id: str, host_ip: str):
         """Send a message to the broker to inform a host is done."""
 
-        try:
-            scan_status_message = ScanStatusMessage(
-                scan_id=scan_id, host_ip=host_ip, status=ScanStatus.FINISHED
-            )
-            self._publisher.publish(scan_status_message)
-        except Exception as e:  # pylint: disable=broad-except
-            logger.error(
-                "An error occurred while pushing the 'host done' message. "
-                "Reason %s",
-                str(e),
-            )
+        scan_status_message = ScanStatusMessage(
+            scan_id=scan_id, host_ip=host_ip, status=ScanStatus.FINISHED
+        )
+        self._publish(scan_status_message)
 
     def _publish_result(
         self, scan_id: str, vulnerability: PackageVulnerability
@@ -104,7 +112,7 @@ Fixed version: {vulnerability.fixed_package.full_name}
             oid=vulnerability.advisory.oid,
             value=report,
         )
-        self._publisher.publish(message)
+        self._publish(message)
 
     def run_scan(
         self,
