@@ -51,8 +51,37 @@ class MQTTClient(mqtt.Client):
         mqtt_broker_port: int,
         client_id=NOTUS_MQTT_CLIENT_ID,
     ):
+        self._mqtt_broker_address = mqtt_broker_address
+        self._mqtt_broker_port = mqtt_broker_port
+
         super().__init__(client_id=client_id, protocol=mqtt.MQTTv5)
-        self.connect(mqtt_broker_address, port=mqtt_broker_port)
+
+        self.enable_logger()
+
+    def connect(
+        self,
+        host=None,
+        port=None,
+        keepalive=60,
+        bind_address="",
+        bind_port=0,
+        clean_start=mqtt.MQTT_CLEAN_START_FIRST_ONLY,
+        properties=None,
+    ):
+        if not host:
+            host = self._mqtt_broker_address
+        if not port:
+            port = self._mqtt_broker_port
+
+        return super().connect(
+            host,
+            port=port,
+            keepalive=keepalive,
+            bind_address=bind_address,
+            bind_port=bind_port,
+            clean_start=clean_start,
+            properties=properties,
+        )
 
 
 class MQTTPublisher:
