@@ -98,6 +98,13 @@ class NotusScanner:
         )
         self._publish(scan_status_message)
 
+    def _start_host(self, scan_id: str, host_ip: str):
+        """Send a message to the broker to inform a host scan has started."""
+        scan_status_message = ScanStatusMessage(
+            scan_id=scan_id, host_ip=host_ip, status=ScanStatus.RUNNING
+        )
+        self._publish(scan_status_message)
+
     def _publish_result(
         self, scan_id: str, vulnerability: PackageVulnerability
     ) -> None:
@@ -125,6 +132,9 @@ Fixed version: {vulnerability.fixed_package.full_name}
             parse_rpm_package(name) for name in message.package_list
         ]
         scan = NotusScan(advisories_loader=self._loader)
+
+        self._start_host(message.scan_id, message.host_ip)
+
         i = 0
         try:
             for vulnerability in scan.start_scan(
