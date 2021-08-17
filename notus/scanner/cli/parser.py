@@ -32,6 +32,16 @@ Arguments = argparse.Namespace
 logger = logging.getLogger(__name__)
 
 
+def log_level(string: str) -> str:
+    """Check if provided string is a valid log level."""
+
+    if not hasattr(logging, string.upper()):
+        raise argparse.ArgumentTypeError(
+            'log level must be one of {debug,info,warning,error,critical}'
+        )
+    return string.upper()
+
+
 def _dir_path(directory: str) -> Path:
     """Check if a given string is a valid path to a directory,
     relative or absolute.
@@ -89,7 +99,7 @@ class CliParser:
             '-L',
             '--log-level',
             default='INFO',
-            type=self.log_level,
+            type=log_level,
             help='Wished level of logging (default: %(default)s)',
         )
         parser.add_argument(
@@ -123,15 +133,6 @@ class CliParser:
         )
 
         self.parser = parser
-
-    def log_level(self, string: str) -> str:
-        """Check if provided string is a valid log level."""
-
-        if not hasattr(logging, string.upper()):
-            raise argparse.ArgumentTypeError(
-                'log level must be one of {debug,info,warning,error,critical}'
-            )
-        return string.upper()
 
     def _set_defaults(self, configfilename=None) -> None:
         self._config = self._load_config(configfilename)
