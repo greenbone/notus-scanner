@@ -53,6 +53,8 @@ pontos = "^21.7.4"
 
 [tool.poetry.scripts]
 notus-scanner = "notus.scanner.daemon:main"
+notus-scan-start = "notus.scanner.tools.scanstart:main"
+notus-subscriber = "notus.scanner.tools.subscriber:main"
 
 [tool.black]
 line-length = 80

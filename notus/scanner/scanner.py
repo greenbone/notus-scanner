@@ -110,8 +110,7 @@ class NotusScanner:
     ) -> None:
         report = f"""Vulnerable package: {vulnerability.package.name}
 Installed version: {vulnerability.package.full_name}
-Fixed version: {vulnerability.fixed_package.full_name}
-"""
+Fixed version: {vulnerability.fixed_package.full_name}"""
         message = ResultMessage(
             scan_id=scan_id,
             host_ip=vulnerability.host_ip,
