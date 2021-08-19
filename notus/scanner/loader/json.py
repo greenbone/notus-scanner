@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 def _get_operating_system_file_name(operating_system: str) -> str:
-    return operating_system.strip().replace(' ', '_')
+    return operating_system.strip().replace(' ', '_').lower()
 
 
 class JSONAdvisoriesLoader(AdvisoriesLoader):
