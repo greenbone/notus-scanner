@@ -22,7 +22,11 @@ from unittest import TestCase, mock
 
 from notus.scanner.messages.message import Message
 from notus.scanner.messages.start import ScanStartMessage
-from notus.scanner.messaging.mqtt import MQTTPublisher, MQTTSubscriber
+from notus.scanner.messaging.mqtt import (
+    MQTTDaemon,
+    MQTTPublisher,
+    MQTTSubscriber,
+)
 
 
 class MQTTPublisherTestCase(TestCase):
@@ -68,3 +72,22 @@ class MQTTSubscriberTestCase(TestCase):
         subscriber.subscribe(message, callback)
 
         client.subscribe.assert_called_with('scanner/start', qos=1)
+
+
+class MQTTDaemonTestCase(TestCase):
+    def test_connect(self):
+        client = mock.MagicMock()
+
+        # pylint: disable=unused-variable
+        daemon = MQTTDaemon(client)
+
+        client.connect.assert_called_with()
+
+    def test_run(self):
+        client = mock.MagicMock()
+
+        daemon = MQTTDaemon(client)
+
+        daemon.run()
+
+        client.loop_forever.assert_called_with()
