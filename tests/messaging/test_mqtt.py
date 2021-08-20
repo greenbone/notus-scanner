@@ -21,7 +21,8 @@ from uuid import UUID
 from unittest import TestCase, mock
 
 from notus.scanner.messages.message import Message
-from notus.scanner.messaging.mqtt import MQTTPublisher
+from notus.scanner.messages.start import ScanStartMessage
+from notus.scanner.messaging.mqtt import MQTTPublisher, MQTTSubscriber
 
 
 class MQTTPublisherTestCase(TestCase):
@@ -46,3 +47,24 @@ class MQTTPublisherTestCase(TestCase):
             '"created": 1628512774.0}',
             qos=1,
         )
+
+
+class MQTTSubscriberTestCase(TestCase):
+    def test_subscribe(self):
+        client = mock.MagicMock()
+        callback = mock.MagicMock()
+        callback.__name__ = "callback_name"
+
+        subscriber = MQTTSubscriber(client)
+
+        message = ScanStartMessage(
+            scan_id='scan_1',
+            host_ip='1.1.1.1',
+            host_name='foo',
+            os_release='BarOS 1.0',
+            package_list=['foo-1.2.3-1.x86_64'],
+        )
+
+        subscriber.subscribe(message, callback)
+
+        client.subscribe.assert_called_with('scanner/start', qos=1)
