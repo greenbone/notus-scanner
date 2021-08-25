@@ -24,7 +24,7 @@ from .message import Message, MessageType
 
 class ScanStartMessage(Message):
     message_type: MessageType = MessageType.SCAN_START
-    topic = "scanner/start"
+    topic = "scanner/package/cmd/notus"
 
     scan_id: str
     host_ip: str
