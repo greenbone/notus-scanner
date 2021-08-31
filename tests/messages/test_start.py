@@ -39,7 +39,7 @@ class ScanStartMessageTestCase(TestCase):
         self.assertIsInstance(message.created, datetime)
 
         self.assertEqual(message.message_type, MessageType.SCAN_START)
-        self.assertEqual(message.topic, 'scanner/start')
+        self.assertEqual(message.topic, 'scanner/package/cmd/notus')
 
         self.assertEqual(message.scan_id, 'scan_1')
         self.assertEqual(message.host_ip, '1.1.1.1')
@@ -109,7 +109,7 @@ class ScanStartMessageTestCase(TestCase):
         self.assertEqual(message.os_release, 'BarOS 1.0')
         self.assertEqual(message.package_list, ['foo-1.2.3-1.x86_64'])
 
-        self.assertEqual(message.topic, 'scanner/start')
+        self.assertEqual(message.topic, 'scanner/package/cmd/notus')
 
     def test_deserialize_invalid_message_type(self):
         data = {
