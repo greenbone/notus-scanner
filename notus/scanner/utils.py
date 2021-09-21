@@ -133,9 +133,7 @@ def init_logging(
         console = logging.StreamHandler()
         console.setFormatter(
             logging.Formatter(
-                '%(asctime)s {}: %(levelname)s: (%(name)s) %(message)s'.format(
-                    name
-                )
+                f'%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s'
             )
         )
         rootlogger.addHandler(console)
@@ -143,18 +141,14 @@ def init_logging(
         logfile = WatchedFileHandler(log_file)
         logfile.setFormatter(
             logging.Formatter(
-                '%(asctime)s {}: %(levelname)s: (%(name)s) %(message)s'.format(
-                    name
-                )
+                f'%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s'
             )
         )
         rootlogger.addHandler(logfile)
     else:
         syslog = SysLogHandler('/dev/log')
         syslog.setFormatter(
-            logging.Formatter(
-                '{}: %(levelname)s: (%(name)s) %(message)s'.format(name)
-            )
+            logging.Formatter(f'{name}: %(levelname)s: (%(name)s) %(message)s')
         )
         rootlogger.addHandler(syslog)
 
