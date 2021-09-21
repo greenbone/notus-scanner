@@ -38,7 +38,7 @@ class Config:
         path = filepath.expanduser()
         parser = configparser.ConfigParser(default_section=def_section)
 
-        with path.open() as f:
+        with path.open(encoding='utf-8') as f:
             parser.read_file(f)
 
         self._defaults.update(parser.defaults())

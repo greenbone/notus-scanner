@@ -57,7 +57,7 @@ def create_pid(pid_file: str) -> bool:
 
     if pid_path.is_file():
         process_name = None
-        current_pid = pid_path.read_text()
+        current_pid = pid_path.read_text(encoding='utf-8')
 
         try:
             process = psutil.Process(int(current_pid))
@@ -83,7 +83,7 @@ def create_pid(pid_file: str) -> bool:
             )
 
     try:
-        pid_path.write_text(pid)
+        pid_path.write_text(pid, encoding='utf-8')
     except (FileNotFoundError, PermissionError) as e:
         logger.error(
             "Failed to create pid file %s. %s", str(pid_path.absolute()), e
@@ -105,7 +105,7 @@ def exit_cleanup(
     if not pid_path.is_file():
         return
 
-    with pid_path.open() as f:
+    with pid_path.open(encoding='utf-8') as f:
         if int(f.read()) == os.getpid():
             logger.debug("Finishing daemon process")
             pid_path.unlink()
@@ -133,9 +133,7 @@ def init_logging(
         console = logging.StreamHandler()
         console.setFormatter(
             logging.Formatter(
-                '%(asctime)s {}: %(levelname)s: (%(name)s) %(message)s'.format(
-                    name
-                )
+                f'%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s'
             )
         )
         rootlogger.addHandler(console)
@@ -143,18 +141,14 @@ def init_logging(
         logfile = WatchedFileHandler(log_file)
         logfile.setFormatter(
             logging.Formatter(
-                '%(asctime)s {}: %(levelname)s: (%(name)s) %(message)s'.format(
-                    name
-                )
+                f'%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s'
             )
         )
         rootlogger.addHandler(logfile)
     else:
         syslog = SysLogHandler('/dev/log')
         syslog.setFormatter(
-            logging.Formatter(
-                '{}: %(levelname)s: (%(name)s) %(message)s'.format(name)
-            )
+            logging.Formatter(f'{name}: %(levelname)s: (%(name)s) %(message)s')
         )
         rootlogger.addHandler(syslog)
 

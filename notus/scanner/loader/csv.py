@@ -63,7 +63,7 @@ class CsvAdvisoriesLoader(AdvisoriesLoader):
                 'File does not exist.'
             )
 
-        with csv_file_path.open('r') as raw_csv_file:
+        with csv_file_path.open('r', encoding='utf-8') as raw_csv_file:
             # Skip the license header, so the actual
             # content can be parsed by the DictReader
             for line_string in raw_csv_file:

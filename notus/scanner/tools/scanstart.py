@@ -97,7 +97,7 @@ def main():
         package_list = args.packages
     else:
         package_file_path: Path = args.package_file
-        with package_file_path.open("r", encoding="utf8") as f:
+        with package_file_path.open("r", encoding="utf-8") as f:
             package_list = f.readlines()
 
     print(f"Starting a scan with ID {scan_id}")
