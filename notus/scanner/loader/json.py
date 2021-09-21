@@ -59,7 +59,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             # the minimim size of a json file is 2 bytes ({} or [])
             return package_advisories
 
-        with json_file_path.open('r', encoding="UTF-8") as f:
+        with json_file_path.open('r', encoding="utf-8") as f:
             try:
                 json_data = json.load(f)
             except JSONDecodeError as e:
