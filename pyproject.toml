@@ -32,7 +32,7 @@ keywords = [
 ]
 
 packages = [
-  { include = "notus/scanner"},
+  { include = "notus"},
   { include = "tests", format = "sdist" },
   { include = "poetry.lock", format = "sdist" },
   { include = "poetry.toml", format = "sdist" },
