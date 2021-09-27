@@ -2,23 +2,43 @@
 
 # Notus Scanner <!-- omit in toc -->
 
-Notus Scanner is vulnerability scanner for creating results from local security
-checks (LSCs).
+[![Build and test](https://github.com/greenbone/notus-scanner/actions/workflows/ci-python.yml/badge.svg)](https://github.com/greenbone/notus-scanner/actions/workflows/ci-python.yml)
+[![codecov](https://codecov.io/gh/greenbone/notus-scanner/branch/main/graph/badge.svg?token=LaduLacbWO)](https://codecov.io/gh/greenbone/notus-scanner)
 
-It is written in Python and can "execute" lots of LSCs in a fraction of the time
-it takes using LSCs for the openvas scanner. This is being achieved through a
-table-based approach instead of utilizing forks to run code.
+Notus Scanner detects vulnerable products in a system environment. The scanning
+method is to evaluate internal system information. It does this very fast and
+even detects currently inactive products because it does not need to interact
+with each of the products.
 
-Note that this scanner works hand-in-hand with a generator, which generates VT
-metadata in the form of files that are used to provide information about
-advisories and fixed packages.
+To report about vulnerabilities, Notus Scanner receives collected system
+information on the one hand and accesses the vulnerability information from the
+feed service on the other. Both input elements are in table form: the system
+information is specific to each environment and the vulnerability information is
+specific to each system type.
+
+Notus Scanner integrates into the Greenbone Vulnerability Management framework
+which allows to let it scan entire networks within a single task. Any
+vulnerability test in the format of `.notus` files inside the Greenbone Feed
+will be considered and automatically matched with the scanned environments.
+
+A system environment can be the operating system of a host. But it could also be
+containers like Docker or virtual machines. Neither of these need to be actively
+running for scanning.
+
+The Notus Scanner is implemented in Python and published under an Open Source
+license. Greenbone Networks maintains and extends it since it is embedded in the
+Greenbone Professional Edition as well as in the Greenbone Cloud Services.
+
+Greenbone also keeps the vulnerability information up-to-date via the feed on a
+daily basis. The `.notus` format specification is open and part of the
+documentation.
 
 ## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
   - [Requirements](#requirements)
 - [Development](#development)
-- [​Support](#support)
+- [Support](#support)
 - [Maintainer](#maintainer)
 - [Contributing](#contributing)
 - [License](#license)
@@ -37,9 +57,11 @@ Besides Python Notus Scanner also needs to have
 
 installed.
 
-The `rpm` is package is not available via pip. Therefore it must be installed via
-your distribution. For example via apt for our reference system Debian 10
+The `rpm` is package is not available via pip. Therefore it must be installed
+via your distribution. For example via apt for our reference system Debian 10
 Buster.
+
+    sudo apt install python3-rpm
 
 ## Development
 
