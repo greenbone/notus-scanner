@@ -2,6 +2,9 @@
 
 # Notus Scanner <!-- omit in toc -->
 
+[![Build and test](https://github.com/greenbone/notus-scanner/actions/workflows/ci-python.yml/badge.svg)](https://github.com/greenbone/notus-scanner/actions/workflows/ci-python.yml)
+[![codecov](https://codecov.io/gh/greenbone/notus-scanner/branch/main/graph/badge.svg?token=LaduLacbWO)](https://codecov.io/gh/greenbone/notus-scanner)
+
 Notus Scanner detects vulnerable products in a system environment. The scanning
 method is to evaluate internal system information. It does this very fast and
 even detects currently inactive products because it does not need to interact
