@@ -97,6 +97,15 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                         package_dict.get("name"),
                         package_dict.get("full_version"),
                     )
+                if not package:
+                    logger.warning(
+                        'Could not parse fixed package information from %s '
+                        'in %s',
+                        package_dict,
+                        json_file_path.absolute(),
+                    )
+                    continue
+
                 package_advisories.add_advisory_for_package(package, advisory)
 
         return package_advisories
