@@ -56,6 +56,7 @@ class RPMPackage:
     release: str
     arch: Architecture
     full_name: str
+    full_version: str
 
     def __gt__(self, other: Any) -> bool:
         if not isinstance(other, RPMPackage):
