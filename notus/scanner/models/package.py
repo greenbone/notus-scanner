@@ -18,9 +18,9 @@
 import logging
 import re
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Dict, Set
 
 logger = logging.getLogger(__name__)
 
@@ -139,3 +139,61 @@ class RPMPackage:
             full_name=f"{name}-{full_version}",
             full_version=full_version,
         )
+
+
+@dataclass(frozen=True)
+class AdvisoryReference:
+    """A reference to a vulnerability advisory"""
+
+    oid: str
+
+
+@dataclass(frozen=True, unsafe_hash=True)
+class PackageAdvisory:
+    """Connects a package with an advisory"""
+
+    package: RPMPackage
+    advisory: AdvisoryReference
+
+
+@dataclass(frozen=True)
+class PackageAdvisories:
+    """Container for mapping a package name to a set of advisories for this
+    package"""
+
+    advisories: Dict[str, Set[PackageAdvisory]] = field(default_factory=dict)
+
+    def get_package_advisories_for_package(
+        self, package: RPMPackage
+    ) -> Set[PackageAdvisory]:
+        return self.advisories.get(package.name) or set()
+
+    def add_advisory_for_package(
+        self, package: RPMPackage, advisory: AdvisoryReference
+    ) -> None:
+        advisories = self.get_package_advisories_for_package(package)
+        advisories.add(PackageAdvisory(package, advisory))
+        self.advisories[package.name] = advisories
+
+    def __len__(self) -> int:
+        return len(self.advisories)
+
+
+@dataclass(frozen=True)
+class OperatingSystemAdvisories:
+    """Mapping of operating systems to a list of package based advisories"""
+
+    advisories: Dict[str, PackageAdvisories] = field(default_factory=dict)
+
+    def get_package_advisories(
+        self, operating_system: str
+    ) -> PackageAdvisories:
+        return self.advisories.get(operating_system) or PackageAdvisories()
+
+    def set_package_advisories(
+        self, operating_system: str, package_advisories: PackageAdvisories
+    ) -> None:
+        self.advisories[operating_system] = package_advisories
+
+    def __len__(self) -> int:
+        return len(self.advisories)
