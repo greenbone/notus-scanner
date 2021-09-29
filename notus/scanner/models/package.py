@@ -24,6 +24,10 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
+_rpm_compile_no_arch = re.compile('(.*)-([^-]+)-([^-]+)')
+_rpm_compile = re.compile(r'(.*)-([^-]+)-([^-]+)\.([^-]+)')
+_rpm_compile_version = re.compile(r'([^-]+)-([^-]+)\.([^-]+)')
+
 
 class Architecture(Enum):
     NOARCH = 'noarch'
@@ -79,40 +83,59 @@ class RPMPackage:
         # the full name identifies the package
         return hash(self.full_name)
 
+    @staticmethod
+    def from_full_name(full_name: str):
+        if not full_name:
+            return None
 
-_rpm_compile_no_arch = re.compile('(.*)-([^-]+)-([^-]+)')
-_rpm_compile = re.compile(r'(.*)-([^-]+)-([^-]+)\.([^-]+)')
+        try:
+            name, version, release, architecture = _rpm_compile.match(
+                full_name
+            ).groups()
+            try:
+                arch = Architecture(architecture)
+            except ValueError:
+                arch = Architecture.UNKNOWN
+        except AttributeError:
+            try:
+                name, version, release = _rpm_compile_no_arch.match(
+                    full_name
+                ).groups()
+                arch = Architecture.NOTSET
+            except AttributeError:
+                logger.warning(
+                    "The rpm package %s could not be parsed", full_name
+                )
+                return None
 
+        return RPMPackage(
+            name=name,
+            version=version,
+            release=release,
+            arch=arch,
+            full_name=full_name,
+            full_version=f"{version}-{release}.{arch.value}",
+        )
 
-def parse_rpm_package(package_name: str) -> Optional[Package]:
-    if not package_name:
-        return None
+    @staticmethod
+    def from_name_and_full_version(name: str, full_version: str):
+        if not name or not full_version:
+            return None
 
-    try:
-        name, version, release, architecture = _rpm_compile.match(
-            package_name
+        version, release, architecture = _rpm_compile_version.match(
+            full_version
         ).groups()
+
         try:
             arch = Architecture(architecture)
         except ValueError:
             arch = Architecture.UNKNOWN
-    except AttributeError:
-        try:
-            name, version, release = _rpm_compile_no_arch.match(
-                package_name
-            ).groups()
-            arch = Architecture.NOTSET
-        except AttributeError:
-            logger.warning(
-                "The rpm package %s could not be parsed", package_name
-            )
-            return None
 
-    return RPMPackage(
-        name=name,
-        version=version,
-        release=release,
-        arch=arch,
-        full_name=f"{name}-{full_version}",
-        full_version=full_version,
-    )
+        return RPMPackage(
+            name=name,
+            version=version,
+            release=release,
+            arch=arch,
+            full_name=f"{name}-{full_version}",
+            full_version=full_version,
+        )
