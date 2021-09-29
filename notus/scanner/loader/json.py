@@ -18,18 +18,15 @@
 import json
 import logging
 
-from datetime import datetime, timezone
 from json.decoder import JSONDecodeError
 from pathlib import Path
 
 from ..errors import AdvisoriesLoadingError
-from ..models.advisory import (
-    Advisory,
+from ..models.package import (
+    AdvisoryReference,
     PackageAdvisories,
-    Severity,
+    RPMPackage,
 )
-from ..models.package import parse_rpm_package
-
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -43,7 +40,9 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
     def __init__(self, advisories_directory_path: Path):
         self._advisories_directory_path = advisories_directory_path
 
-    def load(self, operating_system: str) -> PackageAdvisories:
+    def load_package_advisories(
+        self, operating_system: str
+    ) -> PackageAdvisories:
         os_file_name = _get_operating_system_file_name(operating_system)
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"
@@ -77,21 +76,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             try:
                 # parse required data
                 oid = advisory_data['oid']
-                title = advisory_data['title']
-                creation_date = datetime.fromtimestamp(
-                    advisory_data['creation_date'], timezone.utc
-                )
-                last_modification = datetime.fromtimestamp(
-                    advisory_data['last_modification'], timezone.utc
-                )
-                advisory_id = advisory_data['advisory_id']
-                advisory_xref = advisory_data['advisory_xref']
                 fixed_packages = advisory_data['fixed_packages']
-                severity_data = advisory_data['severity']
-                severity_origin = severity_data['origin']
-                severity_date = datetime.fromtimestamp(
-                    severity_data['date'], tz=timezone.utc
-                )
             except (KeyError, TypeError) as e:
                 logger.warning(
                     'Error while parsing %s from %s. Error was %s',
@@ -101,40 +86,17 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 )
                 continue
 
-            # parse optional data
-            summary = advisory_data.get('summary')
-            insight = advisory_data.get('insight')
-            affected = advisory_data.get('affected')
-            impact = advisory_data.get('impact')
-            xrefs = advisory_data.get('xrefs', [])
-            cves = advisory_data.get('cves', [])
-            cvss_v2 = severity_data.get('cvss_v2')
-            cvss_v3 = severity_data.get('cvss_v3')
+            advisory = AdvisoryReference(oid)
 
-            severity = Severity(
-                origin=severity_origin,
-                date=severity_date,
-                cvss_v2=cvss_v2,
-                cvss_v3=cvss_v3,
-            )
-            advisory = Advisory(
-                oid=oid,
-                title=title,
-                creation_date=creation_date,
-                last_modification=last_modification,
-                advisory_id=advisory_id,
-                advisory_xref=advisory_xref,
-                severity=severity,
-                summary=summary,
-                insight=insight,
-                affected=affected,
-                impact=impact,
-                xrefs=xrefs,
-                cves=cves,
-            )
-
-            for package_name in fixed_packages:
-                package = parse_rpm_package(package_name)
+            for package_dict in fixed_packages:
+                full_name = package_dict.get("full_name")
+                if full_name:
+                    package = RPMPackage.from_full_name(full_name)
+                else:
+                    package = RPMPackage.from_name_and_full_version(
+                        package_dict.get("name"),
+                        package_dict.get("full_version"),
+                    )
                 package_advisories.add_advisory_for_package(package, advisory)
 
         return package_advisories

@@ -1,233 +1,117 @@
 {
     "version": "1.0",
     "package_type": "rpm",
-    "general": {
-        "detection": "Checks if a vulnerable package version is present on the target host.",
-        "solution": "Please install the updated package(s).",
-        "solution_type": "VendorFix",
-        "qod_type": "package",
-        "family": "Huawei EulerOS Local Security Checks"
-    },
+    "product_name": "Huawei EulerOS v2.0 SP1",
     "advisories": [
         {
             "oid": "1.3.6.1.4.1.25623.1.1.2.2016.1001",
-            "title": "Huawei EulerOS: Security Advisory for postgresql (EulerOS-SA-2016-1001)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1001",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1001",
-            "cves": ["CVE-2016-0773"],
-            "summary": "The remote host is missing an update for the Huawei EulerOS 'postgresql' package(s) announced via the EulerOS-SA-2016-1001 advisory.",
-            "insight": "An integer overflow flaw, leading to a heap-based buffer overflow, was found in the PostgreSQL handling code for regular expressions. A remote attacker could use a specially crafted regular expression to cause PostgreSQL to crash or possibly execute arbitrary code.(CVE-2016-0773)",
-            "affected": "'postgresql' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs": [],
-            "fixed_packages": ["postgresql-9.2.15-1.x86_64", "postgresql-contrib-9.2.15-1.x86_64", "postgresql-devel-9.2.15-1.x86_64", "postgresql-docs-9.2.15-1.x86_64", "postgresql-libs-9.2.15-1.x86_64", "postgresql-plperl-9.2.15-1.x86_64", "postgresql-plpython-9.2.15-1.x86_64", "postgresql-pltcl-9.2.15-1.x86_64", "postgresql-server-9.2.15-1.x86_64", "postgresql-test-9.2.15-1.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date": 1512786540,
-                "cvss_v2": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
-                "cvss_v3": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-            }
+            "fixed_packages": [
+                {"full_name": "postgresql-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-contrib-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-devel-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-docs-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-libs-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-plperl-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-plpython-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-pltcl-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-server-9.2.15-1.x86_64"},
+                {"full_name": "postgresql-test-9.2.15-1.x86_64"}
+            ]
         },
         {
             "oid": "1.3.6.1.4.1.25623.1.1.2.2016.1002",
-            "title": "Huawei EulerOS: Security Advisory for firefox (EulerOS-SA-2016-1002)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1002",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1002",
-            "cves":["CVE-2016-1952", "CVE-2016-1954", "CVE-2016-1957", "CVE-2016-1958", "CVE-2016-1960", "CVE-2016-1961", "CVE-2016-1962", "CVE-2016-1964", "CVE-2016-1965", "CVE-2016-1966", "CVE-2016-1973", "CVE-2016-1974", "CVE-2016-1977", "CVE-2016-2790", "CVE-2016-2791", "CVE-2016-2792", "CVE-2016-2793", "CVE-2016-2794", "CVE-2016-2795", "CVE-2016-2796", "CVE-2016-2797", "CVE-2016-2798", "CVE-2016-2799", "CVE-2016-2800", "CVE-2016-2801", "CVE-2016-2802"],
-            "summary": "The remote host is missing an update for the Huawei EulerOS 'firefox' package(s) announced via the EulerOS-SA-2016-1002 advisory.",
-            "insight":"Several flaws were found in the processing of malformed web content. A web page containing malicious content could cause Firefox to crash or, potentially, execute arbitrary code with the privileges of the user running Firefox. (CVE-2016-1952, CVE-2016-1954, CVE-2016-1957, CVE-2016-1958, CVE-2016-1960, CVE-2016-1961, CVE-2016-1962, CVE-2016-1973, CVE-2016-1974, CVE-2016-1964, CVE-2016-1965, CVE-2016-1966)\n\nMultiple security flaws were found in the graphite2 font library shipped with Firefox. A web page containing malicious content could cause Firefox to crash or, potentially, execute arbitrary code with the privileges of the user running Firefox. (CVE-2016-1977, CVE-2016-2790, CVE-2016-2791, CVE-2016-2792, CVE-2016-2793, CVE-2016-2794, CVE-2016-2795, CVE-2016-2796, CVE-2016-2797, CVE-2016-2798, CVE-2016-2799, CVE-2016-2800, CVE-2016-2801, CVE-2016-2802)",
-            "affected":"'firefox' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs": [],
-            "fixed_packages":["firefox-38.7.0-1.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1577462880,
-                "cvss_v2":"AV:N/AC:L/Au:N/C:C/I:C/A:C",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "firefox-38.7.0-1.x86_64"}
+            ]
         },
         {
             "oid": "1.3.6.1.4.1.25623.1.1.2.2016.1003",
-            "title": "Huawei EulerOS: Security Advisory for nss-util (EulerOS-SA-2016-1003)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id": "EulerOS-SA-2016-1003",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1003",
-            "cves":["CVE-2016-1950"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'nss-util' package(s) announced via the EulerOS-SA-2016-1003 advisory.",
-            "insight": "A heap-based buffer overflow flaw was found in the way NSS parsed certain ASN.1 structures. An attacker could use this flaw to create a specially crafted certificate which, when parsed by NSS, could cause it to crash, or execute arbitrary code, using the permissions of the user running an application compiled against the NSS library.(CVE-2016-1950)",
-            "affected":"'nss-util' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs": [],
-            "fixed_packages":["nss-util-3.21.0-3.x86_64", "nss-util-devel-3.21.0-3.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1577462880,
-                "cvss_v2":"AV:N/AC:M/Au:N/C:P/I:P/A:P",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "nss-util-3.21.0-3.x86_64"},
+                {"full_name": "nss-util-devel-3.21.0-3.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1004",
-            "title":"Huawei EulerOS: Security Advisory for xerces-c (EulerOS-SA-2016-1004)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1004",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1004",
-            "cves":["CVE-2016-0729"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'xerces-c' package(s) announced via the EulerOS-SA-2016-1004 advisory.",
-            "insight":"It was discovered that the Xerces-C XML parser did not properly process certain XML input. By providing specially crafted XML data to an application using Xerces-C for XML processing, a remote attacker could exploit this flaw to cause an application crash or, possibly, execute arbitrary code with the privileges of the application.(CVE-2016-0729)",
-            "affected": "'xerces-c' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs": [],
-            "fixed_packages":["xerces-c-3.1.1-8.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1539739740,
-                "cvss_v2":"AV:N/AC:L/Au:N/C:P/I:P/A:P",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "xerces-c-3.1.1-8.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1005",
-            "title":"Huawei EulerOS: Security Advisory for libssh2 (EulerOS-SA-2016-1005)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1005",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1005",
-            "cves":["CVE-2016-0787"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'libssh2' package(s) announced via the EulerOS-SA-2016-1005 advisory.",
-            "insight":"A type confusion issue was found in the way libssh2 generated ephemeral secrets for the diffie-hellman-group1 and diffie-hellman-group14 key exchange methods. This would cause an SSHv2 Diffie-Hellman handshake to use significantly less secure random parameters. (CVE-2016-0787)",
-            "affected":"'libssh2' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["libssh2-1.4.3-10.1.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1540916820,
-                "cvss_v2":"AV:N/AC:M/Au:N/C:P/I:N/A:N",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
-            }
+            "fixed_packages":[
+                {"full_name": "libssh2-1.4.3-10.1.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1006",
-            "title":"Huawei EulerOS: Security Advisory for samba (EulerOS-SA-2016-1006)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1006",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1006",
-            "cves":["CVE-2015-7560"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'samba' package(s) announced via the EulerOS-SA-2016-1006 advisory.",
-            "insight":"A flaw was found in the way Samba handled ACLs on symbolic links. An authenticated user could use this flaw to gain access to an arbitrary file or directory by overwriting its ACL. (CVE-2015-7560)",
-            "affected":"'samba' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["libsmbclient-4.2.3-12.x86_64", "libwbclient-4.2.3-12.x86_64", "samba-4.2.3-12.x86_64", "samba-client-4.2.3-12.x86_64", "samba-client-libs-4.2.3-12.x86_64", "samba-common-4.2.3-12.noarch", "samba-common-libs-4.2.3-12.x86_64", "samba-common-tools-4.2.3-12.x86_64", "samba-libs-4.2.3-12.x86_64", "samba-python-4.2.3-12.x86_64", "samba-winbind-4.2.3-12.x86_64", "samba-winbind-clients-4.2.3-12.x86_64", "samba-winbind-modules-4.2.3-12.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1480734780,
-                "cvss_v2":"AV:N/AC:L/Au:S/C:N/I:P/A:N",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
-            }
+            "fixed_packages":[
+                {"full_name": "libsmbclient-4.2.3-12.x86_64"},
+                {"full_name": "libwbclient-4.2.3-12.x86_64"},
+                {"full_name": "samba-4.2.3-12.x86_64"},
+                {"full_name": "samba-client-4.2.3-12.x86_64"},
+                {"full_name": "samba-client-libs-4.2.3-12.x86_64"},
+                {"full_name": "samba-common-4.2.3-12.noarch"},
+                {"full_name": "samba-common-libs-4.2.3-12.x86_64"},
+                {"full_name": "samba-common-tools-4.2.3-12.x86_64"},
+                {"full_name": "samba-libs-4.2.3-12.x86_64"},
+                {"full_name": "samba-python-4.2.3-12.x86_64"},
+                {"full_name": "samba-winbind-4.2.3-12.x86_64"},
+                {"full_name": "samba-winbind-clients-4.2.3-12.x86_64"},
+                {"full_name": "samba-winbind-modules-4.2.3-12.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1007",
-            "title":"Huawei EulerOS: Security Advisory for kernel (EulerOS-SA-2016-1007)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1007",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1007",
-            "cves":["CVE-2016-0774"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'kernel' package(s) announced via the EulerOS-SA-2016-1007 advisory.",
-            "insight": "It was found that the fix for CVE-2015-1805 incorrectly kept buffer offset and buffer length in sync on a failed atomic read, potentially resulting in a pipe buffer state corruption. A local, unprivileged user could use this flaw to crash the system or leak kernel memory to user space. (CVE-2016-0774)",
-            "affected":"'kernel' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["kernel-3.10.0-229.20.1.45.x86_64", "kernel-debug-3.10.0-229.20.1.45.x86_64", "kernel-debuginfo-3.10.0-229.20.1.45.x86_64", "kernel-debuginfo-common-x86_64-3.10.0-229.20.1.45.x86_64", "kernel-devel-3.10.0-229.20.1.45.x86_64", "kernel-headers-3.10.0-229.20.1.45.x86_64", "kernel-tools-3.10.0-229.20.1.45.x86_64", "kernel-tools-libs-3.10.0-229.20.1.45.x86_64", "perf-3.10.0-229.20.1.45.x86_64", "python-perf-3.10.0-229.20.1.45.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1480735080,
-                "cvss_v2":"AV:L/AC:L/Au:N/C:P/I:N/A:C",
-                "cvss_v3":"CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "kernel-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-debug-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-debuginfo-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-debuginfo-common-x86_64-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-devel-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-headers-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-tools-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "kernel-tools-libs-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "perf-3.10.0-229.20.1.45.x86_64"},
+                {"full_name": "python-perf-3.10.0-229.20.1.45.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1008",
-            "title":"Huawei EulerOS: Security Advisory for openssh (EulerOS-SA-2016-1008)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1008",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008",
-            "cves":["CVE-2016-1908", "CVE-2016-3115"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'openssh' package(s) announced via the EulerOS-SA-2016-1008 advisory.",
-            "insight": "It was discovered that the OpenSSH server did not sanitize data received in requests to enable X11 forwarding. An authenticated client with restricted SSH access could possibly use this flaw to bypass intended restrictions. (CVE-2016-3115)\n\nAn access flaw was discovered in OpenSSH, the OpenSSH client did not correctly handle failures to generate authentication cookies for untrusted X11 forwarding. A malicious or compromised remote X application could possibly use this flaw to establish a trusted connection to the local X server, even if only untrusted X11 forwarding was requested. (CVE-2016-1908)",
-            "affected":"'openssh' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["openssh-6.6.1p1-25.4.h3.x86_64", "openssh-askpass-6.6.1p1-25.4.h3.x86_64", "openssh-clients-6.6.1p1-25.4.h3.x86_64", "openssh-keycat-6.6.1p1-25.4.h3.x86_64", "openssh-server-6.6.1p1-25.4.h3.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1536661740,
-                "cvss_v2":"AV:N/AC:L/Au:N/C:P/I:P/A:P",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "openssh-6.6.1p1-25.4.h3.x86_64"},
+                {"full_name": "openssh-askpass-6.6.1p1-25.4.h3.x86_64"},
+                {"full_name": "openssh-clients-6.6.1p1-25.4.h3.x86_64"},
+                {"full_name": "openssh-keycat-6.6.1p1-25.4.h3.x86_64"},
+                {"full_name": "openssh-server-6.6.1p1-25.4.h3.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1009",
-            "title":"Huawei EulerOS: Security Advisory for git (EulerOS-SA-2016-1009)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1009",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1009",
-            "cves":["CVE-2016-2315", "CVE-2016-2324"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'git' package(s) announced via the EulerOS-SA-2016-1009 advisory.",
-            "insight": "An integer truncation flaw and an integer overflow flaw, both leading to a heap-based buffer overflow, were found in the way Git processed certain path information. A remote attacker could create a specially crafted Git repository that would cause a Git client or server to crash or, possibly, execute arbitrary code. (CVE-2016-2315, CVE-2016-2324)",
-            "affected":"'git' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["git-1.8.3.1-6.1.x86_64", "perl-Git-1.8.3.1-6.1.noarch"],
-            "severity": {
-                "origin": "NVD",
-                "date":1540916820,
-                "cvss_v2":"AV:N/AC:L/Au:N/C:C/I:C/A:C",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "git-1.8.3.1-6.1.x86_64"},
+                {"full_name": "perl-Git-1.8.3.1-6.1.noarch"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1010",
-            "title":"Huawei EulerOS: Security Advisory for java-1.7.0-openjdk (EulerOS-SA-2016-1010)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1010",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1010",
-            "cves":["CVE-2016-0636"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'java-1.7.0-openjdk' package(s) announced via the EulerOS-SA-2016-1010 advisory.",
-            "insight": "An improper type safety check was discovered in the Hotspot component. An untrusted Java application or applet could use this flaw to bypass Java Sandbox restrictions. (CVE-2016-0636)",
-            "affected":"'java-1.7.0-openjdk' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["java-1.7.0-openjdk-1.7.0.99-2.6.5.0.x86_64", "java-1.7.0-openjdk-devel-1.7.0.99-2.6.5.0.x86_64", "java-1.7.0-openjdk-headless-1.7.0.99-2.6.5.0.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1599568200,
-                "cvss_v2":"AV:N/AC:M/Au:N/C:C/I:C/A:C",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
-            }
+            "fixed_packages":[
+                {"full_name": "java-1.7.0-openjdk-1.7.0.99-2.6.5.0.x86_64"},
+                {"full_name": "java-1.7.0-openjdk-devel-1.7.0.99-2.6.5.0.x86_64"},
+                {"full_name": "java-1.7.0-openjdk-headless-1.7.0.99-2.6.5.0.x86_64"}
+            ]
         },
         {
             "oid":"1.3.6.1.4.1.25623.1.1.2.2016.1011",
-            "title":"Huawei EulerOS: Security Advisory for mariadb (EulerOS-SA-2016-1011)",
-            "creation_date":1622098993,
-            "last_modification":1626920642,
-            "advisory_id":"EulerOS-SA-2016-1011",
-            "advisory_xref":"https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1011",
-            "cves":["CVE-2015-4792", "CVE-2015-4802", "CVE-2015-4815", "CVE-2015-4816", "CVE-2015-4819", "CVE-2015-4826", "CVE-2015-4830", "CVE-2015-4836", "CVE-2015-4858", "CVE-2015-4861", "CVE-2015-4870", "CVE-2015-4879", "CVE-2015-4913", "CVE-2016-0505", "CVE-2016-0546", "CVE-2016-0596", "CVE-2016-0597", "CVE-2016-0598", "CVE-2016-0600", "CVE-2016-0606", "CVE-2016-0608", "CVE-2016-0609", "CVE-2016-0616", "CVE-2016-2047"],
-            "summary":"The remote host is missing an update for the Huawei EulerOS 'mariadb' package(s) announced via the EulerOS-SA-2016-1011 advisory.",
-            "insight": "It was found that the MariaDB client library did not properly check host names against server identities noted in the X.509 certificates when establishing secure connections using TLS/SSL. A man-in-the-middle attacker could possibly use this flaw to impersonate a server to a client. (CVE-2016-2047)\n\nThis update fixes several vulnerabilities in the MariaDB database server. Information about these flaws can be found on the Oracle Critical Patch Update Advisory page, listed in the References section.(CVE-2015-4792, CVE-2015-4802, CVE-2015-4815, CVE-2015-4816, CVE-2015-4819, CVE-2015-4826, CVE-2015-4830, CVE-2015-4836, CVE-2015-4858, CVE-2015-4861, CVE-2015-4870, CVE-2015-4879, CVE-2015-4913, CVE-2016-0505, CVE-2016-0546, CVE-2016-0596, CVE-2016-0597, CVE-2016-0598, CVE-2016-0600, CVE-2016-0606, CVE-2016-0608, CVE-2016-0609, CVE-2016-0616)",
-            "affected":"'mariadb' package(s) on Huawei EulerOS V2.0SP1.",
-            "xrefs":[],
-            "fixed_packages":["mariadb-5.5.47-1.x86_64", "mariadb-bench-5.5.47-1.x86_64", "mariadb-devel-5.5.47-1.x86_64", "mariadb-embedded-5.5.47-1.x86_64", "mariadb-libs-5.5.47-1.x86_64", "mariadb-server-5.5.47-1.x86_64", "mariadb-test-5.5.47-1.x86_64"],
-            "severity": {
-                "origin": "NVD",
-                "date":1577462880,
-                "cvss_v2":"AV:L/AC:L/Au:N/C:C/I:C/A:C",
-                "cvss_v3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
-            }
+            "fixed_packages":[
+                {"full_name": "mariadb-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-bench-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-devel-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-embedded-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-libs-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-server-5.5.47-1.x86_64"},
+                {"full_name": "mariadb-test-5.5.47-1.x86_64"}
+            ]
         }
     ]
 }
