@@ -48,7 +48,7 @@ class Architecture(Enum):
 
 
 @dataclass
-class Package:
+class RPMPackage:
     """Represents a RPM package"""
 
     name: str
@@ -58,7 +58,7 @@ class Package:
     full_name: str
 
     def __gt__(self, other: Any) -> bool:
-        if not isinstance(other, Package):
+        if not isinstance(other, RPMPackage):
             raise ValueError(f"Can't compare {self!r} to {other!r}.")
 
         if self.arch != other.arch:
@@ -107,4 +107,11 @@ def parse_rpm_package(package_name: str) -> Optional[Package]:
             )
             return None
 
-    return Package(name, version, release, arch, package_name)
+    return RPMPackage(
+        name=name,
+        version=version,
+        release=release,
+        arch=arch,
+        full_name=f"{name}-{full_version}",
+        full_version=full_version,
+    )
