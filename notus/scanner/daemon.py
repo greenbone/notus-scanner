@@ -16,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import os
 import sys
 
 from pathlib import Path
@@ -40,6 +41,17 @@ from .utils import (
 from .__version__ import __version__
 
 logger = logging.getLogger(__name__)
+
+SENTRY_DSN_NOTUS_SCANNER = os.environ.get("SENTRY_DSN_NOTUS_SCANNER")
+if SENTRY_DSN_NOTUS_SCANNER:
+    import sentry_sdk
+
+    sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
+        SENTRY_DSN_NOTUS_SCANNER,
+        traces_sample_rate=1.0,
+        server_name=os.environ.get('SENTRY_SERVER_NAME'),
+        environment=os.environ.get('SENTRY_ENVIRONMENT'),
+    )
 
 
 def run_daemon(
