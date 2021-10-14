@@ -42,6 +42,7 @@ packages = [
 python = "^3.7"
 paho-mqtt = "^1.5"
 psutil = "^5.5"
+sentry-sdk = {version = "^1.4.3", extras = ["sentry"]}
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.11.1"
