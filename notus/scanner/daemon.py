@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 SENTRY_DSN_NOTUS_SCANNER = os.environ.get("SENTRY_DSN_NOTUS_SCANNER")
 if SENTRY_DSN_NOTUS_SCANNER:
-    import sentry_sdk
+    import sentry_sdk  # pylint: disable=import-error
 
     sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
         SENTRY_DSN_NOTUS_SCANNER,
