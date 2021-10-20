@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  broker:
+    image: greenbone/mqtt-broker
+    build:
+      context: ..
+      dockerfile: .docker/broker.Dockerfile
+    ports:
+      - "9138:9138"
+    restart: on-failure
+  notus-scanner:
+    image: ghcr.io/greenbone/notus-scanner
