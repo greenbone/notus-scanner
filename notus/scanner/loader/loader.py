@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from ..models.advisory import PackageAdvisories
+from ..models.package import PackageAdvisories
 
 
 class AdvisoriesLoader:
-    def load(self, operating_system: str) -> PackageAdvisories:
+    def load_package_advisories(
+        self, operating_system: str
+    ) -> PackageAdvisories:
         raise NotImplementedError()

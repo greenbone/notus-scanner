@@ -17,7 +17,7 @@
 
 import logging
 
-from typing import Generator, List
+from typing import Generator, Iterable
 
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
@@ -26,13 +26,15 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.package import Package, parse_rpm_package
+from .models.package import RPMPackage
 from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
 
 
 class NotusScan:
+    """A single scan of a host"""
+
     def __init__(self, advisories_loader: AdvisoriesLoader):
         self._advisories_loader = advisories_loader
 
@@ -41,9 +43,11 @@ class NotusScan:
         host_ip: str,
         host_name: str,
         operating_system: str,
-        installed_packages: List[Package],
+        installed_packages: Iterable[RPMPackage],
     ) -> Generator[PackageVulnerability, None, None]:
-        package_advisories = self._advisories_loader.load(operating_system)
+        package_advisories = self._advisories_loader.load_package_advisories(
+            operating_system
+        )
         if not package_advisories:
             logger.info(
                 'No advisories found for %s %s with %s',
@@ -128,9 +132,9 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         received via mqtt and run the scan."""
 
         installed_packages = [
-            parse_rpm_package(name) for name in message.package_list
+            RPMPackage.from_full_name(name) for name in message.package_list
         ]
-        scan = NotusScan(advisories_loader=self._loader)
+        scan = NotusScan(self._loader)
 
         self._start_host(message.scan_id, message.host_ip)
 

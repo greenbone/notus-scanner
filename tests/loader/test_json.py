@@ -15,13 +15,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import datetime, timezone
 from pathlib import Path
 from unittest import TestCase
 
 from notus.scanner.errors import AdvisoriesLoadingError
 from notus.scanner.loader.json import JSONAdvisoriesLoader
-from notus.scanner.models.package import parse_rpm_package
+from notus.scanner.models.package import RPMPackage
 
 _here = Path(__file__).parent
 
@@ -31,24 +30,26 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
         with self.assertRaises(AdvisoriesLoadingError):
-            loader.load('foo')
+            loader.load_package_advisories('foo')
 
     def test_empty_file(self):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
-        advisories = loader.load('EmptyOS')
+        advisories = loader.load_package_advisories('EmptyOS')
         self.assertEqual(len(advisories), 0)
 
     def test_example(self):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
-        advisories = loader.load('EulerOS V2.0SP1')
+        advisories = loader.load_package_advisories('EulerOS V2.0SP1')
 
         self.assertIsNotNone(advisories)
         self.assertEqual(len(advisories), 55)
 
-        package1 = parse_rpm_package('openssh-6.6.1p1-25.4.h3.x86_64')
-        package2 = parse_rpm_package('openssh-clients-6.6.1p1-25.4.h3.x86_64')
+        package1 = RPMPackage.from_full_name('openssh-6.6.1p1-25.4.h3.x86_64')
+        package2 = RPMPackage.from_full_name(
+            'openssh-clients-6.6.1p1-25.4.h3.x86_64'
+        )
 
         package_advisories1 = advisories.get_package_advisories_for_package(
             package1
@@ -69,48 +70,3 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         advisory = package_advisory1.advisory
 
         self.assertEqual(advisory.oid, '1.3.6.1.4.1.25623.1.1.2.2016.1008')
-        self.assertEqual(
-            advisory.title,
-            # pylint: disable=line-too-long
-            'Huawei EulerOS: Security Advisory for openssh (EulerOS-SA-2016-1008)',
-        )
-        self.assertEqual(advisory.advisory_id, 'EulerOS-SA-2016-1008')
-        self.assertEqual(
-            advisory.advisory_xref,
-            # pylint: disable=line-too-long
-            'https://developer.huaweicloud.com/ict/en/site-euleros/euleros/security-advisories/EulerOS-SA-2016-1008',
-        )
-        self.assertEqual(advisory.cves, ['CVE-2016-1908', 'CVE-2016-3115'])
-        self.assertEqual(advisory.severity.origin, 'NVD')
-        self.assertEqual(
-            advisory.severity.cvss_v2, 'AV:N/AC:L/Au:N/C:P/I:P/A:P'
-        )
-        self.assertEqual(
-            advisory.severity.cvss_v3,
-            'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
-        )
-        self.assertEqual(
-            advisory.summary,
-            # pylint: disable=line-too-long
-            "The remote host is missing an update for the Huawei EulerOS 'openssh' package(s) announced via the EulerOS-SA-2016-1008 advisory.",
-        )
-        self.assertEqual(
-            advisory.insight,
-            # pylint: disable=line-too-long
-            'It was discovered that the OpenSSH server did not sanitize data received in requests to enable X11 forwarding. An authenticated client with restricted SSH access could possibly use this flaw to bypass intended restrictions. (CVE-2016-3115)\n\n'
-            # pylint: disable=line-too-long
-            'An access flaw was discovered in OpenSSH, the OpenSSH client did not correctly handle failures to generate authentication cookies for untrusted X11 forwarding. A malicious or compromised remote X application could possibly use this flaw to establish a trusted connection to the local X server, even if only untrusted X11 forwarding was requested. (CVE-2016-1908)',
-        )
-        self.assertIsNone(advisory.impact)
-        self.assertEqual(
-            advisory.creation_date,
-            datetime(2021, 5, 27, 7, 3, 13, tzinfo=timezone.utc),
-        )
-        self.assertEqual(
-            advisory.last_modification,
-            datetime(2021, 7, 22, 2, 24, 2, tzinfo=timezone.utc),
-        )
-        self.assertEqual(
-            advisory.severity.date,
-            datetime(2018, 9, 11, 10, 29, tzinfo=timezone.utc),
-        )

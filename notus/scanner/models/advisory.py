@@ -17,9 +17,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Set
-
-from .package import Package
+from typing import List, Optional
 
 
 @dataclass(frozen=True)
@@ -51,47 +49,3 @@ class Advisory:
         # use oid for hashing because it is the unique id of an advisory
         # different advisories must have a different oid
         return hash(self.oid)
-
-
-@dataclass(frozen=True, unsafe_hash=True)
-class PackageAdvisory:
-    package: Package
-    advisory: Advisory
-
-
-@dataclass(frozen=True)
-class PackageAdvisories:
-    advisories: Dict[str, Set[PackageAdvisory]] = field(default_factory=dict)
-
-    def get_package_advisories_for_package(
-        self, package: Package
-    ) -> Set[PackageAdvisory]:
-        return self.advisories.get(package.name) or set()
-
-    def add_advisory_for_package(
-        self, package: Package, advisory: Advisory
-    ) -> None:
-        advisories = self.get_package_advisories_for_package(package)
-        advisories.add(PackageAdvisory(package, advisory))
-        self.advisories[package.name] = advisories
-
-    def __len__(self) -> int:
-        return len(self.advisories)
-
-
-@dataclass(frozen=True)
-class OperatingSystemAdvisories:
-    advisories: Dict[str, PackageAdvisories] = field(default_factory=dict)
-
-    def get_package_advisories(
-        self, operating_system: str
-    ) -> PackageAdvisories:
-        return self.advisories.get(operating_system) or PackageAdvisories()
-
-    def set_package_advisories(
-        self, operating_system: str, package_advisories: PackageAdvisories
-    ) -> None:
-        self.advisories[operating_system] = package_advisories
-
-    def __len__(self) -> int:
-        return len(self.advisories)
