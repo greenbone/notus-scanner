@@ -39,7 +39,7 @@ from notus.scanner.cli.parser import (
 
 class CliParserTestCase(unittest.TestCase):
     def setUp(self):
-        self.parser = create_parser('Wrapper name')
+        self.parser = create_parser('notus-scanner-test')
 
     def parse_args(self, args: List[str]) -> Arguments:
         return self.parser.parse_arguments(args)
