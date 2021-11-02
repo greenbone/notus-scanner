@@ -3,6 +3,8 @@ name: Container Image Builds
 on:
   push:
     branches: [ main ]
+    tags: ["v*"]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -15,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Find reference version
+        uses: greenbone/actions/reference-version@v1
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -34,5 +38,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.VERSION }}
           file: .docker/notus-scanner.Dockerfile
