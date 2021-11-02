@@ -114,7 +114,8 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual(args.log_level, 'INFO')
         self.assertFalse(args.foreground)
 
-    def test_require_arguments(self):
+    @patch('sys.stderr', new_callable=StringIO)
+    def test_require_arguments(self, _io):
         with self.assertRaises(SystemExit):
             self.parse_args([])
 
