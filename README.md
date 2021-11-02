@@ -53,15 +53,8 @@ Besides Python Notus Scanner also needs to have
 
 - paho-mqtt
 - psutil
-- rpm
 
 installed.
-
-The `rpm` is package is not available via pip. Therefore it must be installed
-via your distribution. For example via apt for our reference system Debian 10
-Buster.
-
-    sudo apt install python3-rpm
 
 ## Development
 
@@ -88,16 +81,6 @@ Afterwards activate the git hooks for auto-formatting and linting via
 Validate the activated git hooks by running
 
     poetry run autohooks check
-
-For using the `rpm` Python module you need to install the `python3-rpm` Debian
-package
-
-    sudo apt install python3-rpm
-
-To be able to use the `rpm` module you need to make the Python virtual
-environment created by poetry aware of the system wide Python packages.
-
-    python3 -m venv --system-site-packages .venv
 
 ## Support
 
