@@ -38,7 +38,7 @@ def log_level(string: str) -> str:
 
     if not hasattr(logging, string.upper()):
         raise argparse.ArgumentTypeError(
-            'log level must be one of {debug,info,warning,error,critical}'
+            "log level must be one of {debug,info,warning,error,critical}"
         )
     return string.upper()
 
@@ -73,44 +73,44 @@ class CliParser:
         parser = argparse.ArgumentParser(description=description)
 
         parser.add_argument(
-            '--version',
-            help='Print version then exit.',
-            action='version',
-            version=f'%(prog)s {__version__}',
+            "--version",
+            help="Print version then exit.",
+            action="version",
+            version=f"%(prog)s {__version__}",
         )
 
         parser.add_argument(
-            '-c',
-            '--config',
-            nargs='?',
+            "-c",
+            "--config",
+            nargs="?",
             default=DEFAULT_CONFIG_PATH,
-            help='Configuration file path (default: %(default)s)',
+            help="Configuration file path (default: %(default)s)",
         )
         parser.add_argument(
-            '--pid-file',
+            "--pid-file",
             default=DEFAULT_PID_PATH,
-            help='Location of the file for the process ID '
-            '(default: %(default)s)',
+            help="Location of the file for the process ID "
+            "(default: %(default)s)",
         )
         parser.add_argument(
-            '-l',
-            '--log-file',
-            nargs='?',
+            "-l",
+            "--log-file",
+            nargs="?",
             default=None,
-            help='Log file path (default: syslog)',
+            help="Log file path (default: syslog)",
         )
         parser.add_argument(
-            '-L',
-            '--log-level',
-            default='INFO',
+            "-L",
+            "--log-level",
+            default="INFO",
             type=log_level,
-            help='Wished level of logging (default: %(default)s)',
+            help="Wished level of logging (default: %(default)s)",
         )
         parser.add_argument(
-            '-f',
-            '--foreground',
-            action='store_true',
-            help='Run in foreground and logs all messages to console.',
+            "-f",
+            "--foreground",
+            action="store_true",
+            help="Run in foreground and logs all messages to console.",
         )
         parser.add_argument(
             "-a",
@@ -150,16 +150,16 @@ class CliParser:
         configpath = Path(configfile)
 
         if not configpath.expanduser().resolve().exists():
-            logger.debug('Ignoring non existing config file %s', configfile)
+            logger.debug("Ignoring non existing config file %s", configfile)
             return config
 
         try:
             config.load(configpath, def_section=self._name)
-            logger.debug('Loaded config %s', configfile)
+            logger.debug("Loaded config %s", configfile)
         except Exception as e:  # pylint: disable=broad-except
             raise RuntimeError(
-                f'Error while parsing config file {configfile}. Error was '
-                f'{e}'
+                f"Error while parsing config file {configfile}. Error was "
+                f"{e}"
             ) from None
 
         return config

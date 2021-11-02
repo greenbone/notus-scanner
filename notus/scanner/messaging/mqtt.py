@@ -80,7 +80,7 @@ class MQTTPublisher(Publisher):
         self._client = client
 
     def publish(self, message: Message) -> None:
-        logger.debug('Publish message %s', message)
+        logger.debug("Publish message %s", message)
         self._client.publish(message.topic, str(message), qos=QOS_AT_LEAST_ONCE)
 
 
@@ -148,7 +148,7 @@ class MQTTDaemon:
         if rc == 0:
             logger.info("Connected to broker successfully")
         else:
-            logger.error('Failed to connect to broker. Reason code %s', rc)
+            logger.error("Failed to connect to broker. Reason code %s", rc)
 
     @staticmethod
     def on_disconnect(client, _userdata, rc=0):

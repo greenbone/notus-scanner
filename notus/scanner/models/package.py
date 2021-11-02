@@ -24,31 +24,31 @@ from typing import Any, Dict, Set
 
 logger = logging.getLogger(__name__)
 
-_rpm_compile_no_arch = re.compile('(.*)-([^-]+)-([^-]+)')
-_rpm_compile = re.compile(r'(.*)-([^-]+)-([^-]+)\.([^-]+)')
-_rpm_compile_version = re.compile(r'([^-]+)-([^-]+)\.([^-]+)')
+_rpm_compile_no_arch = re.compile("(.*)-([^-]+)-([^-]+)")
+_rpm_compile = re.compile(r"(.*)-([^-]+)-([^-]+)\.([^-]+)")
+_rpm_compile_version = re.compile(r"([^-]+)-([^-]+)\.([^-]+)")
 
 
 class Architecture(Enum):
-    NOARCH = 'noarch'
-    SOURCE = 'src'
-    ALL = 'all'
-    I386 = 'i386'
-    I586 = 'i586'
-    I686 = 'i686'
-    X86_64 = 'x86_64'
-    ARMV7L = 'armv7l'
-    ARMV6L = 'armv6l'
-    AARCH64 = 'aarch64'
-    AMD64 = 'amd64'
-    IA64 = 'ia64'
-    PPC = 'ppc'
-    PPC64 = 'ppc64'
-    PPC64LE = 'ppc64le'
-    S390 = 's390'
-    S390X = 's390x'
-    UNKNOWN = 'UNKNOWN'
-    NOTSET = 'NOTSET'
+    NOARCH = "noarch"
+    SOURCE = "src"
+    ALL = "all"
+    I386 = "i386"
+    I586 = "i586"
+    I686 = "i686"
+    X86_64 = "x86_64"
+    ARMV7L = "armv7l"
+    ARMV6L = "armv6l"
+    AARCH64 = "aarch64"
+    AMD64 = "amd64"
+    IA64 = "ia64"
+    PPC = "ppc"
+    PPC64 = "ppc64"
+    PPC64LE = "ppc64le"
+    S390 = "s390"
+    S390X = "s390x"
+    UNKNOWN = "UNKNOWN"
+    NOTSET = "NOTSET"
 
 
 @dataclass
@@ -74,8 +74,8 @@ class RPMPackage:
         import rpm  # pylint: disable=import-outside-toplevel
 
         return rpm.labelCompare(  # pylint: disable=no-member
-            ('1', self.version, self.release),
-            ('1', other.version, other.release),
+            ("1", self.version, self.release),
+            ("1", other.version, other.release),
         )
 
     def __hash__(self) -> int:

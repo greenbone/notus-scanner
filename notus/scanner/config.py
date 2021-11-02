@@ -29,16 +29,16 @@ logger = logging.getLogger(__name__)
 
 
 class Config:
-    def __init__(self, section: str = 'main') -> None:
+    def __init__(self, section: str = "main") -> None:
         self._parser = configparser.ConfigParser(default_section=section)
         self._config = {}  # type: Dict
         self._defaults = {}  # type: Dict
 
-    def load(self, filepath: Path, def_section: str = 'main') -> None:
+    def load(self, filepath: Path, def_section: str = "main") -> None:
         path = filepath.expanduser()
         parser = configparser.ConfigParser(default_section=def_section)
 
-        with path.open(encoding='utf-8') as f:
+        with path.open(encoding="utf-8") as f:
             parser.read_file(f)
 
         self._defaults.update(parser.defaults())

@@ -49,8 +49,8 @@ if SENTRY_DSN_NOTUS_SCANNER:
     sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
         SENTRY_DSN_NOTUS_SCANNER,
         traces_sample_rate=1.0,
-        server_name=os.environ.get('SENTRY_SERVER_NAME'),
-        environment=os.environ.get('SENTRY_ENVIRONMENT'),
+        server_name=os.environ.get("SENTRY_SERVER_NAME"),
+        environment=os.environ.get("SENTRY_ENVIRONMENT"),
     )
 
 
@@ -72,7 +72,7 @@ def run_daemon(
         )
     except ConnectionRefusedError:
         logger.error(
-            'Could not connect to MQTT broker at %s. Connection refused.',
+            "Could not connect to MQTT broker at %s. Connection refused.",
             mqtt_broker_address,
         )
         sys.exit(1)

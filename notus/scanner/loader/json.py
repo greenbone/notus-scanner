@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 def _get_operating_system_file_name(operating_system: str) -> str:
-    return operating_system.strip().replace(' ', '_').lower()
+    return operating_system.strip().replace(" ", "_").lower()
 
 
 class JSONAdvisoriesLoader(AdvisoriesLoader):
@@ -49,8 +49,8 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         )
         if not json_file_path.exists():
             raise AdvisoriesLoadingError(
-                f'Could not load advisories from {json_file_path.absolute()}. '
-                'File does not exist.'
+                f"Could not load advisories from {json_file_path.absolute()}. "
+                "File does not exist."
             )
 
         package_advisories = PackageAdvisories()
@@ -58,28 +58,28 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             # the minimim size of a json file is 2 bytes ({} or [])
             return package_advisories
 
-        with json_file_path.open('r', encoding="utf-8") as f:
+        with json_file_path.open("r", encoding="utf-8") as f:
             try:
                 json_data = json.load(f)
             except JSONDecodeError as e:
                 raise AdvisoriesLoadingError(
-                    f'Could not load advisories from '
-                    f'{json_file_path.absolute()}. Error in line {e.lineno} '
-                    f'while decoding JSON data.'
+                    f"Could not load advisories from "
+                    f"{json_file_path.absolute()}. Error in line {e.lineno} "
+                    f"while decoding JSON data."
                 ) from None
 
         for advisory_data in json_data.get("advisories", []):
             if not "oid" in advisory_data:
-                logger.error('No OID found for JSON advisory %s', advisory_data)
+                logger.error("No OID found for JSON advisory %s", advisory_data)
                 continue
 
             try:
                 # parse required data
-                oid = advisory_data['oid']
-                fixed_packages = advisory_data['fixed_packages']
+                oid = advisory_data["oid"]
+                fixed_packages = advisory_data["fixed_packages"]
             except (KeyError, TypeError) as e:
                 logger.warning(
-                    'Error while parsing %s from %s. Error was %s',
+                    "Error while parsing %s from %s. Error was %s",
                     advisory_data,
                     str(json_file_path.absolute()),
                     e,
@@ -99,8 +99,8 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     )
                 if not package:
                     logger.warning(
-                        'Could not parse fixed package information from %s '
-                        'in %s',
+                        "Could not parse fixed package information from %s "
+                        "in %s",
                         package_dict,
                         json_file_path.absolute(),
                     )

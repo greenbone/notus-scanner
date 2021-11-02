@@ -33,38 +33,38 @@ class MessageTestCase(TestCase):
 
     def test_serialize(self):
         created = datetime.fromtimestamp(1628512774)
-        message_id = UUID('63026767-029d-417e-9148-77f4da49f49a')
-        group_id = UUID('866350e8-1492-497e-b12b-c079287d51dd')
+        message_id = UUID("63026767-029d-417e-9148-77f4da49f49a")
+        group_id = UUID("866350e8-1492-497e-b12b-c079287d51dd")
         message = Message(
             message_id=message_id, group_id=group_id, created=created
         )
 
         serialized = message.serialize()
-        self.assertEqual(serialized['created'], 1628512774.0)
+        self.assertEqual(serialized["created"], 1628512774.0)
         self.assertEqual(
-            serialized['message_id'], '63026767-029d-417e-9148-77f4da49f49a'
+            serialized["message_id"], "63026767-029d-417e-9148-77f4da49f49a"
         )
         self.assertEqual(
-            serialized['group_id'], '866350e8-1492-497e-b12b-c079287d51dd'
+            serialized["group_id"], "866350e8-1492-497e-b12b-c079287d51dd"
         )
         self.assertIsNone(message.message_type)
 
     def test_deserialize(self):
         data = {
-            'message_id': '63026767-029d-417e-9148-77f4da49f49a',
-            'group_id': '866350e8-1492-497e-b12b-c079287d51dd',
-            'created': 1628512774.0,
-            'message_type': 'scan.start',
+            "message_id": "63026767-029d-417e-9148-77f4da49f49a",
+            "group_id": "866350e8-1492-497e-b12b-c079287d51dd",
+            "created": 1628512774.0,
+            "message_type": "scan.start",
         }
 
         Message.message_type = MessageType.SCAN_START  # hack a message type
 
         message = Message.deserialize(data)
         self.assertEqual(
-            message.message_id, UUID('63026767-029d-417e-9148-77f4da49f49a')
+            message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
         )
         self.assertEqual(
-            message.group_id, UUID('866350e8-1492-497e-b12b-c079287d51dd')
+            message.group_id, UUID("866350e8-1492-497e-b12b-c079287d51dd")
         )
         self.assertEqual(
             message.created,
@@ -75,9 +75,9 @@ class MessageTestCase(TestCase):
 
     def test_deserialize_no_message_type(self):
         data = {
-            'message_id': '63026767-029d-417e-9148-77f4da49f49a',
-            'group_id': '866350e8-1492-497e-b12b-c079287d51dd',
-            'created': 1628512774.0,
+            "message_id": "63026767-029d-417e-9148-77f4da49f49a",
+            "group_id": "866350e8-1492-497e-b12b-c079287d51dd",
+            "created": 1628512774.0,
         }
 
         with self.assertRaisesRegex(
@@ -87,10 +87,10 @@ class MessageTestCase(TestCase):
 
     def test_deserialize_unknown_message_type(self):
         data = {
-            'message_id': '63026767-029d-417e-9148-77f4da49f49a',
-            'group_id': '866350e8-1492-497e-b12b-c079287d51dd',
-            'created': 1628512774.0,
-            'message_type': 'foo',
+            "message_id": "63026767-029d-417e-9148-77f4da49f49a",
+            "group_id": "866350e8-1492-497e-b12b-c079287d51dd",
+            "created": 1628512774.0,
+            "message_type": "foo",
         }
 
         with self.assertRaisesRegex(
@@ -100,8 +100,8 @@ class MessageTestCase(TestCase):
 
     def test_to_str(self):
         created = datetime.fromtimestamp(1628512774)
-        message_id = UUID('63026767-029d-417e-9148-77f4da49f49a')
-        group_id = UUID('866350e8-1492-497e-b12b-c079287d51dd')
+        message_id = UUID("63026767-029d-417e-9148-77f4da49f49a")
+        group_id = UUID("866350e8-1492-497e-b12b-c079287d51dd")
         message = Message(
             message_id=message_id, group_id=group_id, created=created
         )
@@ -126,10 +126,10 @@ class MessageTestCase(TestCase):
         message = Message.load(payload)
 
         self.assertEqual(
-            message.message_id, UUID('63026767-029d-417e-9148-77f4da49f49a')
+            message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
         )
         self.assertEqual(
-            message.group_id, UUID('866350e8-1492-497e-b12b-c079287d51dd')
+            message.group_id, UUID("866350e8-1492-497e-b12b-c079287d51dd")
         )
         self.assertEqual(
             message.created,

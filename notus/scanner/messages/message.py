@@ -49,16 +49,16 @@ class Message:
 
     @classmethod
     def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
-        message_type = MessageType(data.get('message_type'))
+        message_type = MessageType(data.get("message_type"))
         if message_type != cls.message_type:
             raise ValueError(
                 f"Invalid message type {message_type} for {cls.__name__}. "
                 f"Must be {cls.message_type}.",
             )
         return {
-            'message_id': UUID(data.get("message_id")),
-            'group_id': UUID(data.get("group_id")),
-            'created': datetime.fromtimestamp(
+            "message_id": UUID(data.get("message_id")),
+            "group_id": UUID(data.get("group_id")),
+            "created": datetime.fromtimestamp(
                 float(data.get("created")), timezone.utc
             ),
         }

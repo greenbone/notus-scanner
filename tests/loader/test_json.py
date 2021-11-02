@@ -30,25 +30,25 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
         with self.assertRaises(AdvisoriesLoadingError):
-            loader.load_package_advisories('foo')
+            loader.load_package_advisories("foo")
 
     def test_empty_file(self):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
-        advisories = loader.load_package_advisories('EmptyOS')
+        advisories = loader.load_package_advisories("EmptyOS")
         self.assertEqual(len(advisories), 0)
 
     def test_example(self):
         loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
 
-        advisories = loader.load_package_advisories('EulerOS V2.0SP1')
+        advisories = loader.load_package_advisories("EulerOS V2.0SP1")
 
         self.assertIsNotNone(advisories)
         self.assertEqual(len(advisories), 55)
 
-        package1 = RPMPackage.from_full_name('openssh-6.6.1p1-25.4.h3.x86_64')
+        package1 = RPMPackage.from_full_name("openssh-6.6.1p1-25.4.h3.x86_64")
         package2 = RPMPackage.from_full_name(
-            'openssh-clients-6.6.1p1-25.4.h3.x86_64'
+            "openssh-clients-6.6.1p1-25.4.h3.x86_64"
         )
 
         package_advisories1 = advisories.get_package_advisories_for_package(
@@ -69,4 +69,4 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
 
         advisory = package_advisory1.advisory
 
-        self.assertEqual(advisory.oid, '1.3.6.1.4.1.25623.1.1.2.2016.1008')
+        self.assertEqual(advisory.oid, "1.3.6.1.4.1.25623.1.1.2.2016.1008")
