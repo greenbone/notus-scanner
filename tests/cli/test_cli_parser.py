@@ -19,6 +19,7 @@
 """
 
 import unittest
+import tempfile
 
 from unittest.mock import patch
 
@@ -112,3 +113,37 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual(args.pid_file, DEFAULT_PID_PATH)
         self.assertEqual(args.log_level, 'INFO')
         self.assertFalse(args.foreground)
+
+    def test_require_arguments(self):
+        with self.assertRaises(SystemExit):
+            self.parse_args([])
+
+    def test_config_file_provide_mqtt_broker_address(self):
+        with tempfile.NamedTemporaryFile() as fp:
+            fp.write(b"[notus-scanner-test]\nmqtt_broker_address=1.2.3.4")
+            fp.flush()
+
+            args = self.parse_args(["-c", fp.name])
+            self.assertEqual(args.mqtt_broker_address, "1.2.3.4")
+
+    def test_config_file(self):
+        with tempfile.NamedTemporaryFile() as fp:
+            fp.write(
+                b"[notus-scanner-test]\n"
+                b"mqtt_broker_address=1.2.3.4\n"
+                b"mqtt_broker_port=123\n"
+                b"advisories_directory=/tmp\n"
+                b"pid_file=foo.bar\n"
+                b"log_file=foo.log\n"
+                b"log_level=DEBUG\n"
+            )
+            fp.flush()
+
+            args = self.parse_args(["-c", fp.name])
+
+            self.assertEqual(args.mqtt_broker_address, "1.2.3.4")
+            self.assertEqual(args.mqtt_broker_port, 123)
+            self.assertEqual(args.advisories_directory, Path("/tmp"))
+            self.assertEqual(args.pid_file, "foo.bar")
+            self.assertEqual(args.log_file, "foo.log")
+            self.assertEqual(args.log_level, "DEBUG")
