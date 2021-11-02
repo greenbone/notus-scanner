@@ -23,8 +23,8 @@ from pathlib import Path
 from ..config import Config
 from ..__version__ import __version__
 
-DEFAULT_CONFIG_PATH = "/etc/gvm/notus.conf"
-DEFAULT_PID_PATH = "/run/gvm/notus.pid"
+DEFAULT_CONFIG_PATH = "/etc/gvm/notus-scanner.conf"
+DEFAULT_PID_PATH = "/run/gvm/notus-scanner.pid"
 DEFAULT_MQTT_BROKER_PORT = 1883
 
 ParserType = argparse.ArgumentParser
