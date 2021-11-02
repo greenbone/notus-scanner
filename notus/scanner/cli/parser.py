@@ -21,6 +21,7 @@ import logging
 from pathlib import Path
 
 from ..config import Config
+from ..__version__ import __version__
 
 DEFAULT_CONFIG_PATH = "/etc/gvm/notus.conf"
 DEFAULT_PID_PATH = "/run/gvm/notus.pid"
@@ -72,7 +73,10 @@ class CliParser:
         parser = argparse.ArgumentParser(description=description)
 
         parser.add_argument(
-            '--version', action='store_true', help='Print version then exit.'
+            '--version',
+            help='Print version then exit.',
+            action='version',
+            version=f'%(prog)s {__version__}',
         )
 
         parser.add_argument(

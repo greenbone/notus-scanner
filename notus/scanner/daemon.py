@@ -92,10 +92,6 @@ def main():
     parser = create_parser("Notus Scanner")
     args = parser.parse_arguments()
 
-    if args.version:
-        print(f'Notus Scanner {__version__}')
-        sys.exit()
-
     init_logging(
         "notus-scanner",
         args.log_level,
