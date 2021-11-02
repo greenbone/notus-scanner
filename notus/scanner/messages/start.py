@@ -72,7 +72,7 @@ class ScanStartMessage(Message):
 
         package_list = data.get("package_list")
         if not isinstance(package_list, list):
-            raise ValueError('package_list must contain a list')
+            raise ValueError("package_list must contain a list")
 
         kwargs.update(
             {

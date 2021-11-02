@@ -50,9 +50,9 @@ class NotusScan:
         )
         if not package_advisories:
             logger.info(
-                'No advisories found for %s %s with %s',
+                "No advisories found for %s %s with %s",
                 host_ip,
-                host_name or '',
+                host_name or "",
                 operating_system,
             )
 
@@ -155,9 +155,9 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
 
         except AdvisoriesLoadingError as e:
             logger.error(
-                'Scan for %s %s with %s could not be started. Error was %s',
+                "Scan for %s %s with %s could not be started. Error was %s",
                 message.host_ip,
-                message.host_name or '',
+                message.host_name or "",
                 message.os_release,
                 e,
             )

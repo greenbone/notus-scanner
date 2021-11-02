@@ -81,11 +81,11 @@ def main():
         "vulnerabilities",
     )
     parser.add_argument(
-        '-L',
-        '--log-level',
-        default='INFO',
+        "-L",
+        "--log-level",
+        default="INFO",
         type=log_level,
-        help='Wished level of logging (default: %(default)s)',
+        help="Wished level of logging (default: %(default)s)",
     )
 
     args = parser.parse_args()

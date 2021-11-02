@@ -39,70 +39,70 @@ from notus.scanner.cli.parser import (
 
 class CliParserTestCase(unittest.TestCase):
     def setUp(self):
-        self.parser = create_parser('notus-scanner-test')
+        self.parser = create_parser("notus-scanner-test")
 
     def parse_args(self, args: List[str]) -> Arguments:
         return self.parser.parse_arguments(args)
 
     def parse_args_with_required_args(self, args: List[str]) -> Arguments:
-        required_args = ['--mqtt-broker-address=localhost']
+        required_args = ["--mqtt-broker-address=localhost"]
         required_args.extend(args)
         return self.parse_args(required_args)
 
     def test_mqtt_broker(self):
-        args = self.parse_args(['--mqtt-broker-address=localhost'])
-        self.assertEqual('localhost', args.mqtt_broker_address)
+        args = self.parse_args(["--mqtt-broker-address=localhost"])
+        self.assertEqual("localhost", args.mqtt_broker_address)
 
-        args = self.parse_args(['-b', 'localhost'])
-        self.assertEqual('localhost', args.mqtt_broker_address)
+        args = self.parse_args(["-b", "localhost"])
+        self.assertEqual("localhost", args.mqtt_broker_address)
 
     def test_mqtt_broker_port(self):
-        args = self.parse_args_with_required_args(['--mqtt-broker-port=12345'])
+        args = self.parse_args_with_required_args(["--mqtt-broker-port=12345"])
         self.assertEqual(args.mqtt_broker_port, 12345)
 
-        args = self.parse_args_with_required_args(['-p', '12345'])
+        args = self.parse_args_with_required_args(["-p", "12345"])
         self.assertEqual(args.mqtt_broker_port, 12345)
 
     def test_correct_upper_case_log_level(self):
-        args = self.parse_args_with_required_args(['--log-level=ERROR'])
-        self.assertEqual('ERROR', args.log_level)
+        args = self.parse_args_with_required_args(["--log-level=ERROR"])
+        self.assertEqual("ERROR", args.log_level)
 
     def test_correct_lower_case_log_level(self):
-        args = self.parse_args_with_required_args(['-L', 'info'])
-        self.assertEqual('INFO', args.log_level)
+        args = self.parse_args_with_required_args(["-L", "info"])
+        self.assertEqual("INFO", args.log_level)
 
     def test_advisories_directory(self):
         args = self.parse_args_with_required_args(
-            ['--advisories-directory=/tmp']
+            ["--advisories-directory=/tmp"]
         )
-        self.assertEqual(Path('/tmp'), args.advisories_directory)
+        self.assertEqual(Path("/tmp"), args.advisories_directory)
 
-        args = self.parse_args_with_required_args(['-a', '/tmp'])
-        self.assertEqual(Path('/tmp'), args.advisories_directory)
+        args = self.parse_args_with_required_args(["-a", "/tmp"])
+        self.assertEqual(Path("/tmp"), args.advisories_directory)
 
-    @patch('sys.stderr', new_callable=StringIO)
+    @patch("sys.stderr", new_callable=StringIO)
     def test_advisories_directory_not_exists(self, _mock_stderr):
         with self.assertRaises(SystemExit):
             self.parse_args_with_required_args(
-                ['--advisories-directory=/foobarbaz']
+                ["--advisories-directory=/foobarbaz"]
             )
 
     def test_pid_file(self):
-        args = self.parse_args_with_required_args(['--pid-file=/foo/bar'])
-        self.assertEqual(args.pid_file, '/foo/bar')
+        args = self.parse_args_with_required_args(["--pid-file=/foo/bar"])
+        self.assertEqual(args.pid_file, "/foo/bar")
 
     def test_log_file(self):
-        args = self.parse_args_with_required_args(['--log-file=/foo/bar'])
-        self.assertEqual(args.log_file, '/foo/bar')
+        args = self.parse_args_with_required_args(["--log-file=/foo/bar"])
+        self.assertEqual(args.log_file, "/foo/bar")
 
-        args = self.parse_args_with_required_args(['-l', '/foo/bar'])
-        self.assertEqual(args.log_file, '/foo/bar')
+        args = self.parse_args_with_required_args(["-l", "/foo/bar"])
+        self.assertEqual(args.log_file, "/foo/bar")
 
     def test_foreground(self):
-        args = self.parse_args_with_required_args(['--foreground'])
+        args = self.parse_args_with_required_args(["--foreground"])
         self.assertTrue(args.foreground)
 
-        args = self.parse_args_with_required_args(['-f'])
+        args = self.parse_args_with_required_args(["-f"])
         self.assertTrue(args.foreground)
 
     def test_defaults(self):
@@ -111,10 +111,10 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual(args.config, DEFAULT_CONFIG_PATH)
         self.assertEqual(args.mqtt_broker_port, DEFAULT_MQTT_BROKER_PORT)
         self.assertEqual(args.pid_file, DEFAULT_PID_PATH)
-        self.assertEqual(args.log_level, 'INFO')
+        self.assertEqual(args.log_level, "INFO")
         self.assertFalse(args.foreground)
 
-    @patch('sys.stderr', new_callable=StringIO)
+    @patch("sys.stderr", new_callable=StringIO)
     def test_require_arguments(self, _io):
         with self.assertRaises(SystemExit):
             self.parse_args([])

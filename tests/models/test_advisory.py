@@ -46,13 +46,13 @@ class AdvisoryTestCase(TestCase):
             severity=severity,
         )
 
-        self.assertEqual(advisory.oid, '1.2.3.4.5')
-        self.assertEqual(advisory.title, 'Foo Bar')
+        self.assertEqual(advisory.oid, "1.2.3.4.5")
+        self.assertEqual(advisory.title, "Foo Bar")
         self.assertEqual(advisory.creation_date, creation_date)
         self.assertEqual(advisory.last_modification, last_modification)
-        self.assertEqual(advisory.advisory_id, '1234')
-        self.assertEqual(advisory.advisory_xref, 'http://foo/1234')
-        self.assertEqual(advisory.severity.origin, 'foo')
+        self.assertEqual(advisory.advisory_id, "1234")
+        self.assertEqual(advisory.advisory_xref, "http://foo/1234")
+        self.assertEqual(advisory.severity.origin, "foo")
         self.assertEqual(advisory.severity.date, severity_date)
         self.assertIsNone(advisory.severity.cvss_v2)
         self.assertEqual(advisory.severity.cvss_v3, cvss_v3)
@@ -128,10 +128,10 @@ class AdvisoryTestCase(TestCase):
         )
 
         with self.assertRaises(FrozenInstanceError):
-            advisory.oid = '2.2.2.2.2'
+            advisory.oid = "2.2.2.2.2"
 
         with self.assertRaises(FrozenInstanceError):
-            advisory.title = 'Ipsum'
+            advisory.title = "Ipsum"
 
         with self.assertRaises(FrozenInstanceError):
             advisory.last_modification = datetime.now()
