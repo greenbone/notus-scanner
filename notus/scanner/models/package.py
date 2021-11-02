@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Set
 
+from .rpm import label_compare
+
 logger = logging.getLogger(__name__)
 
 _rpm_compile_no_arch = re.compile("(.*)-([^-]+)-([^-]+)")
@@ -71,9 +73,7 @@ class RPMPackage:
             # we should not compare packages with different architectures
             return False
 
-        import rpm  # pylint: disable=import-outside-toplevel
-
-        return rpm.labelCompare(  # pylint: disable=no-member
+        return label_compare(
             ("1", self.version, self.release),
             ("1", other.version, other.release),
         )

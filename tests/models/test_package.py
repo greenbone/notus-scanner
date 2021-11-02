@@ -28,15 +28,6 @@ from notus.scanner.models.package import (
 )
 
 
-def rpm_module_available():
-    try:
-        import rpm  # pylint: disable=unused-import,import-outside-toplevel
-
-        return True
-    except ModuleNotFoundError:
-        return False
-
-
 class ArchitectureTestCase(TestCase):
     def test_none(self):
         with self.assertRaises(ValueError):
@@ -100,9 +91,6 @@ class RPMPackageTestCase(TestCase):
 
     def test_compare_gt(self):
         """packages should be comparable"""
-        if not rpm_module_available():
-            self.skipTest("No rpm module available skipping test")
-
         package1 = RPMPackage(
             name="foo-bar",
             version="1.2.3",
@@ -133,9 +121,6 @@ class RPMPackageTestCase(TestCase):
 
     def test_compare_gt_different_architecture(self):
         """packages of different architecture should not be comparable"""
-        if not rpm_module_available():
-            self.skipTest("No rpm module available skipping test")
-
         package1 = RPMPackage(
             name="foo-bar",
             version="1.2.3",
@@ -157,9 +142,6 @@ class RPMPackageTestCase(TestCase):
 
     def test_compare_less(self):
         """packages should be comparable"""
-        if not rpm_module_available():
-            self.skipTest("No rpm module available skipping test")
-
         package1 = RPMPackage(
             name="foo-bar",
             version="1.2.3",
