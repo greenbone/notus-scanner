@@ -125,7 +125,6 @@ class CliParser:
             "-b",
             "--mqtt-broker-address",
             type=str,
-            required=True,
             help="Hostname or IP address of the MQTT broker.",
         )
         parser.add_argument(
@@ -172,7 +171,15 @@ class CliParser:
         # Load the defaults from the config file if it exists.
         # This also override what was passed as cmd option.
         self._set_defaults(_args.config)
-        return self.parser.parse_args(args)
+
+        parsed_args = self.parser.parse_args(args)
+        if not parsed_args.mqtt_broker_address:
+            # mqtt broker address is required
+            self.parser.error(
+                "the following arguments are required: "
+                "-b/--mqtt-broker-address"
+            )
+        return parsed_args
 
 
 def create_parser(description: str) -> CliParser:
