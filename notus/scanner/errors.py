@@ -22,3 +22,7 @@ class NotusScannerError(Exception):
 
 class AdvisoriesLoadingError(NotusScannerError):
     """A problem while loading an Advisory has occurred"""
+
+
+class RpmError(NotusScannerError):
+    """A problem while parsing RPM package version information"""
