@@ -18,6 +18,7 @@ Public methods include:
 
 import logging
 import re
+from typing import Tuple
 
 from ..errors import RpmError
 
@@ -33,6 +34,8 @@ logger = logging.getLogger(__name__)
 _A_NEWER = 1
 _B_NEWER = -1
 _A_EQ_B = 0
+
+EVRTuple = Tuple[str, str, str]
 
 
 def compare_packages(rpm_str_a, rpm_str_b, arch_provided=True):
@@ -62,7 +65,7 @@ def compare_packages(rpm_str_a, rpm_str_b, arch_provided=True):
     return label_compare(evr_a, evr_b)
 
 
-def compare_evrs(evr_a, evr_b):
+def compare_evrs(evr_a: EVRTuple, evr_b: EVRTuple) -> int:
     """Compare two EVR tuples to determine which is newer
 
     This method compares the epoch, version, and release of the
@@ -87,7 +90,7 @@ def compare_evrs(evr_a, evr_b):
     return rel_comp
 
 
-def label_compare(evr_a, evr_b):
+def label_compare(evr_a: EVRTuple, evr_b: EVRTuple) -> int:
     """Convenience function to provide the same behavior as
     labelCompare from rpm-python.
 
@@ -107,7 +110,7 @@ def label_compare(evr_a, evr_b):
     return compare_evrs(evr_a, evr_b)
 
 
-def compare_versions(version_a, version_b):
+def compare_versions(version_a: str, version_b: str) -> int:
     """Compare two RPM version strings
 
     Compares two RPM version strings and returns an integer indicating
@@ -181,7 +184,7 @@ def compare_versions(version_a, version_b):
         return _A_NEWER if len(chars_a) > len(chars_b) else _B_NEWER
 
 
-def parse_package(package_string, arch_included=True):
+def parse_package(package_string: str, arch_included: bool = True):
     """Parse an RPM version string to get name, version, and arch
 
     Splits most (all tested) RPM version strings into name, epoch,
