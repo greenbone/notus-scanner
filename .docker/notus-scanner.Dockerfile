@@ -25,4 +25,4 @@ RUN chown notus:notus /notus
 USER notus
 
 ENTRYPOINT [ "notus-scanner" ]
-CMD ["-f", "--pid-file=/notus/notus-scanner.pid", "-b", "broker", "-p", "9138"]
+CMD ["-f", "--pid-file=/notus/notus-scanner.pid", "-b", "broker"]
