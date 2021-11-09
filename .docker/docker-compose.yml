@@ -7,7 +7,7 @@ services:
       context: ..
       dockerfile: .docker/broker.Dockerfile
     ports:
-      - "9138:9138"
+      - "1883:1883"
     restart: on-failure
   notus-scanner:
     image: ghcr.io/greenbone/notus-scanner
