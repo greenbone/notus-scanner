@@ -283,6 +283,9 @@ class RPMPackageTestCase(TestCase):
             package.full_name, "perl-Pod-Escapes-1.04-285.h2.noarch"
         )
 
+        package = RPMPackage.from_full_name(" libtool-ltdl-2.4.2-21.x86_64\r\n")
+        self.assertEqual(package.arch, Architecture.X86_64)
+
     def test_from_name_and_full_version(self):
         """it should be possible to create packages from name and full
         version"""
