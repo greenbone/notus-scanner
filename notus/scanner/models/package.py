@@ -93,7 +93,7 @@ class RPMPackage:
                 full_name
             ).groups()
             try:
-                arch = Architecture(architecture)
+                arch = Architecture(architecture.strip())
             except ValueError:
                 arch = Architecture.UNKNOWN
         except AttributeError:
@@ -127,7 +127,7 @@ class RPMPackage:
         ).groups()
 
         try:
-            arch = Architecture(architecture)
+            arch = Architecture(architecture.strip())
         except ValueError:
             arch = Architecture.UNKNOWN
 
