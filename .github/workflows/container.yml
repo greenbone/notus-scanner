@@ -25,12 +25,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
       - name: Install poetry and dependencies
         uses: greenbone/actions/poetry@v1
+        with:
+          python-version: 3.9
       - name: Build wheel
         run: poetry build -f wheel
       - name: Build and push Container image
