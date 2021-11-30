@@ -49,6 +49,7 @@ class Architecture(Enum):
     PPC64LE = "ppc64le"
     S390 = "s390"
     S390X = "s390x"
+    AARCH64_ILP32 = "aarch64_ilp32"
     UNKNOWN = "UNKNOWN"
     NOTSET = "NOTSET"
 
