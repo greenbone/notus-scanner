@@ -38,6 +38,8 @@ from .utils import (
     init_logging,
 )
 
+from .loader.gpg_sha_verifier import gpg_sha256sums, create_verify
+
 from .__version__ import __version__
 
 logger = logging.getLogger(__name__)
@@ -62,8 +64,12 @@ def run_daemon(
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
+
+    sums = gpg_sha256sums((advisories_directory_path / "sha256sums"))
+    verifier = create_verify(sums)
+
     loader = JSONAdvisoriesLoader(
-        advisories_directory_path=advisories_directory_path
+        advisories_directory_path=advisories_directory_path, verify=verifier
     )
     try:
         client = MQTTClient(

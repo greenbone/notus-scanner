@@ -27,19 +27,25 @@ _here = Path(__file__).parent
 
 class JSONAdvisoriesLoaderTestCase(TestCase):
     def test_unknown_file(self):
-        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(
+            advisories_directory_path=_here, verify=lambda _: True
+        )
 
         with self.assertRaises(AdvisoriesLoadingError):
             loader.load_package_advisories("foo")
 
     def test_empty_file(self):
-        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(
+            advisories_directory_path=_here, verify=lambda _: True
+        )
 
         advisories = loader.load_package_advisories("EmptyOS")
         self.assertEqual(len(advisories), 0)
 
     def test_example(self):
-        loader = JSONAdvisoriesLoader(advisories_directory_path=_here)
+        loader = JSONAdvisoriesLoader(
+            advisories_directory_path=_here, verify=lambda _: True
+        )
 
         advisories = loader.load_package_advisories("EulerOS V2.0SP1")
 

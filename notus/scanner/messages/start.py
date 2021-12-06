@@ -41,7 +41,7 @@ class ScanStartMessage(Message):
         os_release: str,
         package_list: List[str],
         message_id: Optional[UUID] = None,
-        group_id: Optional[UUID] = None,
+        group_id: Optional[str] = None,
         created: Optional[datetime] = None,
     ):
         super().__init__(
