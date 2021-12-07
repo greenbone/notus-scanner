@@ -34,6 +34,13 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         with self.assertRaises(AdvisoriesLoadingError):
             loader.load_package_advisories("foo")
 
+    def test_verification_failure(self):
+        loader = JSONAdvisoriesLoader(
+            advisories_directory_path=_here, verify=lambda _: False
+        )
+        with self.assertRaises(AdvisoriesLoadingError):
+            loader.load_package_advisories("EmptyOS")
+
     def test_empty_file(self):
         loader = JSONAdvisoriesLoader(
             advisories_directory_path=_here, verify=lambda _: True

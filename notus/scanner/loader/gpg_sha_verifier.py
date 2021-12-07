@@ -3,24 +3,21 @@ import os
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
-import gnupg
+from gnupg import GPG
 
 
-def __default_gpg_home() -> Optional[Path]:
+def __default_gpg_home() -> GPG:
     """
     __defaultGpgHome tries to load the variable 'GPG_HOME' or to guess it
     """
     manual = os.getenv("GPG_HOME")
-    if manual:
-        return Path(manual)
-    home = os.getenv("HOME")
-    if home:
-        return Path(home) / ".gnupg"
-    return None
+
+    home = Path(manual) if manual else Path(os.getenv("HOME", "")) / ".gnupg"
+    return GPG(gnupghome=f"{home.absolute()}")
 
 
 def gpg_sha256sums(
-    hash_file: Path, gpg_home: Optional[Path] = __default_gpg_home()
+    hash_file: Path, gpg: Optional[GPG] = None
 ) -> Dict[str, str]:
     """
     gpg_sha256sums verifies given hash_file with a asc file
@@ -28,23 +25,24 @@ def gpg_sha256sums(
     This functions assumes that the asc file is in the same directory as the
     hashfile and has the same name but with the suffix '.asc'
     """
-    if not gpg_home:
-        raise Exception("no gpg_home set")
-    gpg = gnupg.GPG(gnupghome=f"{gpg_home.absolute()}")
+
+    # when doing that via paramater list it is loading eagerly on import
+    # which may fail on some systems
+    if not gpg:
+        gpg = __default_gpg_home()
     if not hash_file.is_file():
         raise Exception(f"{hash_file.absolute()} is not a file")
     asc_path = hash_file.parent / f"{hash_file.name}.asc"
-    if not asc_path.is_file():
-        raise Exception(f"{asc_path.absolute()} is not a file")
     with asc_path.open(mode="rb") as f:
         verified = gpg.verify_file(f, f"{hash_file.absolute()}")
         if not verified:
             raise Exception(f"verification of {hash_file.absolute()} failed")
         result = {}
         with hash_file.open() as f:
-            hsum, fname = tuple(f.readline().split("  "))
-            # the second part can contain a newline
-            result[hsum] = fname.strip()
+            for line in f.readlines():
+                hsum, fname = tuple(line.split("  "))
+                # the second part can contain a newline
+                result[hsum] = fname.strip()
         return result
 
 
