@@ -19,6 +19,8 @@ import logging
 
 from typing import Generator, Iterable
 
+from notus.scanner.models.packages.deb import DEBPackage
+
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
 from .messages.message import Message
@@ -26,7 +28,8 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.package import RPMPackage
+from .models.packages.package import Package
+from .models.packages.rpm import RPMPackage
 from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
@@ -43,7 +46,7 @@ class NotusScan:
         host_ip: str,
         host_name: str,
         operating_system: str,
-        installed_packages: Iterable[RPMPackage],
+        installed_packages: Iterable[Package],
     ) -> Generator[PackageVulnerability, None, None]:
         package_advisories = self._advisories_loader.load_package_advisories(
             operating_system
@@ -131,9 +134,14 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        installed_packages = [
-            RPMPackage.from_full_name(name) for name in message.package_list
-        ]
+        if message.os_release.find("debian") != -1:
+            installed_packages = [
+                DEBPackage.from_full_name(name) for name in message.package_list
+            ]
+        else:
+            installed_packages = [
+                RPMPackage.from_full_name(name) for name in message.package_list
+            ]
         scan = NotusScan(self._loader)
 
         self._start_host(message.scan_id, message.host_ip)

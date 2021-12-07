@@ -15,20 +15,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from abc import abstractmethod
 import logging
-import re
-
-from dataclasses import dataclass, field
 from enum import Enum
+from dataclasses import dataclass, field
 from typing import Any, Dict, Set
 
-from .rpm import label_compare
+from ...errors import PackageError
+
 
 logger = logging.getLogger(__name__)
 
-_rpm_compile_no_arch = re.compile("(.*)-([^-]+)-([^-]+)")
-_rpm_compile = re.compile(r"(.*)-([^-]+)-([^-]+)\.([^-]+)")
-_rpm_compile_version = re.compile(r"([^-]+)-([^-]+)\.([^-]+)")
+# Return values:
+#   a_newer: a is newer than b, return 1
+#   _B_NEWER: b is newer than a, return -1
+#   _A_EQ_B: a and b are equal, return 0
+A_NEWER = 1
+B_NEWER = -1
+A_EQ_B = 0
 
 
 class Architecture(Enum):
@@ -55,91 +59,36 @@ class Architecture(Enum):
 
 
 @dataclass
-class RPMPackage:
-    """Represents a RPM package"""
-
+class Package:
+    "Base class for different Package types"
     name: str
-    version: str
-    release: str
-    arch: Architecture
     full_name: str
     full_version: str
 
     def __gt__(self, other: Any) -> bool:
-        if not isinstance(other, RPMPackage):
-            raise ValueError(f"Can't compare {self!r} to {other!r}.")
+        if not isinstance(other, type(self)):
+            raise PackageError(f"Can't compare {self!r} to {other!r}.")
 
-        if self.arch != other.arch:
-            # self is not greater if arch does not match
-            # we should not compare packages with different architectures
-            return False
-
-        return label_compare(
-            ("1", self.version, self.release),
-            ("1", other.version, other.release),
-        )
+        return self._compare(other) > 0
 
     def __hash__(self) -> int:
         # allow to hash the package
         # the full name identifies the package
         return hash(self.full_name)
 
+    @abstractmethod
+    def _compare(self, other: Any) -> bool:
+        raise NotImplementedError()
+
     @staticmethod
+    @abstractmethod
     def from_full_name(full_name: str):
-        if not full_name:
-            return None
-
-        try:
-            name, version, release, architecture = _rpm_compile.match(
-                full_name
-            ).groups()
-            try:
-                arch = Architecture(architecture.strip())
-            except ValueError:
-                arch = Architecture.UNKNOWN
-        except AttributeError:
-            try:
-                name, version, release = _rpm_compile_no_arch.match(
-                    full_name
-                ).groups()
-                arch = Architecture.NOTSET
-            except AttributeError:
-                logger.warning(
-                    "The rpm package %s could not be parsed", full_name
-                )
-                return None
-
-        return RPMPackage(
-            name=name,
-            version=version,
-            release=release,
-            arch=arch,
-            full_name=full_name,
-            full_version=f"{version}-{release}.{arch.value}",
-        )
+        raise NotImplementedError()
 
     @staticmethod
+    @abstractmethod
     def from_name_and_full_version(name: str, full_version: str):
-        if not name or not full_version:
-            return None
-
-        version, release, architecture = _rpm_compile_version.match(
-            full_version
-        ).groups()
-
-        try:
-            arch = Architecture(architecture.strip())
-        except ValueError:
-            arch = Architecture.UNKNOWN
-
-        return RPMPackage(
-            name=name,
-            version=version,
-            release=release,
-            arch=arch,
-            full_name=f"{name}-{full_version}",
-            full_version=full_version,
-        )
+        raise NotImplementedError()
 
 
 @dataclass(frozen=True)
@@ -153,7 +102,7 @@ class AdvisoryReference:
 class PackageAdvisory:
     """Connects a package with an advisory"""
 
-    package: RPMPackage
+    package: Package
     advisory: AdvisoryReference
 
 
@@ -165,12 +114,12 @@ class PackageAdvisories:
     advisories: Dict[str, Set[PackageAdvisory]] = field(default_factory=dict)
 
     def get_package_advisories_for_package(
-        self, package: RPMPackage
+        self, package: Package
     ) -> Set[PackageAdvisory]:
         return self.advisories.get(package.name) or set()
 
     def add_advisory_for_package(
-        self, package: RPMPackage, advisory: AdvisoryReference
+        self, package: Package, advisory: AdvisoryReference
     ) -> None:
         advisories = self.get_package_advisories_for_package(package)
         advisories.add(PackageAdvisory(package, advisory))

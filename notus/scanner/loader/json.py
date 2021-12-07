@@ -22,12 +22,15 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Callable
 
+from notus.scanner.models.packages.deb import DEBPackage
+
 from ..errors import AdvisoriesLoadingError
-from ..models.package import (
+from ..models.packages.package import (
     AdvisoryReference,
     PackageAdvisories,
-    RPMPackage,
 )
+from ..models.packages.rpm import RPMPackage
+from ..models.packages.deb import DEBPackage
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -72,9 +75,9 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 json_data = json.load(f)
             except JSONDecodeError as e:
                 raise AdvisoriesLoadingError(
-                    f"Could not load advisories from "
+                    "Could not load advisories from "
                     f"{json_file_path.absolute()}. Error in line {e.lineno} "
-                    f"while decoding JSON data."
+                    "while decoding JSON data."
                 ) from None
 
         for advisory_data in json_data.get("advisories", []):
@@ -100,12 +103,21 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
                 if full_name:
-                    package = RPMPackage.from_full_name(full_name)
+                    if operating_system.find("debian") != -1:
+                        package = DEBPackage.from_full_name(full_name)
+                    else:
+                        package = RPMPackage.from_full_name(full_name)
                 else:
-                    package = RPMPackage.from_name_and_full_version(
-                        package_dict.get("name"),
-                        package_dict.get("full_version"),
-                    )
+                    if operating_system.find("debian") != -1:
+                        package = DEBPackage.from_name_and_full_version(
+                            package_dict.get("name"),
+                            package_dict.get("full_version"),
+                        )
+                    else:
+                        package = RPMPackage.from_name_and_full_version(
+                            package_dict.get("name"),
+                            package_dict.get("full_version"),
+                        )
                 if not package:
                     logger.warning(
                         "Could not parse fixed package information from %s "

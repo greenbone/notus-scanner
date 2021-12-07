@@ -20,7 +20,7 @@ from unittest import TestCase
 
 from notus.scanner.errors import AdvisoriesLoadingError
 from notus.scanner.loader.json import JSONAdvisoriesLoader
-from notus.scanner.models.package import RPMPackage
+from notus.scanner.models.packages.rpm import RPMPackage
 
 _here = Path(__file__).parent
 
