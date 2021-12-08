@@ -65,7 +65,7 @@ def run_daemon(
     forever
     """
 
-    sums = gpg_sha256sums((advisories_directory_path / "sha256sums"))
+    sums = gpg_sha256sums(advisories_directory_path / "sha256sums")
     verifier = create_verify(sums)
 
     loader = JSONAdvisoriesLoader(

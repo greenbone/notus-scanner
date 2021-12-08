@@ -6,13 +6,17 @@ from typing import Callable, Dict, Optional
 from gnupg import GPG
 
 
+class GPGException(Exception):
+    """Class for exceptions raised in gpg_sha256sums"""
+
+
 def __default_gpg_home() -> GPG:
     """
     __defaultGpgHome tries to load the variable 'GPG_HOME' or to guess it
     """
     manual = os.getenv("GPG_HOME")
 
-    home = Path(manual) if manual else Path(os.getenv("HOME", "")) / ".gnupg"
+    home = Path(manual) if manual else Path.home() / ".gnupg"
     return GPG(gnupghome=f"{home.absolute()}")
 
 
@@ -31,12 +35,12 @@ def gpg_sha256sums(
     if not gpg:
         gpg = __default_gpg_home()
     if not hash_file.is_file():
-        raise Exception(f"{hash_file.absolute()} is not a file")
+        raise GPGException(f"{hash_file.absolute()} is not a file")
     asc_path = hash_file.parent / f"{hash_file.name}.asc"
     with asc_path.open(mode="rb") as f:
-        verified = gpg.verify_file(f, f"{hash_file.absolute()}")
+        verified = gpg.verify_file(f, str(hash_file.absolute()))
         if not verified:
-            raise Exception(f"verification of {hash_file.absolute()} failed")
+            raise GPGException(f"verification of {hash_file.absolute()} failed")
         result = {}
         with hash_file.open() as f:
             for line in f.readlines():
