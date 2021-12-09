@@ -31,12 +31,11 @@ class GpgTest(TestCase):
         omock.__exit__ = Mock()
         pathmock.open.return_value = omock
         emock.readlines.side_effect = [["h  hi\n", "g  gude\n"]]
-        self.assertDictEqual(
-            gpg_sha256sums(pathmock, gmock), {"h": "hi", "g": "gude"}
-        )
-        with self.assertRaises(Exception):
-            gmock.verify_file.side_effect = [False]
-            gpg_sha256sums(pathmock, gmock)
+        success_result = gpg_sha256sums(pathmock, gmock)
+        self.assertIsNotNone(success_result)
+        self.assertDictEqual(success_result, {"h": "hi", "g": "gude"})
+        gmock.verify_file.side_effect = [False]
+        self.assertIsNone(gpg_sha256sums(pathmock, gmock))
 
     @patch("pathlib.Path")
     def test_verify_closure(self, pathmock):

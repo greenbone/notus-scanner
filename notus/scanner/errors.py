@@ -24,5 +24,9 @@ class AdvisoriesLoadingError(NotusScannerError):
     """A problem while loading an Advisory has occurred"""
 
 
+class Sha256SumLoadingError(NotusScannerError):
+    """A problem while loading sha256sums has occurred"""
+
+
 class RpmError(NotusScannerError):
     """A problem while parsing RPM package version information"""

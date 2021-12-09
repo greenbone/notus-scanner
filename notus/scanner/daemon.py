@@ -22,6 +22,7 @@ import sys
 from pathlib import Path
 
 from .cli import create_parser
+from .errors import Sha256SumLoadingError
 from .loader import JSONAdvisoriesLoader
 from .messaging.mqtt import (
     MQTTDaemon,
@@ -41,6 +42,7 @@ from .utils import (
 from .loader.gpg_sha_verifier import gpg_sha256sums, create_verify
 
 from .__version__ import __version__
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +66,12 @@ def run_daemon(
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
-
-    sums = gpg_sha256sums(advisories_directory_path / "sha256sums")
+    sha_sum_file_path = advisories_directory_path / "sha256sums"
+    sums = gpg_sha256sums(sha_sum_file_path)
+    if not sums:
+        raise Sha256SumLoadingError(
+            f"Unable to verify signature of {sha_sum_file_path}"
+        )
     verifier = create_verify(sums)
 
     loader = JSONAdvisoriesLoader(

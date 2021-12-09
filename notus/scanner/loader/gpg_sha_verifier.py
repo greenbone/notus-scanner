@@ -6,10 +6,6 @@ from typing import Callable, Dict, Optional
 from gnupg import GPG
 
 
-class GPGError(Exception):
-    """Class for exceptions raised in gpg_sha256sums"""
-
-
 def __default_gpg_home() -> GPG:
     """
     __defaultGpgHome tries to load the variable 'GPG_HOME' or to guess it
@@ -22,7 +18,7 @@ def __default_gpg_home() -> GPG:
 
 def gpg_sha256sums(
     hash_file: Path, gpg: Optional[GPG] = None
-) -> Dict[str, str]:
+) -> Optional[Dict[str, str]]:
     """
     gpg_sha256sums verifies given hash_file with a asc file
 
@@ -34,13 +30,11 @@ def gpg_sha256sums(
     # which may fail on some systems
     if not gpg:
         gpg = __default_gpg_home()
-    if not hash_file.is_file():
-        raise GPGError(f"{hash_file.absolute()} is not a file")
     asc_path = hash_file.parent / f"{hash_file.name}.asc"
     with asc_path.open(mode="rb") as f:
         verified = gpg.verify_file(f, str(hash_file.absolute()))
         if not verified:
-            raise GPGError(f"verification of {hash_file.absolute()} failed")
+            return None
         result = {}
         with hash_file.open() as f:
             for line in f.readlines():
