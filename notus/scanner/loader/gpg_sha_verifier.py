@@ -1,8 +1,10 @@
 import hashlib
+from datetime import datetime, timedelta
 import os
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
+from dataclasses import dataclass
 from gnupg import GPG
 
 
@@ -14,6 +16,40 @@ def __default_gpg_home() -> GPG:
 
     home = Path(manual) if manual else Path.home() / ".gnupg"
     return GPG(gnupghome=f"{home.absolute()}")
+
+
+@dataclass
+class ReloadConfiguration:
+    hash_file: Path
+    on_verification_failure: Callable[
+        [Optional[Dict[str, str]]], Dict[str, str]
+    ]
+    gpg: Optional[GPG] = None
+    cache: Optional[Dict[str, str]] = None
+    delta: timedelta = timedelta(hours=2)
+    last_call = datetime.now()
+
+
+def reload_sha256sums(
+    config: ReloadConfiguration,
+) -> Callable[[], Dict[str, str]]:
+    """
+    reload_sha256sums reloads sha256sums if a threshold has been reached.
+    """
+    if not config.gpg:
+        config.gpg = __default_gpg_home()
+
+    def internal_reload() -> Dict[str, str]:
+        called = datetime.now()
+        time_passed = called - config.last_call
+        if not config.cache or time_passed > config.delta:
+            config.last_call = called
+            config.cache = gpg_sha256sums(config.hash_file, config.gpg)
+        if not config.cache:
+            return config.on_verification_failure(None)
+        return config.cache
+
+    return internal_reload
 
 
 def gpg_sha256sums(
@@ -44,7 +80,9 @@ def gpg_sha256sums(
         return result
 
 
-def create_verify(sha256sums: Dict[str, str]) -> Callable[[Path], bool]:
+def create_verify(
+    sha256sums: Callable[[], Dict[str, str]]
+) -> Callable[[Path], bool]:
     """
     create_verify is returning a closure based on the sha256sums.
 
@@ -61,7 +99,8 @@ def create_verify(sha256sums: Dict[str, str]) -> Callable[[Path], bool]:
             for hash_file_bytes in iter(lambda: f.read(1024), b""):
                 s256h.update(hash_file_bytes)
         hash_sum = s256h.hexdigest()
-        assumed_name = sha256sums.get(hash_sum)
+
+        assumed_name = sha256sums().get(hash_sum)
         if not assumed_name:
             return False
         return assumed_name == advisory_path.name

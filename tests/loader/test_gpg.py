@@ -15,13 +15,52 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-from unittest.mock import patch, Mock
+from datetime import timedelta
+import time
 from pathlib import Path
-from notus.scanner.loader.gpg_sha_verifier import gpg_sha256sums, create_verify
+from unittest import TestCase
+from unittest.mock import Mock, patch
+from typing import Dict, Optional
+
+from notus.scanner.loader.gpg_sha_verifier import (
+    ReloadConfiguration,
+    create_verify,
+    gpg_sha256sums,
+    reload_sha256sums,
+)
 
 
 class GpgTest(TestCase):
+    @patch("gnupg.GPG")
+    @patch("pathlib.Path")
+    def test_reload(self, gmock, pathmock: Path):
+        def on_failure(_: Optional[Dict[str, str]]) -> Dict[str, str]:
+            raise Exception("verification_failed")
+
+        omock = Mock()
+        emock = Mock()
+        omock.__enter__ = Mock(return_value=emock)
+        omock.__exit__ = Mock()
+        pathmock.open.return_value = omock
+        emock.readlines.side_effect = [["h  hi\n"], ["g  gude\n"]]
+
+        load = reload_sha256sums(
+            ReloadConfiguration(
+                hash_file=pathmock,
+                on_verification_failure=on_failure,
+                delta=timedelta(seconds=1),
+                gpg=gmock,
+            )
+        )
+        self.assertDictEqual(load(), {"h": "hi"})
+        self.assertDictEqual(load(), {"h": "hi"})
+        time.sleep(1.2)
+        self.assertDictEqual(load(), {"g": "gude"})
+        time.sleep(1.2)
+        gmock.verify_file.side_effect = [False]
+        with self.assertRaises(Exception):
+            load()
+
     @patch("gnupg.GPG")
     @patch("pathlib.Path")
     def test_verifying(self, gmock, pathmock: Path):
@@ -42,7 +81,7 @@ class GpgTest(TestCase):
         shas = (
             "98ea6e4f216f2fb4b69fff9b3a44842c38686ca685f3f55dc48c5d3fb1107be4"
         )
-        vsuccess = create_verify({shas: "hi.txt"})
+        vsuccess = create_verify(lambda: {shas: "hi.txt"})
         omock = Mock()
         emock = Mock()
         omock.__enter__ = Mock(return_value=emock)
