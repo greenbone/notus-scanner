@@ -6,7 +6,7 @@ from typing import Callable, Dict, Optional
 from gnupg import GPG
 
 
-class GPGException(Exception):
+class GPGError(Exception):
     """Class for exceptions raised in gpg_sha256sums"""
 
 
@@ -35,12 +35,12 @@ def gpg_sha256sums(
     if not gpg:
         gpg = __default_gpg_home()
     if not hash_file.is_file():
-        raise GPGException(f"{hash_file.absolute()} is not a file")
-    asc_path = f"{hash_file}.asc"
+        raise GPGError(f"{hash_file.absolute()} is not a file")
+    asc_path = hash_file.parent / f"{hash_file.name}.asc"
     with asc_path.open(mode="rb") as f:
         verified = gpg.verify_file(f, str(hash_file.absolute()))
         if not verified:
-            raise GPGException(f"verification of {hash_file.absolute()} failed")
+            raise GPGError(f"verification of {hash_file.absolute()} failed")
         result = {}
         with hash_file.open() as f:
             for line in f.readlines():
