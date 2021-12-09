@@ -36,7 +36,7 @@ def gpg_sha256sums(
         gpg = __default_gpg_home()
     if not hash_file.is_file():
         raise GPGException(f"{hash_file.absolute()} is not a file")
-    asc_path = hash_file.parent / f"{hash_file.name}.asc"
+    asc_path = f"{hash_file}.asc"
     with asc_path.open(mode="rb") as f:
         verified = gpg.verify_file(f, str(hash_file.absolute()))
         if not verified:
@@ -44,7 +44,7 @@ def gpg_sha256sums(
         result = {}
         with hash_file.open() as f:
             for line in f.readlines():
-                hsum, fname = tuple(line.split("  "))
+                hsum, fname = line.split("  ")
                 # the second part can contain a newline
                 result[hsum] = fname.strip()
         return result
