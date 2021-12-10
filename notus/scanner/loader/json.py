@@ -20,6 +20,7 @@ import logging
 
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from typing import Callable
 
 from ..errors import AdvisoriesLoadingError
 from ..models.package import (
@@ -37,8 +38,11 @@ def _get_operating_system_file_name(operating_system: str) -> str:
 
 
 class JSONAdvisoriesLoader(AdvisoriesLoader):
-    def __init__(self, advisories_directory_path: Path):
+    def __init__(
+        self, advisories_directory_path: Path, verify: Callable[[Path], bool]
+    ):
         self._advisories_directory_path = advisories_directory_path
+        self._verify = verify
 
     def load_package_advisories(
         self, operating_system: str
@@ -51,6 +55,11 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             raise AdvisoriesLoadingError(
                 f"Could not load advisories from {json_file_path.absolute()}. "
                 "File does not exist."
+            )
+        if not self._verify(json_file_path):
+            raise AdvisoriesLoadingError(
+                f"Could not load advisories from {json_file_path.absolute()}. "
+                "File verification failed."
             )
 
         package_advisories = PackageAdvisories()

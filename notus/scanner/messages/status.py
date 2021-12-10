@@ -45,7 +45,7 @@ class ScanStatusMessage(Message):
         host_ip: str,
         status: ScanStatus,
         message_id: Optional[UUID] = None,
-        group_id: Optional[UUID] = None,
+        group_id: Optional[str] = None,
         created: Optional[datetime] = None,
     ):
         super().__init__(

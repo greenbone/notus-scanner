@@ -31,7 +31,7 @@ class ScanStatusMessageTestCase(TestCase):
         )
 
         self.assertIsInstance(message.message_id, UUID)
-        self.assertIsInstance(message.group_id, UUID)
+        self.assertIsInstance(message.group_id, str)
         self.assertIsInstance(message.created, datetime)
 
         self.assertEqual(message.message_type, MessageType.SCAN_STATUS)
@@ -44,7 +44,7 @@ class ScanStatusMessageTestCase(TestCase):
     def test_serialize(self):
         created = datetime.fromtimestamp(1628512774)
         message_id = UUID("63026767-029d-417e-9148-77f4da49f49a")
-        group_id = UUID("866350e8-1492-497e-b12b-c079287d51dd")
+        group_id = "866350e8-1492-497e-b12b-c079287d51dd"
         message = ScanStatusMessage(
             message_id=message_id,
             group_id=group_id,
@@ -83,7 +83,7 @@ class ScanStatusMessageTestCase(TestCase):
             message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
         )
         self.assertEqual(
-            message.group_id, UUID("866350e8-1492-497e-b12b-c079287d51dd")
+            message.group_id, "866350e8-1492-497e-b12b-c079287d51dd"
         )
         self.assertEqual(
             message.created,
