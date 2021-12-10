@@ -1,5 +1,4 @@
 import hashlib
-from datetime import datetime, timedelta
 import os
 from pathlib import Path
 from typing import Callable, Dict, Optional
@@ -26,8 +25,7 @@ class ReloadConfiguration:
     ]
     gpg: Optional[GPG] = None
     cache: Optional[Dict[str, str]] = None
-    delta: timedelta = timedelta(hours=2)
-    last_call = datetime.now()
+    fingerprint: str = ""
 
 
 def reload_sha256sums(
@@ -39,11 +37,20 @@ def reload_sha256sums(
     if not config.gpg:
         config.gpg = __default_gpg_home()
 
+    def create_hash(file: Path) -> str:
+        # we just use the hash to identify we have to reload the sha256sums
+        # therefore a collision is not the end of the world and sha1 is more
+        # than sufficient
+        hasher = hashlib.sha1()
+        with file.open(mode="rb") as f:
+            for hash_file_bytes in iter(lambda: f.read(1024), b""):
+                hasher.update(hash_file_bytes)
+        return hasher.hexdigest()
+
     def internal_reload() -> Dict[str, str]:
-        called = datetime.now()
-        time_passed = called - config.last_call
-        if not config.cache or time_passed > config.delta:
-            config.last_call = called
+        fingerprint = create_hash(config.hash_file)
+        if not config.cache or config.fingerprint != fingerprint:
+            config.fingerprint = fingerprint
             config.cache = gpg_sha256sums(config.hash_file, config.gpg)
         if not config.cache:
             return config.on_verification_failure(None)

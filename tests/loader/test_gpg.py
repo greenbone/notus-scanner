@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import timedelta
-import time
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock, patch
@@ -43,20 +41,18 @@ class GpgTest(TestCase):
         omock.__exit__ = Mock()
         pathmock.open.return_value = omock
         emock.readlines.side_effect = [["h  hi\n"], ["g  gude\n"]]
+        emock.read.side_effect = [b"hi", b"", b"hi", b"", b"ih", b""]
 
         load = reload_sha256sums(
             ReloadConfiguration(
                 hash_file=pathmock,
                 on_verification_failure=on_failure,
-                delta=timedelta(seconds=1),
                 gpg=gmock,
             )
         )
         self.assertDictEqual(load(), {"h": "hi"})
         self.assertDictEqual(load(), {"h": "hi"})
-        time.sleep(1.2)
         self.assertDictEqual(load(), {"g": "gude"})
-        time.sleep(1.2)
         gmock.verify_file.side_effect = [False]
         with self.assertRaises(Exception):
             load()
