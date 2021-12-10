@@ -7,8 +7,6 @@ import re
 from dataclasses import dataclass
 from packaging.version import parse
 
-from notus.scanner.errors import RpmError
-
 from .package import Package, Architecture, A_NEWER, B_NEWER, A_EQ_B
 
 _rpm_re = re.compile(r"(\S+)-(?:(\d*):)?(.*)-(~?\w+[\w.]*)")
@@ -89,12 +87,6 @@ class RPMPackage(Package):
             arch = Architecture(architecture.strip())
         except ValueError:
             arch = Architecture.UNKNOWN
-
-        if not name or not version or not arch or not full_version:
-            raise RpmError(
-                f"Unable to Parse Package from name {name} and full version"
-                f" {full_version}"
-            )
 
         return RPMPackage(
             name=name,
