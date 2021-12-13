@@ -19,7 +19,7 @@ from abc import abstractmethod
 import logging
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Any, Dict, Set
+from typing import Any, Dict, List, Set
 
 from ...errors import PackageError
 
@@ -33,6 +33,11 @@ logger = logging.getLogger(__name__)
 A_NEWER = 1
 B_NEWER = -1
 A_EQ_B = 0
+
+
+class PackageType(Enum):
+    RPM = "rpm"
+    DEB = "deb"
 
 
 class Architecture(Enum):

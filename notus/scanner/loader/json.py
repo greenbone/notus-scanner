@@ -22,15 +22,8 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
-from notus.scanner.models.packages.deb import DEBPackage
 
 from ..errors import AdvisoriesLoadingError
-from ..models.packages.package import (
-    AdvisoryReference,
-    PackageAdvisories,
-)
-from ..models.packages.rpm import RPMPackage
-from ..models.packages.deb import DEBPackage
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -76,65 +69,3 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     f"{json_file_path.absolute()}. Error in line {e.lineno} "
                     "while decoding JSON data."
                 ) from None
-
-    def load_package_advisories(
-        self, json_data: Optional[Dict]
-    ) -> PackageAdvisories:
-
-        package_advisories = PackageAdvisories()
-        if not json_data:
-            return package_advisories
-        operating_system = json_data.get("product_name", "")
-
-        for advisory_data in json_data.get("advisories", []):
-            if not "oid" in advisory_data:
-                logger.error("No OID found for JSON advisory %s", advisory_data)
-                continue
-
-            try:
-                # parse required data
-                oid = advisory_data["oid"]
-                fixed_packages = advisory_data["fixed_packages"]
-            except (KeyError, TypeError) as e:
-                logger.warning(
-                    "Error while parsing %s for %s. Error was %s",
-                    advisory_data,
-                    operating_system,
-                    e,
-                )
-                continue
-
-            advisory = AdvisoryReference(oid)
-
-            package_type = json_data.get("package_type", "")
-
-            for package_dict in fixed_packages:
-                full_name = package_dict.get("full_name")
-                if full_name:
-                    if operating_system.find("debian") != -1:
-                        package = DEBPackage.from_full_name(full_name)
-                    else:
-                        package = RPMPackage.from_full_name(full_name)
-                else:
-                    if "debian" in operating_system or "debian" in package_type:
-                        package = DEBPackage.from_name_and_full_version(
-                            package_dict.get("name"),
-                            package_dict.get("full_version"),
-                        )
-                    else:
-                        package = RPMPackage.from_name_and_full_version(
-                            package_dict.get("name"),
-                            package_dict.get("full_version"),
-                        )
-                if not package:
-                    logger.warning(
-                        "Could not parse fixed package information from %s "
-                        "in %s",
-                        package_dict,
-                        json_file_path.absolute(),
-                    )
-                    continue
-
-                package_advisories.add_advisory_for_package(package, advisory)
-
-        return package_advisories
