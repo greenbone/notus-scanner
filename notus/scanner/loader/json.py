@@ -20,7 +20,7 @@ import logging
 
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Dict, Optional
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -47,9 +47,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         self._advisories_directory_path = advisories_directory_path
         self._verify = verify
 
-    def load_package_advisories(
-        self, operating_system: str
-    ) -> PackageAdvisories:
+    def load_advisory(self, operating_system: str) -> Optional[Dict]:
         os_file_name = _get_operating_system_file_name(operating_system)
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"
@@ -65,20 +63,28 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 "File verification failed."
             )
 
-        package_advisories = PackageAdvisories()
         if json_file_path.stat().st_size < 2:
             # the minimim size of a json file is 2 bytes ({} or [])
-            return package_advisories
+            return None
 
         with json_file_path.open("r", encoding="utf-8") as f:
             try:
-                json_data = json.load(f)
+                return json.load(f)
             except JSONDecodeError as e:
                 raise AdvisoriesLoadingError(
                     "Could not load advisories from "
                     f"{json_file_path.absolute()}. Error in line {e.lineno} "
                     "while decoding JSON data."
                 ) from None
+
+    def load_package_advisories(
+        self, json_data: Optional[Dict]
+    ) -> PackageAdvisories:
+
+        package_advisories = PackageAdvisories()
+        if not json_data:
+            return package_advisories
+        operating_system = json_data.get("product_name", "")
 
         for advisory_data in json_data.get("advisories", []):
             if not "oid" in advisory_data:
@@ -91,14 +97,16 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 fixed_packages = advisory_data["fixed_packages"]
             except (KeyError, TypeError) as e:
                 logger.warning(
-                    "Error while parsing %s from %s. Error was %s",
+                    "Error while parsing %s for %s. Error was %s",
                     advisory_data,
-                    str(json_file_path.absolute()),
+                    operating_system,
                     e,
                 )
                 continue
 
             advisory = AdvisoryReference(oid)
+
+            package_type = json_data.get("package_type", "")
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
@@ -108,7 +116,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     else:
                         package = RPMPackage.from_full_name(full_name)
                 else:
-                    if "debian" in operating_system:
+                    if "debian" in operating_system or "debian" in package_type:
                         package = DEBPackage.from_name_and_full_version(
                             package_dict.get("name"),
                             package_dict.get("full_version"),

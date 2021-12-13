@@ -16,8 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from notus.scanner.models import advisory
 
-from typing import Generator, Iterable
+from typing import Dict, Optional, Generator, Iterable
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -43,13 +44,14 @@ class NotusScan:
 
     def start_scan(
         self,
+        advisory: Optional[Dict],
         host_ip: str,
         host_name: str,
         operating_system: str,
         installed_packages: Iterable[Package],
     ) -> Generator[PackageVulnerability, None, None]:
         package_advisories = self._advisories_loader.load_package_advisories(
-            operating_system
+            advisory
         )
         if not package_advisories:
             logger.info(
@@ -64,6 +66,7 @@ class NotusScan:
                 package_advisories.get_package_advisories_for_package(package)
             )
             for package_advisory in package_advisory_list:
+                logger.info(f"{package_advisory.package} > {package}")
                 if package_advisory.package > package:
                     yield PackageVulnerability(
                         host_ip=host_ip,
@@ -134,7 +137,12 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        if message.os_release.find("debian") != -1:
+        logger.info(f"message: {message}")
+        advisory = self._loader.load_advisory(
+            operating_system=message.os_release
+        )
+        package_type = advisory.get("package_type", "") if advisory else ""
+        if "debian" == package_type or "debian" in message.os_release:
             installed_packages = [
                 DEBPackage.from_full_name(name) for name in message.package_list
             ]
@@ -149,6 +157,7 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         i = 0
         try:
             for vulnerability in scan.start_scan(
+                advisory=advisory,
                 host_ip=message.host_ip,
                 host_name=message.host_name,
                 operating_system=message.os_release,

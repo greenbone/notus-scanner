@@ -15,11 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from typing import Dict, Optional
 from ..models.packages.package import PackageAdvisories
 
 
 class AdvisoriesLoader:
+    def load_advisory(self, operating_system: str) -> Optional[Dict]:
+        raise NotImplementedError()
+
     def load_package_advisories(
-        self, operating_system: str
+        self, data: Optional[Dict]
     ) -> PackageAdvisories:
         raise NotImplementedError()
