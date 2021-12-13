@@ -79,9 +79,12 @@ class RPMPackage(Package):
         if not name or not full_version:
             return None
 
-        version, release, architecture = _rpm_compile_version.match(
+        version_match = _rpm_compile_version.match(
             full_version
-        ).groups()
+        )
+        if not version_match:
+            return None
+        version, release, architecture = version_match.groups()
 
         try:
             arch = Architecture(architecture.strip())
