@@ -108,7 +108,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     else:
                         package = RPMPackage.from_full_name(full_name)
                 else:
-                    if operating_system.find("debian") != -1:
+                    if "debian" in operating_system:
                         package = DEBPackage.from_name_and_full_version(
                             package_dict.get("name"),
                             package_dict.get("full_version"),
