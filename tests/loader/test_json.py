@@ -32,21 +32,21 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         )
 
         with self.assertRaises(AdvisoriesLoadingError):
-            loader.load_package_advisories("foo")
+            loader.load_advisory("foo")
 
     def test_verification_failure(self):
         loader = JSONAdvisoriesLoader(
             advisories_directory_path=_here, verify=lambda _: False
         )
         with self.assertRaises(AdvisoriesLoadingError):
-            loader.load_package_advisories("EmptyOS")
+            loader.load_advisory("EmptyOS")
 
     def test_empty_file(self):
         loader = JSONAdvisoriesLoader(
             advisories_directory_path=_here, verify=lambda _: True
         )
 
-        advisories = loader.load_package_advisories("EmptyOS")
+        advisories = loader.load_package_advisories(None)
         self.assertEqual(len(advisories), 0)
 
     def test_example(self):
@@ -54,7 +54,8 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
             advisories_directory_path=_here, verify=lambda _: True
         )
 
-        advisories = loader.load_package_advisories("EulerOS V2.0SP1")
+        data = loader.load_advisory("EulerOS V2.0SP1")
+        advisories = loader.load_package_advisories(data)
 
         self.assertIsNotNone(advisories)
         self.assertEqual(len(advisories), 55)
