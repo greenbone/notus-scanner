@@ -29,4 +29,4 @@ class Sha256SumLoadingError(NotusScannerError):
 
 
 class PackageError(NotusScannerError):
-    """Base Class for errir raised in package handling"""
+    """Base Class for errors raised in package handling"""
