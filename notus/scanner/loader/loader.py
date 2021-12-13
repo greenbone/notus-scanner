@@ -15,11 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from typing import Dict, Optional
 import logging
+from typing import Dict, Optional
+
 from ..models.packages.deb import DEBPackage
-from ..models.packages.package import PackageAdvisories, PackageType
-from ..models.packages.package import AdvisoryReference, PackageAdvisories
+from ..models.packages.package import (
+    AdvisoryReference,
+    PackageAdvisories,
+    PackageType,
+)
 from ..models.packages.rpm import RPMPackage
 
 logger = logging.getLogger(__name__)

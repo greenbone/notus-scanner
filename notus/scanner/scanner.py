@@ -16,9 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from notus.scanner.models import advisory
-
-from typing import Dict, Optional, Generator, Iterable
+from typing import Dict, Generator, Iterable, Optional
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -66,7 +64,6 @@ class NotusScan:
                 package_advisories.get_package_advisories_for_package(package)
             )
             for package_advisory in package_advisory_list:
-                logger.info(f"{package_advisory.package} > {package}")
                 if package_advisory.package > package:
                     yield PackageVulnerability(
                         host_ip=host_ip,
@@ -137,7 +134,6 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        logger.info(f"message: {message}")
         advisory = self._loader.load_advisory(
             operating_system=message.os_release
         )
