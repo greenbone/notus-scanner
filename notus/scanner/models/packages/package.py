@@ -123,6 +123,7 @@ class PackageAdvisories:
     """Container for mapping a package name to a set of advisories for this
     package"""
 
+    package_type: PackageType
     advisories: Dict[str, Set[PackageAdvisory]] = field(default_factory=dict)
 
     def get_package_advisories_for_package(
@@ -136,26 +137,6 @@ class PackageAdvisories:
         advisories = self.get_package_advisories_for_package(package)
         advisories.add(PackageAdvisory(package, advisory))
         self.advisories[package.name] = advisories
-
-    def __len__(self) -> int:
-        return len(self.advisories)
-
-
-@dataclass(frozen=True)
-class OperatingSystemAdvisories:
-    """Mapping of operating systems to a list of package based advisories"""
-
-    advisories: Dict[str, PackageAdvisories] = field(default_factory=dict)
-
-    def get_package_advisories(
-        self, operating_system: str
-    ) -> PackageAdvisories:
-        return self.advisories.get(operating_system) or PackageAdvisories()
-
-    def set_package_advisories(
-        self, operating_system: str, package_advisories: PackageAdvisories
-    ) -> None:
-        self.advisories[operating_system] = package_advisories
 
     def __len__(self) -> int:
         return len(self.advisories)

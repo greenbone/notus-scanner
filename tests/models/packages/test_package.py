@@ -23,9 +23,9 @@ from notus.scanner.models.packages.package import (
     Package,
     AdvisoryReference,
     Architecture,
-    OperatingSystemAdvisories,
     PackageAdvisories,
     PackageAdvisory,
+    PackageType,
 )
 from notus.scanner.models.packages.rpm import RPMPackage
 from notus.scanner.models.packages.deb import DEBPackage
@@ -100,59 +100,6 @@ class ArchitectureTestCase(TestCase):
         self.assertEqual(Architecture.I386, Architecture("i386"))
         self.assertEqual(Architecture.I686, Architecture("i686"))
         self.assertEqual(Architecture.X86_64, Architecture("x86_64"))
-
-
-class OperatingSystemAdvisoriesTestCase(TestCase):
-    def test_constructor(self):
-        os_advisories = OperatingSystemAdvisories()
-
-        self.assertIsInstance(os_advisories.advisories, dict)
-        self.assertEqual(len(os_advisories), 0)
-
-    def test_immutability(self):
-        os_advisories = OperatingSystemAdvisories()
-
-        with self.assertRaises(FrozenInstanceError):
-            os_advisories.advisories = dict()
-
-    def test_set_package_advisory(self):
-        os_advisories = OperatingSystemAdvisories()
-
-        self.assertEqual(len(os_advisories), 0)
-
-        advisories1 = PackageAdvisories()
-        os_advisories.set_package_advisories("BarOS 1.0", advisories1)
-
-        self.assertEqual(len(os_advisories), 1)
-
-        advisories2 = PackageAdvisories()
-        os_advisories.set_package_advisories("BarOS 1.0", advisories2)
-
-        self.assertEqual(len(os_advisories), 1)
-
-        advisories3 = PackageAdvisories()
-        os_advisories.set_package_advisories("FooOS 2.0", advisories3)
-        self.assertEqual(len(os_advisories), 2)
-
-    def test_get_package_advisory(self):
-        os_advisories = OperatingSystemAdvisories()
-
-        self.assertEqual(len(os_advisories), 0)
-
-        advisories = os_advisories.get_package_advisories("BarOS 1.0")
-        self.assertEqual(len(advisories), 0)
-
-        advisories1 = PackageAdvisories()
-        advisories2 = PackageAdvisories()
-        os_advisories.set_package_advisories("BarOS 1.0", advisories1)
-        os_advisories.set_package_advisories("FooOS 2.0", advisories2)
-
-        self.assertEqual(
-            os_advisories.get_package_advisories("BarOS 1.0"), advisories1
-        )
-        self.assertEqual(
-            os_advisories.get_package_advisories("FooOS 2.0"), advisories2
-        )
 
 
 class PackageAdvisoryTestCase(TestCase):
@@ -265,13 +212,13 @@ class PackageAdvisoryTestCase(TestCase):
 
 class PackageAdvisoriesTestCase(TestCase):
     def test_constructor(self):
-        package_advisories = PackageAdvisories()
+        package_advisories = PackageAdvisories(PackageType.DEB)
 
         self.assertIsInstance(package_advisories.advisories, dict)
         self.assertEqual(len(package_advisories), 0)
 
     def test_add_advisory_for_package(self):
-        package_advisories = PackageAdvisories()
+        package_advisories = PackageAdvisories(PackageType.RPM)
         package = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
@@ -286,7 +233,7 @@ class PackageAdvisoriesTestCase(TestCase):
         self.assertEqual(len(package_advisories), 1)
 
     def test_add_duplicate_advisory_for_package(self):
-        package_advisories = PackageAdvisories()
+        package_advisories = PackageAdvisories(package_type=PackageType.RPM)
         package1 = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
@@ -321,7 +268,7 @@ class PackageAdvisoriesTestCase(TestCase):
         package_advisories.add_advisory_for_package(package2, advisory2)
 
     def test_get_package_advisories_for_package(self):
-        package_advisories = PackageAdvisories()
+        package_advisories = PackageAdvisories(package_type=PackageType.RPM)
         package1 = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )

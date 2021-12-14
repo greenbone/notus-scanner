@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Dict, Generator, Iterable, Optional
+from typing import Generator, Iterable, Optional
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -27,7 +27,7 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages.package import Package, PackageType
+from .models.packages.package import Package, PackageAdvisories, PackageType
 from .models.packages.rpm import RPMPackage
 from .models.vulnerability import PackageVulnerability
 
@@ -37,27 +37,13 @@ logger = logging.getLogger(__name__)
 class NotusScan:
     """A single scan of a host"""
 
-    def __init__(self, advisories_loader: AdvisoriesLoader):
-        self._advisories_loader = advisories_loader
-
     def start_scan(
         self,
-        advisory: Optional[Dict],
         host_ip: str,
         host_name: str,
-        operating_system: str,
         installed_packages: Iterable[Package],
+        package_advisories: PackageAdvisories,
     ) -> Generator[PackageVulnerability, None, None]:
-        package_advisories = self._advisories_loader.load_package_advisories(
-            advisory
-        )
-        if not package_advisories:
-            logger.info(
-                "No advisories found for %s %s with %s",
-                host_ip,
-                host_name or "",
-                operating_system,
-            )
 
         for package in installed_packages:
             package_advisory_list = (
@@ -134,16 +120,14 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        advisory = self._loader.load_advisory(
-            operating_system=message.os_release
+        package_advisories = self._loader.load_package_advisories(
+            message.os_release
         )
-        package_type_id = advisory.get("package_type", "") if advisory else ""
-        package_type = PackageType.from_string(package_type_id)
-        if not package_type:
-            logger.log(
-                logging.WARN, "%s invalid package type.", package_type_id
-            )
-            return
+        if not package_advisories:
+            logger.info("No advisories found for %s", message.os_release)
+            return None
+        package_type = package_advisories.package_type
+
         may_installed: Iterable[Optional[Package]] = (
             DEBPackage.from_full_name(name)
             if package_type == PackageType.DEB
@@ -156,18 +140,17 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         installed_packages: Iterable[Package] = (
             package for package in may_installed if package is not None
         )
-        scan = NotusScan(self._loader)
+        scan = NotusScan()
 
         self._start_host(message.scan_id, message.host_ip)
 
         i = 0
         try:
             for vulnerability in scan.start_scan(
-                advisory=advisory,
                 host_ip=message.host_ip,
                 host_name=message.host_name,
-                operating_system=message.os_release,
                 installed_packages=installed_packages,
+                package_advisories=package_advisories,
             ):
                 i += 1
                 self._publish_result(message.scan_id, vulnerability)
