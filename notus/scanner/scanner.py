@@ -16,8 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-
 from typing import Generator, Iterable
+
+from notus.scanner.models.packages.deb import DEBPackage
 
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
@@ -26,49 +27,11 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.package import RPMPackage
+from .models.packages.package import Package, PackageAdvisories, PackageType
+from .models.packages.rpm import RPMPackage
 from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
-
-
-class NotusScan:
-    """A single scan of a host"""
-
-    def __init__(self, advisories_loader: AdvisoriesLoader):
-        self._advisories_loader = advisories_loader
-
-    def start_scan(
-        self,
-        host_ip: str,
-        host_name: str,
-        operating_system: str,
-        installed_packages: Iterable[RPMPackage],
-    ) -> Generator[PackageVulnerability, None, None]:
-        package_advisories = self._advisories_loader.load_package_advisories(
-            operating_system
-        )
-        if not package_advisories:
-            logger.info(
-                "No advisories found for %s %s with %s",
-                host_ip,
-                host_name or "",
-                operating_system,
-            )
-
-        for package in installed_packages:
-            package_advisory_list = (
-                package_advisories.get_package_advisories_for_package(package)
-            )
-            for package_advisory in package_advisory_list:
-                if package_advisory.package > package:
-                    yield PackageVulnerability(
-                        host_ip=host_ip,
-                        host_name=host_name,
-                        package=package,
-                        fixed_package=package_advisory.package,
-                        advisory=package_advisory.advisory,
-                    )
 
 
 class NotusScanner:
@@ -124,6 +87,28 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         )
         self._publish(message)
 
+    def _start_scan(
+        self,
+        host_ip: str,
+        host_name: str,
+        installed_packages: Iterable[Package],
+        package_advisories: PackageAdvisories,
+    ) -> Generator[PackageVulnerability, None, None]:
+
+        for package in installed_packages:
+            package_advisory_list = (
+                package_advisories.get_package_advisories_for_package(package)
+            )
+            for package_advisory in package_advisory_list:
+                if package_advisory.package > package:
+                    yield PackageVulnerability(
+                        host_ip=host_ip,
+                        host_name=host_name,
+                        package=package,
+                        fixed_package=package_advisory.package,
+                        advisory=package_advisory.advisory,
+                    )
+
     def run_scan(
         self,
         message: ScanStartMessage,
@@ -131,20 +116,36 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        installed_packages = [
-            RPMPackage.from_full_name(name) for name in message.package_list
+        package_advisories = self._loader.load_package_advisories(
+            message.os_release
+        )
+        if not package_advisories:
+            logger.info("No advisories found for %s", message.os_release)
+            return None
+        package_type = package_advisories.package_type
+
+        package_class = (
+            DEBPackage if package_type == PackageType.DEB else RPMPackage
+        )
+        may_installed = [
+            package_class.from_full_name(name) for name in message.package_list
         ]
-        scan = NotusScan(self._loader)
+        # a package in may_installed can only be None when .from_full_name fails
+        # they both log a warning when they're unable to parse that hence it
+        # is safe to silently remove them
+        installed_packages: Iterable[Package] = (
+            package for package in may_installed if package is not None
+        )
 
         self._start_host(message.scan_id, message.host_ip)
 
         i = 0
         try:
-            for vulnerability in scan.start_scan(
+            for vulnerability in self._start_scan(
                 host_ip=message.host_ip,
                 host_name=message.host_name,
-                operating_system=message.os_release,
                 installed_packages=installed_packages,
+                package_advisories=package_advisories,
             ):
                 i += 1
                 self._publish_result(message.scan_id, vulnerability)

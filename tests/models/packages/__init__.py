@@ -14,19 +14,3 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
-class NotusScannerError(Exception):
-    """Base Class for error raised in Notus Scanner"""
-
-
-class AdvisoriesLoadingError(NotusScannerError):
-    """A problem while loading an Advisory has occurred"""
-
-
-class Sha256SumLoadingError(NotusScannerError):
-    """A problem while loading sha256sums has occurred"""
-
-
-class PackageError(NotusScannerError):
-    """Base Class for errors raised in package handling"""

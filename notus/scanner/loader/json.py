@@ -16,18 +16,19 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
-import logging
-
 from json.decoder import JSONDecodeError
+import logging
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Dict, Optional
 
-from ..errors import AdvisoriesLoadingError
-from ..models.package import (
+from ..models.packages.package import (
     AdvisoryReference,
     PackageAdvisories,
-    RPMPackage,
+    PackageType,
 )
+from ..models.packages.deb import DEBPackage
+from ..models.packages.rpm import RPMPackage
+from ..errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -44,9 +45,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         self._advisories_directory_path = advisories_directory_path
         self._verify = verify
 
-    def load_package_advisories(
-        self, operating_system: str
-    ) -> PackageAdvisories:
+    def __load_data(self, operating_system: str) -> Optional[Dict]:
         os_file_name = _get_operating_system_file_name(operating_system)
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"
@@ -62,22 +61,36 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 "File verification failed."
             )
 
-        package_advisories = PackageAdvisories()
         if json_file_path.stat().st_size < 2:
             # the minimim size of a json file is 2 bytes ({} or [])
-            return package_advisories
+            return None
 
         with json_file_path.open("r", encoding="utf-8") as f:
             try:
-                json_data = json.load(f)
+                return json.load(f)
             except JSONDecodeError as e:
                 raise AdvisoriesLoadingError(
-                    f"Could not load advisories from "
+                    "Could not load advisories from "
                     f"{json_file_path.absolute()}. Error in line {e.lineno} "
-                    f"while decoding JSON data."
+                    "while decoding JSON data."
                 ) from None
 
-        for advisory_data in json_data.get("advisories", []):
+    def load_package_advisories(
+        self, operating_system: str
+    ) -> Optional[PackageAdvisories]:
+        data = self.__load_data(operating_system=operating_system)
+        if not data:
+            return None
+        package_type_id = data.get("package_type", "")
+        package_type = PackageType.from_string(package_type_id)
+        if not package_type:
+            logger.log(
+                logging.WARN, "%s invalid package type.", package_type_id
+            )
+            return None
+        package_advisories = PackageAdvisories(package_type)
+
+        for advisory_data in data.get("advisories", []):
             if not "oid" in advisory_data:
                 logger.error("No OID found for JSON advisory %s", advisory_data)
                 continue
@@ -88,9 +101,9 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 fixed_packages = advisory_data["fixed_packages"]
             except (KeyError, TypeError) as e:
                 logger.warning(
-                    "Error while parsing %s from %s. Error was %s",
+                    "Error while parsing %s for %s. Error was %s",
                     advisory_data,
-                    str(json_file_path.absolute()),
+                    operating_system,
                     e,
                 )
                 continue
@@ -99,10 +112,11 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
+                package_class = DEBPackage if PackageType.DEB else RPMPackage
                 if full_name:
-                    package = RPMPackage.from_full_name(full_name)
+                    package = package_class.from_full_name(full_name)
                 else:
-                    package = RPMPackage.from_name_and_full_version(
+                    package = package_class.from_name_and_full_version(
                         package_dict.get("name"),
                         package_dict.get("full_version"),
                     )
@@ -111,7 +125,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                         "Could not parse fixed package information from %s "
                         "in %s",
                         package_dict,
-                        json_file_path.absolute(),
+                        operating_system,
                     )
                     continue
 

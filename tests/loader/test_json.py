@@ -20,7 +20,7 @@ from unittest import TestCase
 
 from notus.scanner.errors import AdvisoriesLoadingError
 from notus.scanner.loader.json import JSONAdvisoriesLoader
-from notus.scanner.models.package import RPMPackage
+from notus.scanner.models.packages.rpm import RPMPackage
 
 _here = Path(__file__).parent
 
@@ -47,7 +47,7 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         )
 
         advisories = loader.load_package_advisories("EmptyOS")
-        self.assertEqual(len(advisories), 0)
+        self.assertIsNone(advisories)
 
     def test_example(self):
         loader = JSONAdvisoriesLoader(
@@ -55,15 +55,20 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         )
 
         advisories = loader.load_package_advisories("EulerOS V2.0SP1")
-
+        if not advisories:
+            self.fail("Advisories are none")
         self.assertIsNotNone(advisories)
         self.assertEqual(len(advisories), 55)
 
         package1 = RPMPackage.from_full_name("openssh-6.6.1p1-25.4.h3.x86_64")
+        if not package1:
+            self.fail("package1 is None")
         package2 = RPMPackage.from_full_name(
             "openssh-clients-6.6.1p1-25.4.h3.x86_64"
         )
 
+        if not package2:
+            self.fail("package2 is None")
         package_advisories1 = advisories.get_package_advisories_for_package(
             package1
         )
