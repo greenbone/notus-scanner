@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Generator, Iterable, Optional
+from typing import Generator, Iterable
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -124,12 +124,12 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
             return None
         package_type = package_advisories.package_type
 
-        may_installed: Iterable[Optional[Package]] = (
-            DEBPackage.from_full_name(name)
-            if package_type == PackageType.DEB
-            else RPMPackage.from_full_name(name)
-            for name in message.package_list
+        package_class = (
+            DEBPackage if package_type == PackageType.DEB else RPMPackage
         )
+        may_installed = [
+            package_class.from_full_name(name) for name in message.package_list
+        ]
         # a package in may_installed can only be None when .from_full_name fails
         # they both log a warning when they're unable to parse that hence it
         # is safe to silently remove them
