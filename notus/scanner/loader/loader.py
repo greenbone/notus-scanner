@@ -70,19 +70,11 @@ class AdvisoriesLoader:
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
+                package_class = DEBPackage if PackageType.DEB else RPMPackage
                 if full_name:
-                    if package_type == PackageType.DEB:
-                        package = DEBPackage.from_full_name(full_name)
-                    else:
-                        package = RPMPackage.from_full_name(full_name)
+                    package = package_class.from_full_name(full_name)
                 else:
-                    if package_type == PackageType.DEB:
-                        package = DEBPackage.from_name_and_full_version(
-                            package_dict.get("name"),
-                            package_dict.get("full_version"),
-                        )
-                    else:
-                        package = RPMPackage.from_name_and_full_version(
+                    package = package_class.from_name_and_full_version(
                             package_dict.get("name"),
                             package_dict.get("full_version"),
                         )
