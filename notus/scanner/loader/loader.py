@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class AdvisoriesLoader:
-    def load_advisory(self, operating_system: str) -> Optional[Dict]:
+    def load_advisory(self, _: str) -> Optional[Dict]:
         raise NotImplementedError()
 
     def load_package_advisories(
@@ -41,9 +41,8 @@ class AdvisoriesLoader:
             return package_advisories
         operating_system = data.get("product_name", "")
         package_type_id = data.get("package_type", "")
-        try:
-            package_type = PackageType[package_type_id.upper()]
-        except KeyError:
+        package_type = PackageType.from_string(package_type_id)
+        if not package_type:
             logger.log(
                 logging.WARN, "%s invalid package type.", package_type_id
             )

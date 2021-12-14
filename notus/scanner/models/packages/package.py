@@ -39,6 +39,13 @@ class PackageType(Enum):
     RPM = "rpm"
     DEB = "deb"
 
+    @staticmethod
+    def from_string(guess: str):
+        try:
+            return PackageType[guess.upper()]
+        except KeyError:
+            return None
+
 
 class Architecture(Enum):
     NOARCH = "noarch"
