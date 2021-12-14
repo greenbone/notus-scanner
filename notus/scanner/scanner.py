@@ -34,32 +34,6 @@ from .models.vulnerability import PackageVulnerability
 logger = logging.getLogger(__name__)
 
 
-class NotusScan:
-    """A single scan of a host"""
-
-    def start_scan(
-        self,
-        host_ip: str,
-        host_name: str,
-        installed_packages: Iterable[Package],
-        package_advisories: PackageAdvisories,
-    ) -> Generator[PackageVulnerability, None, None]:
-
-        for package in installed_packages:
-            package_advisory_list = (
-                package_advisories.get_package_advisories_for_package(package)
-            )
-            for package_advisory in package_advisory_list:
-                if package_advisory.package > package:
-                    yield PackageVulnerability(
-                        host_ip=host_ip,
-                        host_name=host_name,
-                        package=package,
-                        fixed_package=package_advisory.package,
-                        advisory=package_advisory.advisory,
-                    )
-
-
 class NotusScanner:
     def __init__(
         self,
@@ -113,6 +87,28 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         )
         self._publish(message)
 
+    def _start_scan(
+        self,
+        host_ip: str,
+        host_name: str,
+        installed_packages: Iterable[Package],
+        package_advisories: PackageAdvisories,
+    ) -> Generator[PackageVulnerability, None, None]:
+
+        for package in installed_packages:
+            package_advisory_list = (
+                package_advisories.get_package_advisories_for_package(package)
+            )
+            for package_advisory in package_advisory_list:
+                if package_advisory.package > package:
+                    yield PackageVulnerability(
+                        host_ip=host_ip,
+                        host_name=host_name,
+                        package=package,
+                        fixed_package=package_advisory.package,
+                        advisory=package_advisory.advisory,
+                    )
+
     def run_scan(
         self,
         message: ScanStartMessage,
@@ -140,13 +136,12 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         installed_packages: Iterable[Package] = (
             package for package in may_installed if package is not None
         )
-        scan = NotusScan()
 
         self._start_host(message.scan_id, message.host_ip)
 
         i = 0
         try:
-            for vulnerability in scan.start_scan(
+            for vulnerability in self._start_scan(
                 host_ip=message.host_ip,
                 host_name=message.host_name,
                 installed_packages=installed_packages,
