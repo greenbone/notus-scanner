@@ -75,9 +75,9 @@ class AdvisoriesLoader:
                     package = package_class.from_full_name(full_name)
                 else:
                     package = package_class.from_name_and_full_version(
-                            package_dict.get("name"),
-                            package_dict.get("full_version"),
-                        )
+                        package_dict.get("name"),
+                        package_dict.get("full_version"),
+                    )
                 if not package:
                     logger.warning(
                         "Could not parse fixed package information from %s "
