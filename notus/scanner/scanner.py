@@ -27,7 +27,7 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages.package import Package
+from .models.packages.package import Package, PackageType
 from .models.packages.rpm import RPMPackage
 from .models.vulnerability import PackageVulnerability
 
@@ -137,15 +137,24 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         advisory = self._loader.load_advisory(
             operating_system=message.os_release
         )
-        package_type = advisory.get("package_type", "") if advisory else ""
-        if "deb" == package_type:
-            installed_packages = [
-                DEBPackage.from_full_name(name) for name in message.package_list
-            ]
-        else:
-            installed_packages = [
-                RPMPackage.from_full_name(name) for name in message.package_list
-            ]
+
+        package_type_id = advisory.get("package_type", "") if advisory else ""
+        try:
+            package_type = PackageType[package_type_id.upper()]
+        except KeyError:
+            logger.log(
+                logging.WARN, "%s invalid package type.", package_type_id
+            )
+            return
+        may_installed: Iterable[Optional[Package]] = (
+            DEBPackage.from_full_name(name)
+            if package_type == PackageType.DEB
+            else RPMPackage.from_full_name(name)
+            for name in message.package_list
+        )
+        installed_packages: Iterable[Package] = (
+            package for package in may_installed if package is not None
+        )
         scan = NotusScan(self._loader)
 
         self._start_host(message.scan_id, message.host_ip)
