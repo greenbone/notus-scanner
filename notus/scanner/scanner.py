@@ -138,7 +138,7 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
             operating_system=message.os_release
         )
         package_type = advisory.get("package_type", "") if advisory else ""
-        if "debian" == package_type or "debian" in message.os_release:
+        if "deb" == package_type:
             installed_packages = [
                 DEBPackage.from_full_name(name) for name in message.package_list
             ]

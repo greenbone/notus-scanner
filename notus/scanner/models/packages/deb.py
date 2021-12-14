@@ -57,7 +57,6 @@ class DEBPackage(Package):
         if not full_name:
             return None
 
-        logger.info(full_name)
         # Try to get data with
         try:
             name, epoch, upstream_version, debian_revision = _deb_compile.match(
