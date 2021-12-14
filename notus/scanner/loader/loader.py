@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class AdvisoriesLoader:
-    def load_advisory(self, _: str) -> Optional[Dict]:
+    def load_advisory(self, operating_system: str) -> Optional[Dict]:
         raise NotImplementedError()
 
     def load_package_advisories(

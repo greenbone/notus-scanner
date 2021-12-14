@@ -150,6 +150,9 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
             else RPMPackage.from_full_name(name)
             for name in message.package_list
         )
+        # a package in may_installed can only be None when .from_full_name fails
+        # they both log a warning when they're unable to parse that hence it
+        # is safe to silently remove them
         installed_packages: Iterable[Package] = (
             package for package in may_installed if package is not None
         )
