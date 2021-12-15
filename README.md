@@ -53,6 +53,7 @@ Besides Python Notus Scanner also needs to have
 
 - paho-mqtt
 - psutil
+- python-gnupg
 
 installed.
 
