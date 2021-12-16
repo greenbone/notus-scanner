@@ -21,14 +21,16 @@ import logging
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
+from .gpg_sha_verifier import VerificationResult
+
+from ..errors import AdvisoriesLoadingError
+from ..models.packages.deb import DEBPackage
 from ..models.packages.package import (
     AdvisoryReference,
     PackageAdvisories,
     PackageType,
 )
-from ..models.packages.deb import DEBPackage
 from ..models.packages.rpm import RPMPackage
-from ..errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -40,7 +42,9 @@ def _get_operating_system_file_name(operating_system: str) -> str:
 
 class JSONAdvisoriesLoader(AdvisoriesLoader):
     def __init__(
-        self, advisories_directory_path: Path, verify: Callable[[Path], bool]
+        self,
+        advisories_directory_path: Path,
+        verify: Callable[[Path], VerificationResult],
     ):
         self._advisories_directory_path = advisories_directory_path
         self._verify = verify
@@ -50,15 +54,27 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"
         )
+        # since the data is comming from the outside it should not crash
+        # on wrongfully send data instead print a warning and return None
         if not json_file_path.exists():
-            raise AdvisoriesLoadingError(
-                f"Could not load advisories from {json_file_path.absolute()}. "
-                "File does not exist."
+            logger.log(
+                logging.WARNING,
+                "Could not load advisories from %s. File does not exist.",
+                json_file_path.absolute(),
             )
-        if not self._verify(json_file_path):
+            return None
+        # If there is a file but unable to verify it could be that the feed
+        # is corrupted and the application should stop
+        verify_result = self._verify(json_file_path)
+        if not verify_result == VerificationResult.SUCCESS:
+            reason = (
+                "File verification failed."
+                if verify_result != VerificationResult.INVALID_NAME
+                else "OS name does not match filename."
+            )
             raise AdvisoriesLoadingError(
                 f"Could not load advisories from {json_file_path.absolute()}. "
-                "File verification failed."
+                f"{reason}"
             )
 
         if json_file_path.stat().st_size < 2:
