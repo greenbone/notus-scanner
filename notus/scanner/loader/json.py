@@ -128,7 +128,11 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
-                package_class = DEBPackage if PackageType.DEB else RPMPackage
+                package_class = (
+                    DEBPackage
+                    if PackageType.DEB == package_type
+                    else RPMPackage
+                )
                 if full_name:
                     package = package_class.from_full_name(full_name)
                 else:
