@@ -22,6 +22,7 @@ from typing import Dict, Optional
 
 from notus.scanner.loader.gpg_sha_verifier import (
     ReloadConfiguration,
+    VerificationResult,
     create_verify,
     gpg_sha256sums,
     reload_sha256sums,
@@ -85,10 +86,10 @@ class GpgTest(TestCase):
         pathmock.open.return_value = omock
         emock.read.side_effect = [bytes("hi\n", "utf-8"), ""]
         pathmock.name = "hi.txt"
-        self.assertTrue(vsuccess(pathmock))
+        self.assertEqual(vsuccess(pathmock), VerificationResult.SUCCESS)
         emock.read.side_effect = [bytes("hi\n", "utf-8"), ""]
         pathmock.name = "false.txt"
-        self.assertFalse(vsuccess(pathmock))
+        self.assertEqual(vsuccess(pathmock), VerificationResult.INVALID_NAME)
         emock.read.side_effect = [bytes("hin", "utf-8"), ""]
         pathmock.name = "hi.txt"
-        self.assertFalse(vsuccess(pathmock))
+        self.assertEqual(vsuccess(pathmock), VerificationResult.INVALID_HASH)

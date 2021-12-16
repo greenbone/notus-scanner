@@ -1,3 +1,4 @@
+from enum import Enum
 import hashlib
 import os
 from pathlib import Path
@@ -85,13 +86,24 @@ def gpg_sha256sums(
             for line in f.readlines():
                 hsum, fname = line.split("  ")
                 # the second part can contain a newline
-                result[hsum] = fname.strip()
+                # sometimes the hash sum got generated outside the current dir
+                # and may contain leading paths.
+                # Since we check against the filename we should normalize to
+                # prevent false positives.
+                result[hsum] = fname.split("/")[-1].strip()
         return result
+
+
+class VerificationResult(Enum):
+    INVALID_FILE = 0
+    INVALID_HASH = 1
+    INVALID_NAME = 2
+    SUCCESS = 3
 
 
 def create_verify(
     sha256sums: Callable[[], Dict[str, str]]
-) -> Callable[[Path], bool]:
+) -> Callable[[Path], VerificationResult]:
     """
     create_verify is returning a closure based on the sha256sums.
 
@@ -99,10 +111,10 @@ def create_verify(
     loading on each verification request.
     """
 
-    def verify(advisory_path: Path) -> bool:
+    def verify(advisory_path: Path) -> VerificationResult:
         s256h = hashlib.sha256()
         if not advisory_path.is_file():
-            return False
+            return VerificationResult.INVALID_FILE
 
         with advisory_path.open(mode="rb") as f:
             for hash_file_bytes in iter(lambda: f.read(1024), b""):
@@ -111,7 +123,11 @@ def create_verify(
 
         assumed_name = sha256sums().get(hash_sum)
         if not assumed_name:
-            return False
-        return assumed_name == advisory_path.name
+            return VerificationResult.INVALID_HASH
+        return (
+            VerificationResult.SUCCESS
+            if assumed_name == advisory_path.name
+            else VerificationResult.INVALID_NAME
+        )
 
     return verify

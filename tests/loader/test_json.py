@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest import TestCase
 
 from notus.scanner.errors import AdvisoriesLoadingError
+from notus.scanner.loader.gpg_sha_verifier import VerificationResult
 from notus.scanner.loader.json import JSONAdvisoriesLoader
 from notus.scanner.models.packages.rpm import RPMPackage
 
@@ -28,22 +29,24 @@ _here = Path(__file__).parent
 class JSONAdvisoriesLoaderTestCase(TestCase):
     def test_unknown_file(self):
         loader = JSONAdvisoriesLoader(
-            advisories_directory_path=_here, verify=lambda _: True
+            advisories_directory_path=_here,
+            verify=lambda _: VerificationResult.SUCCESS,
         )
 
-        with self.assertRaises(AdvisoriesLoadingError):
-            loader.load_package_advisories("foo")
+        self.assertIsNone(loader.load_package_advisories("foo"))
 
     def test_verification_failure(self):
         loader = JSONAdvisoriesLoader(
-            advisories_directory_path=_here, verify=lambda _: False
+            advisories_directory_path=_here,
+            verify=lambda _: VerificationResult.INVALID_HASH,
         )
         with self.assertRaises(AdvisoriesLoadingError):
             loader.load_package_advisories("EmptyOS")
 
     def test_empty_file(self):
         loader = JSONAdvisoriesLoader(
-            advisories_directory_path=_here, verify=lambda _: True
+            advisories_directory_path=_here,
+            verify=lambda _: VerificationResult.SUCCESS,
         )
 
         advisories = loader.load_package_advisories("EmptyOS")
@@ -51,7 +54,8 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
 
     def test_example(self):
         loader = JSONAdvisoriesLoader(
-            advisories_directory_path=_here, verify=lambda _: True
+            advisories_directory_path=_here,
+            verify=lambda _: VerificationResult.SUCCESS,
         )
 
         advisories = loader.load_package_advisories("EulerOS V2.0SP1")
