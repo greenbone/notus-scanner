@@ -23,7 +23,7 @@ from typing import Tuple
 from dataclasses import dataclass
 from packaging.version import parse
 
-from .package import Package
+from .package import Package, PackageComparision
 
 _deb_compile = re.compile(r"(.*)-(?:(\d*):)?(.*)-(.*)")
 _deb_compile_wo_revision = re.compile(r"(.*)-(?:(\d*):)?(.*)")
@@ -47,10 +47,18 @@ class DEBPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: Package) -> int:
-        v1 = parse(self.full_version)
-        v2 = parse(other.full_version)
-        return v1 > v2
+    def _compare(self, other: Package) -> PackageComparision:
+        a_version = parse(self.full_version)
+        b_version = parse(other.full_version)
+
+        if a_version == b_version:
+            return PackageComparision.EQUAL
+
+        return (
+            PackageComparision.A_NEWER
+            if a_version > b_version
+            else PackageComparision.B_NEWER
+        )
 
     @staticmethod
     def from_full_name(full_name: str):
