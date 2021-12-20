@@ -71,8 +71,28 @@ class RPMPackageTestCase(TestCase):
             full_name="foo-bar-1.2.3-4.aarch64",
             full_version="1.2.3-4.aarch64",
         )
+        package3 = RPMPackage(
+            name="foo-bar",
+            version="1.2.4",
+            release="4",
+            arch=Architecture.AARCH64,
+            full_name="foo-bar-1.2.4-4.aarch64",
+            full_version="1.2.4-4.aarch64",
+        )
+        package4 = RPMPackage(
+            name="foo-bar",
+            version="1.2.3",
+            release="5",
+            arch=Architecture.AARCH64,
+            full_name="foo-bar-1.2.3-5.aarch64",
+            full_version="1.2.3-5.aarch64",
+        )
         self.assertFalse(package2 > package1)
         self.assertFalse(package1 > package2)
+        self.assertFalse(package3 > package1)
+        self.assertFalse(package1 > package3)
+        self.assertFalse(package4 > package1)
+        self.assertFalse(package1 > package4)
 
     def test_compare_less(self):
         """packages should be comparable"""
