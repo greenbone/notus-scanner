@@ -26,14 +26,6 @@ from ...errors import PackageError
 
 logger = logging.getLogger(__name__)
 
-# Return values:
-#   a_newer: a is newer than b, return 1
-#   _B_NEWER: b is newer than a, return -1
-#   _A_EQ_B: a and b are equal, return 0
-A_NEWER = 1
-B_NEWER = -1
-A_EQ_B = 0
-
 
 class PackageType(Enum):
     RPM = "rpm"
@@ -45,6 +37,14 @@ class PackageType(Enum):
             return PackageType[guess.upper()]
         except KeyError:
             return None
+
+
+class PackageComparision(Enum):
+    EQUAL = 0  # a and b are equal
+    A_NEWER = 1  # a is newer than b
+    B_NEWER = 2  # b is newer than a
+    # a and b are not compareable. e.g. different architectures
+    NOT_COMPARABLE = 3
 
 
 class Architecture(Enum):
@@ -81,7 +81,7 @@ class Package:
         if not isinstance(other, type(self)):
             raise PackageError(f"Can't compare {self!r} to {other!r}.")
 
-        return self._compare(other) > 0
+        return self._compare(other) == PackageComparision.A_NEWER
 
     def __hash__(self) -> int:
         # allow to hash the package
@@ -89,7 +89,7 @@ class Package:
         return hash(self.full_name)
 
     @abstractmethod
-    def _compare(self, other: Any) -> bool:
+    def _compare(self, other: Any) -> PackageComparision:
         raise NotImplementedError()
 
     @staticmethod
