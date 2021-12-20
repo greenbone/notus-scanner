@@ -191,3 +191,31 @@ class DEBPackageTestCase(TestCase):
         self.assertEqual(package.debian_revision, "2.20160614")
         self.assertEqual(package.full_name, "mesa-libgbm-2:11.2.2-2.20160614")
         self.assertEqual(package.full_version, "2:11.2.2-2.20160614")
+
+        package = DEBPackage.from_name_and_full_version(
+            "mesa-libgbm", "2:11.2.2"
+        )
+        self.assertEqual(package.name, "mesa-libgbm")
+        self.assertEqual(package.epoch, "2")
+        self.assertEqual(package.upstream_version, "11.2.2")
+        self.assertEqual(package.debian_revision, "")
+        self.assertEqual(package.full_name, "mesa-libgbm-2:11.2.2")
+        self.assertEqual(package.full_version, "2:11.2.2")
+
+        package = DEBPackage.from_name_and_full_version("mesa-libgbm", "11.2.2")
+        self.assertEqual(package.name, "mesa-libgbm")
+        self.assertEqual(package.epoch, "0")
+        self.assertEqual(package.upstream_version, "11.2.2")
+        self.assertEqual(package.debian_revision, "")
+        self.assertEqual(package.full_name, "mesa-libgbm-11.2.2")
+        self.assertEqual(package.full_version, "11.2.2")
+
+        package = DEBPackage.from_name_and_full_version(
+            "mesa-libgbm", "11.2.2-2.20160614"
+        )
+        self.assertEqual(package.name, "mesa-libgbm")
+        self.assertEqual(package.epoch, "0")
+        self.assertEqual(package.upstream_version, "11.2.2")
+        self.assertEqual(package.debian_revision, "2.20160614")
+        self.assertEqual(package.full_name, "mesa-libgbm-11.2.2-2.20160614")
+        self.assertEqual(package.full_version, "11.2.2-2.20160614")

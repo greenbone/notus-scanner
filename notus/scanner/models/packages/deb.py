@@ -104,15 +104,28 @@ class DEBPackage(Package):
     def from_name_and_full_version(name: str, full_version: str):
         if not name or not full_version:
             return None
-
-        epoch, upstream_version, debian_revision = _deb_compile_version.match(
-            full_version
-        ).groups()
-
-        if not upstream_version:
-            epoch, upstream_version = _deb_compile_version_wo_revision.match(
-                full_version
-            ).groups()
+        try:
+            (
+                epoch,
+                upstream_version,
+                debian_revision,
+            ) = _deb_compile_version.match(full_version).groups()
+        except AttributeError:
+            try:
+                (
+                    epoch,
+                    upstream_version,
+                ) = _deb_compile_version_wo_revision.match(
+                    full_version
+                ).groups()
+                debian_revision = ""
+            except AttributeError:
+                logger.warning(
+                    "The deb package %s %s could not be parsed",
+                    name,
+                    full_version,
+                )
+                return None
 
         if not epoch:
             epoch = "0"
