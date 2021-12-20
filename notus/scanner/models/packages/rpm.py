@@ -33,6 +33,9 @@ class RPMPackage(Package):
     __hash__ = Package.__hash__
 
     def _compare(self, other: "RPMPackage") -> PackageComparision:
+        if self.arch != other.arch:
+            return PackageComparision.NOT_COMPARABLE
+
         if self.full_version == other.full_version:
             return PackageComparision.EQUAL
 
