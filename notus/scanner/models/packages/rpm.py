@@ -7,7 +7,11 @@ import re
 from dataclasses import dataclass
 from packaging.version import parse
 
-from .package import Package, Architecture, A_NEWER, B_NEWER, A_EQ_B
+from .package import (
+    Package,
+    Architecture,
+    PackageComparision,
+)
 
 _rpm_re = re.compile(r"(\S+)-(?:(\d*):)?(.*)-(~?\w+[\w.]*)")
 
@@ -28,17 +32,25 @@ class RPMPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: Package) -> int:
+    def _compare(self, other: "RPMPackage") -> PackageComparision:
         if self.full_version == other.full_version:
-            return A_EQ_B
+            return PackageComparision.EQUAL
 
         a_ver = parse(self.version)
         b_ver = parse(other.version)
         if a_ver != b_ver:
-            return A_NEWER if a_ver > b_ver else B_NEWER
+            return (
+                PackageComparision.A_NEWER
+                if a_ver > b_ver
+                else PackageComparision.B_NEWER
+            )
         a_rel = parse(self.release)
         b_rel = parse(other.release)
-        return A_NEWER if a_rel > b_rel else B_NEWER
+        return (
+            PackageComparision.A_NEWER
+            if a_rel > b_rel
+            else PackageComparision.B_NEWER
+        )
 
     @staticmethod
     def from_full_name(full_name: str):
