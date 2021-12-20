@@ -40,11 +40,11 @@ class Message:
         self,
         *,
         message_id: Optional[UUID] = None,
-        group_id: Optional[str] = None,
+        group_id: Optional[UUID] = None,
         created: Optional[datetime] = None,
     ):
         self.message_id = message_id if message_id else uuid4()
-        self.group_id = group_id if group_id else ""
+        self.group_id = group_id if group_id else uuid4()
         self.created = created if created else datetime.utcnow()
 
     @classmethod
@@ -57,7 +57,7 @@ class Message:
             )
         return {
             "message_id": UUID(data.get("message_id")),
-            "group_id": data.get("group_id"),
+            "group_id": UUID(data.get("group_id")),
             "created": datetime.fromtimestamp(
                 float(data.get("created")), timezone.utc
             ),
