@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from .cli import create_parser
-from .errors import Sha256SumLoadingError
+from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
 from .loader import JSONAdvisoriesLoader
 from .messaging.mqtt import (
     MQTTDaemon,
@@ -71,6 +71,12 @@ def run_daemon(
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
+
+    if not advisories_directory_path.is_dir():
+        raise AdvisoriesLoadingError(
+            f"Can't load advisories. {advisories_directory_path.absolute()} is"
+            " not a directory."
+        )
 
     def on_hash_sum_verification_failure(
         _: Optional[Dict[str, str]]
