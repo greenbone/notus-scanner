@@ -35,3 +35,6 @@ jobs:
           push: true
           tags: ${{ steps.container.outputs.image-tags }}
           file: .docker/notus-scanner.Dockerfile
+          labels: |
+            org.opencontainers.image.vendor=Greenbone
+            org.opencontainers.image.revision=${{ github.sha }}
