@@ -6,9 +6,6 @@ on:
     tags: ["v*"]
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   images:
     name: Build images
@@ -17,14 +14,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Find reference version
-        uses: greenbone/actions/reference-version@v1
+      - name: Gather container image tags
+        id: container
+        uses: greenbone/actions/container-image-tags@v1
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Install poetry and dependencies
         uses: greenbone/actions/poetry@v1
         with:
@@ -36,5 +33,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.VERSION }}
+          tags: ${{ steps.container.outputs.image-tags }}
           file: .docker/notus-scanner.Dockerfile
+          labels: |
+            org.opencontainers.image.vendor=Greenbone
+            org.opencontainers.image.revision=${{ github.sha }}
