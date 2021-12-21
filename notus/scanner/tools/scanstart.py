@@ -21,7 +21,8 @@ import logging
 from pathlib import Path
 from uuid import uuid4
 
-from ..cli.parser import DEFAULT_MQTT_BROKER_PORT, log_level
+from ..cli.parser import log_level
+from ..config import DEFAULT_MQTT_BROKER_ADDRESS, DEFAULT_MQTT_BROKER_PORT
 from ..messages.start import ScanStartMessage
 from ..messaging.mqtt import MQTTClient, MQTTPublisher
 
@@ -40,6 +41,7 @@ def main():
         "--mqtt-broker-address",
         type=str,
         required=True,
+        default=DEFAULT_MQTT_BROKER_ADDRESS,
         help="Hostname or IP address of the MQTT broker.",
     )
     parser.add_argument(
