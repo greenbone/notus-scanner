@@ -31,7 +31,7 @@ from typing import List
 from notus.scanner.cli.parser import (
     DEFAULT_MQTT_BROKER_PORT,
     DEFAULT_PID_PATH,
-    create_parser,
+    CliParser,
     Arguments,
     DEFAULT_CONFIG_PATH,
 )
@@ -39,7 +39,7 @@ from notus.scanner.cli.parser import (
 
 class CliParserTestCase(unittest.TestCase):
     def setUp(self):
-        self.parser = create_parser("notus-scanner-test")
+        self.parser = CliParser()
 
     def parse_args(self, args: List[str]) -> Arguments:
         return self.parser.parse_arguments(args)
@@ -121,7 +121,7 @@ class CliParserTestCase(unittest.TestCase):
 
     def test_config_file_provide_mqtt_broker_address(self):
         with tempfile.NamedTemporaryFile() as fp:
-            fp.write(b"[notus-scanner-test]\nmqtt_broker_address=1.2.3.4")
+            fp.write(b"[notus-scanner]\nmqtt_broker_address=1.2.3.4")
             fp.flush()
 
             args = self.parse_args(["-c", fp.name])
@@ -130,7 +130,7 @@ class CliParserTestCase(unittest.TestCase):
     def test_config_file(self):
         with tempfile.NamedTemporaryFile() as fp:
             fp.write(
-                b"[notus-scanner-test]\n"
+                b"[notus-scanner]\n"
                 b"mqtt_broker_address=1.2.3.4\n"
                 b"mqtt_broker_port=123\n"
                 b"advisories_directory=/tmp\n"

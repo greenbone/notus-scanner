@@ -44,10 +44,10 @@ def log_level(string: str) -> str:
 
 
 class CliParser:
-    def __init__(self, description: str) -> None:
+    def __init__(self) -> None:
         """Create a command-line arguments parser for Notus Scanner."""
-        self._name = description
-        parser = argparse.ArgumentParser(description=description)
+        self._name = "Notus Scanner"
+        parser = argparse.ArgumentParser(description=self._name, add_help=False)
 
         parser.add_argument(
             "--version",
@@ -157,7 +157,3 @@ class CliParser:
                 "-b/--mqtt-broker-address"
             )
         return parsed_args
-
-
-def create_parser(description: str) -> CliParser:
-    return CliParser(description)

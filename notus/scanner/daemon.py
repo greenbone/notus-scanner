@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Optional
 
-from .cli import create_parser
+from .cli import CliParser
 from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
 from .loader import JSONAdvisoriesLoader
 from .messaging.mqtt import (
@@ -121,7 +121,7 @@ def run_daemon(
 
 
 def main():
-    parser = create_parser("Notus Scanner")
+    parser = CliParser()
     args = parser.parse_arguments()
 
     init_logging(
