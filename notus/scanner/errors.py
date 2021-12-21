@@ -30,3 +30,7 @@ class Sha256SumLoadingError(NotusScannerError):
 
 class PackageError(NotusScannerError):
     """Base Class for errors raised in package handling"""
+
+
+class ConfigFileError(NotusScannerError):
+    """ "A problem while parsing the config file has occurred"""
