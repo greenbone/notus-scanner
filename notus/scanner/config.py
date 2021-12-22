@@ -64,9 +64,13 @@ class Config:
         self._config: Dict[str, Any] = {}
 
     def load(self, filepath: Path) -> None:
-        content = filepath.read_text(encoding="utf-8")
         try:
+            content = filepath.read_text(encoding="utf-8")
             config_data = tomli.loads(content)
+        except IOError as e:
+            raise ConfigFileError(
+                f"Can't load config file {filepath.absolute()}. Error was {e}."
+            ) from e
         except tomli.TOMLDecodeError as e:
             raise ConfigFileError(
                 f"Can't load config file. {filepath.absolute()} is not a valid "
