@@ -29,7 +29,7 @@ Arguments = argparse.Namespace
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CONFIG_FILE = "/etc/gvm/notus-scanner.conf"
+DEFAULT_CONFIG_FILE = "/etc/gvm/notus-scanner.toml"
 
 
 def log_level(string: str) -> str:
