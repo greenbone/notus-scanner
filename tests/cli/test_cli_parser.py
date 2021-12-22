@@ -27,7 +27,6 @@ from typing import List
 from notus.scanner.cli.parser import (
     CliParser,
     Arguments,
-    DEFAULT_CONFIG_FILE,
 )
 from notus.scanner.config import (
     DEFAULT_ADVISORIES_DIRECTORY,
@@ -98,7 +97,7 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual(
             args.advisories_directory, Path(DEFAULT_ADVISORIES_DIRECTORY)
         )
-        self.assertEqual(args.config, DEFAULT_CONFIG_FILE)
+        self.assertIsNone(args.config)
         self.assertIsNone(args.log_file)
         self.assertEqual(args.log_level, DEFAULT_LOG_LEVEL)
         self.assertEqual(args.mqtt_broker_port, DEFAULT_MQTT_BROKER_PORT)
