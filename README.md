@@ -87,11 +87,14 @@ Validate the activated git hooks by running
 ## Configuration
 
 The configuration of notus-scanner can be done by providing a TOML config file.
-The config file is loaded per default from the location `/etc/gvm/notus-scanner.toml`.
-The location of the config file can be changed via the `-c`/`--config` command
-line argument.
+Per default notus-scanner tries to load the settings from config files in the
+following order: `~/.config/notus-scanner.toml`, `/etc/gvm/notus-scanner.toml`.
 
-The settings are read from a `[notus-scanner]` section.
+Alternatively the location of the to be loaded config file can be set via the
+`-c`/`--config` command line argument. Setting a config file via command line
+will ignore the default config files.
+
+The settings are read from a `[notus-scanner]` [section](https://toml.io/en/v1.0.0#table).
 
 Example config file:
 ```toml
