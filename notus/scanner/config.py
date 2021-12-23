@@ -31,7 +31,7 @@ from notus.scanner.errors import ConfigFileError
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_ADVISORIES_DIRECTORY = "/var/lib/openvas/plugins/notus/products"
+DEFAULT_PRODUCTS_DIRECTORY = "/var/lib/openvas/plugins/notus/products"
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_MQTT_BROKER_ADDRESS = "localhost"
 DEFAULT_MQTT_BROKER_PORT = 1883
@@ -39,9 +39,9 @@ DEFAULT_PID_FILE = "/run/notus-scanner/notus-scanner.pid"
 
 _CONFIG = (
     (
-        "advisories-directory",
-        "NOTUS_SCANNER_ADVISORIES_DIRECTORY",
-        DEFAULT_ADVISORIES_DIRECTORY,
+        "products-directory",
+        "NOTUS_SCANNER_PRODUCTS_DIRECTORY",
+        DEFAULT_PRODUCTS_DIRECTORY,
     ),
     ("log-file", "NOTUS_SCANNER_LOG_FILE", None),
     ("log-level", "NOTUS_SCANNER_LOG_LEVEL", DEFAULT_LOG_LEVEL),

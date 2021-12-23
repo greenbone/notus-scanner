@@ -29,11 +29,11 @@ from notus.scanner.cli.parser import (
     Arguments,
 )
 from notus.scanner.config import (
-    DEFAULT_ADVISORIES_DIRECTORY,
     DEFAULT_LOG_LEVEL,
     DEFAULT_MQTT_BROKER_ADDRESS,
     DEFAULT_MQTT_BROKER_PORT,
     DEFAULT_PID_FILE,
+    DEFAULT_PRODUCTS_DIRECTORY,
 )
 
 
@@ -67,11 +67,8 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual("INFO", args.log_level)
 
     def test_advisories_directory(self):
-        args = self.parse_args(["--advisories-directory=/tmp"])
-        self.assertEqual(Path("/tmp"), args.advisories_directory)
-
-        args = self.parse_args(["-a", "/tmp"])
-        self.assertEqual(Path("/tmp"), args.advisories_directory)
+        args = self.parse_args(["--products-directory=/tmp"])
+        self.assertEqual(Path("/tmp"), args.products_directory)
 
     def test_pid_file(self):
         args = self.parse_args(["--pid-file=/foo/bar"])
@@ -95,7 +92,7 @@ class CliParserTestCase(unittest.TestCase):
         args = self.parse_args([])
 
         self.assertEqual(
-            args.advisories_directory, Path(DEFAULT_ADVISORIES_DIRECTORY)
+            args.products_directory, Path(DEFAULT_PRODUCTS_DIRECTORY)
         )
         self.assertIsNone(args.config)
         self.assertIsNone(args.log_file)
@@ -119,7 +116,7 @@ class CliParserTestCase(unittest.TestCase):
                 b"""[notus-scanner]
                 mqtt-broker-address="1.2.3.4"
                 mqtt-broker-port="123"
-                advisories-directory="/tmp"
+                products-directory="/tmp"
                 pid-file="foo.bar"
                 log-file="foo.log"
                 log-level="DEBUG"
@@ -131,7 +128,7 @@ class CliParserTestCase(unittest.TestCase):
 
             self.assertEqual(args.mqtt_broker_address, "1.2.3.4")
             self.assertEqual(args.mqtt_broker_port, 123)
-            self.assertEqual(args.advisories_directory, Path("/tmp"))
+            self.assertEqual(args.products_directory, Path("/tmp"))
             self.assertEqual(args.pid_file, "foo.bar")
             self.assertEqual(args.log_file, "foo.log")
             self.assertEqual(args.log_level, "DEBUG")
