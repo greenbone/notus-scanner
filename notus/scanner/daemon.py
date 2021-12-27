@@ -22,8 +22,8 @@ import sys
 from pathlib import Path
 from typing import Dict, Optional
 
-from .cli import create_parser
-from .errors import Sha256SumLoadingError
+from .cli import CliParser
+from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
 from .loader import JSONAdvisoriesLoader
 from .messaging.mqtt import (
     MQTTDaemon,
@@ -66,11 +66,17 @@ if SENTRY_DSN_NOTUS_SCANNER:
 def run_daemon(
     mqtt_broker_address: str,
     mqtt_broker_port: int,
-    advisories_directory_path: Path,
+    products_directory_path: Path,
 ):
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
     """
+
+    if not products_directory_path.is_dir():
+        raise AdvisoriesLoadingError(
+            f"Can't load advisories. {products_directory_path.absolute()} is"
+            " not a directory."
+        )
 
     def on_hash_sum_verification_failure(
         _: Optional[Dict[str, str]]
@@ -79,7 +85,7 @@ def run_daemon(
             f"Unable to verify signature of {sha_sum_file_path}"
         )
 
-    sha_sum_file_path = advisories_directory_path / "sha256sums"
+    sha_sum_file_path = products_directory_path / "sha256sums"
     sha_sum_reload_config = ReloadConfiguration(
         hash_file=sha_sum_file_path,
         on_verification_failure=on_hash_sum_verification_failure,
@@ -89,7 +95,7 @@ def run_daemon(
     verifier = create_verify(sums)
 
     loader = JSONAdvisoriesLoader(
-        advisories_directory_path=advisories_directory_path, verify=verifier
+        advisories_directory_path=products_directory_path, verify=verifier
     )
     try:
         client = MQTTClient(
@@ -115,7 +121,7 @@ def run_daemon(
 
 
 def main():
-    parser = create_parser("Notus Scanner")
+    parser = CliParser()
     args = parser.parse_arguments()
 
     init_logging(
@@ -138,7 +144,7 @@ def main():
     run_daemon(
         args.mqtt_broker_address,
         args.mqtt_broker_port,
-        args.advisories_directory,
+        args.products_directory,
     )
 
 

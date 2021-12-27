@@ -38,6 +38,7 @@ documentation.
 - [Installation](#installation)
   - [Requirements](#requirements)
 - [Development](#development)
+- [Configuration](#configuration)
 - [Support](#support)
 - [Maintainer](#maintainer)
 - [Contributing](#contributing)
@@ -82,6 +83,42 @@ Afterwards activate the git hooks for auto-formatting and linting via
 Validate the activated git hooks by running
 
     poetry run autohooks check
+
+## Configuration
+
+The configuration of notus-scanner can be done by providing a TOML config file.
+Per default notus-scanner tries to load the settings from config files in the
+following order: `~/.config/notus-scanner.toml`, `/etc/gvm/notus-scanner.toml`.
+
+Alternatively the location of the to be loaded config file can be set via the
+`-c`/`--config` command line argument. Setting a config file via command line
+will ignore the default config files.
+
+The settings are read from a `[notus-scanner]` [section](https://toml.io/en/v1.0.0#table).
+
+Example config file:
+```toml
+[notus-scanner]
+mqtt-broker-address = "1.2.3.4"
+mqtt-broker-port = "1234"
+products-directory = "/tmp/notus/advisories/products"
+pid-file = "/tmp/notus-scanner.pid"
+log-file = "/tmp/notus-scanner.log"
+log-level = "DEBUG"
+```
+
+Each setting can be overridden via an environment variable or command line
+argument.
+
+|Config|Environment|Default|Description|
+|------|-----------|-------|-----------|
+|log-file|NOTUS_SCANNER_LOG_FILE|syslog|File for log output|
+|log-level|NOTUS_SCANNER_LOG_LEVEL|INFO|Minimum level for log output|
+|mqtt-broker-address|NOTUS_SCANNER_MQTT_BROKER_ADDRESS|localhost|IP or DNS address of the MQTT broker|
+|mqtt-broker-port|NOTUS_SCANNER_MQTT_BROKER_PORT|1883|Port of the MQTT broker|
+|pid-file|NOTUS_SCANNER_PID_FILE|/run/notus-scanner/notus-scanner.pid|File for storing the process ID|
+|products-directory|NOTUS_SCANNER_PRODUCTS_DIRECTORY|/var/lib/openvas/plugins/notus/products|Directory for loading product advisories|
+
 
 ## Support
 

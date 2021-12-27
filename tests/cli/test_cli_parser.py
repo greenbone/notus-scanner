@@ -21,33 +21,28 @@
 import unittest
 import tempfile
 
-from unittest.mock import patch
-
-
-from io import StringIO
 from pathlib import Path
 from typing import List
 
 from notus.scanner.cli.parser import (
-    DEFAULT_MQTT_BROKER_PORT,
-    DEFAULT_PID_PATH,
-    create_parser,
+    CliParser,
     Arguments,
-    DEFAULT_CONFIG_PATH,
+)
+from notus.scanner.config import (
+    DEFAULT_LOG_LEVEL,
+    DEFAULT_MQTT_BROKER_ADDRESS,
+    DEFAULT_MQTT_BROKER_PORT,
+    DEFAULT_PID_FILE,
+    DEFAULT_PRODUCTS_DIRECTORY,
 )
 
 
 class CliParserTestCase(unittest.TestCase):
     def setUp(self):
-        self.parser = create_parser("notus-scanner-test")
+        self.parser = CliParser()
 
     def parse_args(self, args: List[str]) -> Arguments:
         return self.parser.parse_arguments(args)
-
-    def parse_args_with_required_args(self, args: List[str]) -> Arguments:
-        required_args = ["--mqtt-broker-address=localhost"]
-        required_args.extend(args)
-        return self.parse_args(required_args)
 
     def test_mqtt_broker(self):
         args = self.parse_args(["--mqtt-broker-address=localhost"])
@@ -57,71 +52,59 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual("localhost", args.mqtt_broker_address)
 
     def test_mqtt_broker_port(self):
-        args = self.parse_args_with_required_args(["--mqtt-broker-port=12345"])
+        args = self.parse_args(["--mqtt-broker-port=12345"])
         self.assertEqual(args.mqtt_broker_port, 12345)
 
-        args = self.parse_args_with_required_args(["-p", "12345"])
+        args = self.parse_args(["-p", "12345"])
         self.assertEqual(args.mqtt_broker_port, 12345)
 
     def test_correct_upper_case_log_level(self):
-        args = self.parse_args_with_required_args(["--log-level=ERROR"])
+        args = self.parse_args(["--log-level=ERROR"])
         self.assertEqual("ERROR", args.log_level)
 
     def test_correct_lower_case_log_level(self):
-        args = self.parse_args_with_required_args(["-L", "info"])
+        args = self.parse_args(["-L", "info"])
         self.assertEqual("INFO", args.log_level)
 
     def test_advisories_directory(self):
-        args = self.parse_args_with_required_args(
-            ["--advisories-directory=/tmp"]
-        )
-        self.assertEqual(Path("/tmp"), args.advisories_directory)
-
-        args = self.parse_args_with_required_args(["-a", "/tmp"])
-        self.assertEqual(Path("/tmp"), args.advisories_directory)
-
-    @patch("sys.stderr", new_callable=StringIO)
-    def test_advisories_directory_not_exists(self, _mock_stderr):
-        with self.assertRaises(SystemExit):
-            self.parse_args_with_required_args(
-                ["--advisories-directory=/foobarbaz"]
-            )
+        args = self.parse_args(["--products-directory=/tmp"])
+        self.assertEqual(Path("/tmp"), args.products_directory)
 
     def test_pid_file(self):
-        args = self.parse_args_with_required_args(["--pid-file=/foo/bar"])
+        args = self.parse_args(["--pid-file=/foo/bar"])
         self.assertEqual(args.pid_file, "/foo/bar")
 
     def test_log_file(self):
-        args = self.parse_args_with_required_args(["--log-file=/foo/bar"])
+        args = self.parse_args(["--log-file=/foo/bar"])
         self.assertEqual(args.log_file, "/foo/bar")
 
-        args = self.parse_args_with_required_args(["-l", "/foo/bar"])
+        args = self.parse_args(["-l", "/foo/bar"])
         self.assertEqual(args.log_file, "/foo/bar")
 
     def test_foreground(self):
-        args = self.parse_args_with_required_args(["--foreground"])
+        args = self.parse_args(["--foreground"])
         self.assertTrue(args.foreground)
 
-        args = self.parse_args_with_required_args(["-f"])
+        args = self.parse_args(["-f"])
         self.assertTrue(args.foreground)
 
     def test_defaults(self):
-        args = self.parse_args_with_required_args([])
+        args = self.parse_args([])
 
-        self.assertEqual(args.config, DEFAULT_CONFIG_PATH)
+        self.assertEqual(
+            args.products_directory, Path(DEFAULT_PRODUCTS_DIRECTORY)
+        )
+        self.assertIsNone(args.config)
+        self.assertIsNone(args.log_file)
+        self.assertEqual(args.log_level, DEFAULT_LOG_LEVEL)
         self.assertEqual(args.mqtt_broker_port, DEFAULT_MQTT_BROKER_PORT)
-        self.assertEqual(args.pid_file, DEFAULT_PID_PATH)
-        self.assertEqual(args.log_level, "INFO")
+        self.assertEqual(args.mqtt_broker_address, DEFAULT_MQTT_BROKER_ADDRESS)
+        self.assertEqual(args.pid_file, DEFAULT_PID_FILE)
         self.assertFalse(args.foreground)
-
-    @patch("sys.stderr", new_callable=StringIO)
-    def test_require_arguments(self, _io):
-        with self.assertRaises(SystemExit):
-            self.parse_args([])
 
     def test_config_file_provide_mqtt_broker_address(self):
         with tempfile.NamedTemporaryFile() as fp:
-            fp.write(b"[notus-scanner-test]\nmqtt_broker_address=1.2.3.4")
+            fp.write(b"[notus-scanner]\nmqtt-broker-address='1.2.3.4'")
             fp.flush()
 
             args = self.parse_args(["-c", fp.name])
@@ -130,13 +113,14 @@ class CliParserTestCase(unittest.TestCase):
     def test_config_file(self):
         with tempfile.NamedTemporaryFile() as fp:
             fp.write(
-                b"[notus-scanner-test]\n"
-                b"mqtt_broker_address=1.2.3.4\n"
-                b"mqtt_broker_port=123\n"
-                b"advisories_directory=/tmp\n"
-                b"pid_file=foo.bar\n"
-                b"log_file=foo.log\n"
-                b"log_level=DEBUG\n"
+                b"""[notus-scanner]
+                mqtt-broker-address="1.2.3.4"
+                mqtt-broker-port="123"
+                products-directory="/tmp"
+                pid-file="foo.bar"
+                log-file="foo.log"
+                log-level="DEBUG"
+                """
             )
             fp.flush()
 
@@ -144,7 +128,7 @@ class CliParserTestCase(unittest.TestCase):
 
             self.assertEqual(args.mqtt_broker_address, "1.2.3.4")
             self.assertEqual(args.mqtt_broker_port, 123)
-            self.assertEqual(args.advisories_directory, Path("/tmp"))
+            self.assertEqual(args.products_directory, Path("/tmp"))
             self.assertEqual(args.pid_file, "foo.bar")
             self.assertEqual(args.log_file, "foo.log")
             self.assertEqual(args.log_level, "DEBUG")
