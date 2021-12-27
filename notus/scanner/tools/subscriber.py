@@ -22,7 +22,8 @@ import signal
 
 from functools import partial
 
-from ..cli.parser import DEFAULT_MQTT_BROKER_PORT, log_level
+from ..cli.parser import log_level
+from ..config import DEFAULT_MQTT_BROKER_ADDRESS, DEFAULT_MQTT_BROKER_PORT
 from ..messaging.mqtt import MQTTClient, MQTTSubscriber
 from ..messages.status import ScanStatusMessage
 from ..messages.result import ResultMessage
@@ -62,6 +63,7 @@ def main():
         "--mqtt-broker-address",
         type=str,
         required=True,
+        default=DEFAULT_MQTT_BROKER_ADDRESS,
         help="Hostname or IP address of the MQTT broker.",
     )
     parser.add_argument(
