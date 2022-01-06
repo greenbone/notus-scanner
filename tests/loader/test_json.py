@@ -92,3 +92,13 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         advisory = package_advisory1.advisory
 
         self.assertEqual(advisory.oid, "1.3.6.1.4.1.25623.1.1.2.2016.1008")
+
+    def test_invalid_package_type(self):
+        loader = JSONAdvisoriesLoader(
+            advisories_directory_path=_here,
+            verify=lambda _: VerificationResult.SUCCESS,
+        )
+
+        advisory = loader.load_package_advisories("invalid_package")
+
+        self.assertIsNone(advisory)

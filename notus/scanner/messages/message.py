@@ -22,6 +22,8 @@ from enum import Enum
 from typing import Any, Dict, Union, Optional
 from uuid import UUID, uuid4
 
+from ..errors import MessageParsingError
+
 
 class MessageType(Enum):
     RESULT = "result.scan"
@@ -49,9 +51,14 @@ class Message:
 
     @classmethod
     def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
-        message_type = MessageType(data.get("message_type"))
+        try:
+            message_type = MessageType(data.get("message_type"))
+        except ValueError as e:
+            raise MessageParsingError(
+                f"error while parsing 'message_type', {e}"
+            ) from e
         if message_type != cls.message_type:
-            raise ValueError(
+            raise MessageParsingError(
                 f"Invalid message type {message_type} for {cls.__name__}. "
                 f"Must be {cls.message_type}.",
             )
@@ -59,17 +66,23 @@ class Message:
         try:
             message_id = UUID(data.get("message_id"))
         except (TypeError, ValueError) as e:
-            raise e.__class__(f"error while parsing 'message_id', {e}")
+            raise MessageParsingError(
+                f"error while parsing 'message_id', {e}"
+            ) from e
         try:
             group_id = UUID(data.get("group_id"))
         except (TypeError, ValueError) as e:
-            raise e.__class__(f"error while parsing 'group_id', {e}")
+            raise MessageParsingError(
+                f"error while parsing 'group_id', {e}"
+            ) from e
         try:
             created = datetime.fromtimestamp(
                 float(data.get("created")), timezone.utc
             )
         except (TypeError, ValueError) as e:
-            raise e.__class__(f"error while parsing 'created', {e}")
+            raise MessageParsingError(
+                f"error while parsing 'created', {e}"
+            ) from e
 
         return {
             "message_id": message_id,

@@ -1,0 +1,42 @@
+{
+    "version": "1.0",
+    "package_type": "foo",
+    "product_name": "Huawei EulerOS v2.0 SP1",
+    "advisories": [
+        {
+            "oid": "1.3.6.1.4.1.25623.1.1.2.2016.1001",
+            "fixed_packages": [
+                {
+                    "full_name": "postgresql-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-contrib-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-devel-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-docs-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-libs-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-plperl-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-plpython-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-pltcl-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-server-9.2.15-1.x86_64"
+                },
+                {
+                    "full_name": "postgresql-test-9.2.15-1.x86_64"
+                }
+            ]
+        }
+    ]
+}

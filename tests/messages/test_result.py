@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from unittest import TestCase
+from notus.scanner.errors import MessageParsingError
 
 from notus.scanner.messages.message import MessageType
 from notus.scanner.messages.result import ResultMessage, ResultType
@@ -141,7 +142,7 @@ class ResultMessageTestCase(TestCase):
             "result_type": "ALARM",
         }
         with self.assertRaisesRegex(
-            ValueError,
+            MessageParsingError,
             "Invalid message type MessageType.SCAN_STATUS for "
             "ResultMessage. Must be MessageType.RESULT.",
         ):
@@ -164,6 +165,8 @@ class ResultMessageTestCase(TestCase):
         }
 
         with self.assertRaisesRegex(
-            ValueError, "'foo' is not a valid ResultType"
+            MessageParsingError,
+            "error while parsing 'result_type', 'foo' is not a valid"
+            " ResultType",
         ):
             ResultMessage.deserialize(data)

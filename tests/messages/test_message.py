@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from unittest import TestCase
+from notus.scanner.errors import MessageParsingError
 
 from notus.scanner.messages.message import Message, MessageType
 
@@ -81,7 +82,9 @@ class MessageTestCase(TestCase):
         }
 
         with self.assertRaisesRegex(
-            ValueError, "None is not a valid MessageType"
+            MessageParsingError,
+            "error while parsing 'message_type', None is not a valid"
+            " MessageType",
         ):
             Message.deserialize(data)
 
@@ -94,7 +97,9 @@ class MessageTestCase(TestCase):
         }
 
         with self.assertRaisesRegex(
-            ValueError, "'foo' is not a valid MessageType"
+            MessageParsingError,
+            "error while parsing 'message_type', 'foo' is not a valid"
+            " MessageType",
         ):
             Message.deserialize(data)
 
@@ -136,4 +141,84 @@ class MessageTestCase(TestCase):
             datetime.fromtimestamp(1628512774.0, tz=timezone.utc),
         )
 
+        Message.message_type = None
+
+    def test_load_message_id_unvalid(self):
+        payload = (
+            '{"message_id": "foo", '
+            '"message_type": "scan.start", '
+            '"group_id": "866350e8-1492-497e-b12b-c079287d51dd", '
+            '"created": 1628512774.0}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_message_id_missing(self):
+        payload = (
+            '{"message_type": "scan.start", '
+            '"group_id": "866350e8-1492-497e-b12b-c079287d51dd", '
+            '"created": 1628512774.0}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_group_id_unvalid(self):
+        payload = (
+            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
+            '"message_type": "scan.start", '
+            '"group_id": "bar", '
+            '"created": 1628512774.0}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_group_id_missing(self):
+        payload = (
+            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
+            '"message_type": "scan.start", '
+            '"created": 1628512774.0}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_message_type_missing(self):
+        payload = (
+            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
+            '"group_id": "866350e8-1492-497e-b12b-c079287d51dd", '
+            '"created": 1628512774.0}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_created_unvalid(self):
+        payload = (
+            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
+            '"message_type": "scan.start", '
+            '"group_id": "866350e8-1492-497e-b12b-c079287d51dd", '
+            '"created": "a"}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
+        Message.message_type = None
+
+    def test_load_created_missing(self):
+        payload = (
+            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
+            '"message_type": "scan.start", '
+            '"group_id": "866350e8-1492-497e-b12b-c079287d51dd"}'
+        )
+        Message.message_type = MessageType.SCAN_START
+        with self.assertRaises(MessageParsingError):
+            Message.load(payload)
         Message.message_type = None
