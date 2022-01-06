@@ -118,7 +118,7 @@ class MQTTSubscriber(Subscriber):
             )
             logger.debug("Got: %s", msg.payload)
             return
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             logger.error(
                 "Could not parse message for topic %s. Error was %s",
                 msg.topic,
@@ -151,9 +151,10 @@ class MQTTDaemon:
             logger.error("Failed to connect to broker. Reason code %s", rc)
 
     @staticmethod
-    def on_disconnect(client, _userdata, rc, _properties):
+    def on_disconnect(
+        client, _userdata, rc, _properties  # pylint: disable=unused-argument
+    ):
         logger.info("Disconnected from broker. Reason code %s", rc)
-        client.loop_stop()
 
     def run(self):
         self._client.loop_forever()
