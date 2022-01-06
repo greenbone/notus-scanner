@@ -116,12 +116,47 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         """Handle the data necessary to start a scan,
         received via mqtt and run the scan."""
 
-        package_advisories = self._loader.load_package_advisories(
-            message.os_release
-        )
+        # Check if all necessary information to run a scan are given
+        if not message:
+            logger.error(
+                "Unable to start scan for %s: The message seems to be empty",
+                message.host_ip,
+            )
+            return
+        if not message.os_release:
+            logger.error(
+                "Unable to start scan for %s: The field os_release is empty",
+                message.host_ip,
+            )
+            return
+        if not message.package_list:
+            logger.error(
+                "Unable to start scan for %s: The field package_list is empty",
+                message.host_ip,
+            )
+            return
+
+        # Get advisory information from disk
+        try:
+            package_advisories = self._loader.load_package_advisories(
+                message.os_release
+            )
+        except AdvisoriesLoadingError as e:
+            logger.error("Unable to load package advisories. Error was %s", e)
+            return
+
         if not package_advisories:
-            logger.info("No advisories found for %s", message.os_release)
-            return None
+            # Probably a wrong or not supported OS-release
+            logger.error(
+                "Unable to start scan for %s: No advisories for OS-release %s"
+                " found. Check if the OS-release is correct and the"
+                " corresponding advisories are given.",
+                message.host_ip,
+                message.os_release,
+            )
+            return
+
+        # Determine package type
         package_type = package_advisories.package_type
 
         package_class = (

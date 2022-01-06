@@ -55,12 +55,26 @@ class Message:
                 f"Invalid message type {message_type} for {cls.__name__}. "
                 f"Must be {cls.message_type}.",
             )
-        return {
-            "message_id": UUID(data.get("message_id")),
-            "group_id": UUID(data.get("group_id")),
-            "created": datetime.fromtimestamp(
+
+        try:
+            message_id = UUID(data.get("message_id"))
+        except (TypeError, ValueError) as e:
+            raise e.__class__(f"error while parsing 'message_id', {e}")
+        try:
+            group_id = UUID(data.get("group_id"))
+        except (TypeError, ValueError) as e:
+            raise e.__class__(f"error while parsing 'group_id', {e}")
+        try:
+            created = datetime.fromtimestamp(
                 float(data.get("created")), timezone.utc
-            ),
+            )
+        except (TypeError, ValueError) as e:
+            raise e.__class__(f"error while parsing 'created', {e}")
+
+        return {
+            "message_id": message_id,
+            "group_id": group_id,
+            "created": created,
         }
 
     def serialize(self) -> Dict[str, Union[int, str]]:

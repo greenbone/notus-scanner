@@ -73,7 +73,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 else "OS name does not match filename."
             )
             raise AdvisoriesLoadingError(
-                f"Could not load advisories from {json_file_path.absolute()}. "
+                f"could not load advisories from {json_file_path.absolute()}. "
                 f"{reason}"
             )
 
@@ -98,13 +98,15 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         if not data:
             return None
         package_type_id = data.get("package_type", "")
-        package_type = PackageType.from_string(package_type_id)
-        if not package_type:
-            logger.log(
-                logging.WARN, "%s invalid package type.", package_type_id
-            )
+        try:
+            package_type = PackageType(package_type_id)
+        except ValueError:
+            logger.warning("%s invalid package type.", package_type_id)
             return None
         package_advisories = PackageAdvisories(package_type)
+        package_class = (
+            DEBPackage if PackageType.DEB == package_type else RPMPackage
+        )
 
         for advisory_data in data.get("advisories", []):
             if not "oid" in advisory_data:
@@ -128,11 +130,6 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")
-                package_class = (
-                    DEBPackage
-                    if PackageType.DEB == package_type
-                    else RPMPackage
-                )
                 if full_name:
                     package = package_class.from_full_name(full_name)
                 else:
