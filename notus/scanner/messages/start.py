@@ -19,6 +19,8 @@ from datetime import datetime
 from typing import Dict, Union, Any, List, Optional
 from uuid import UUID
 
+from notus.scanner.errors import MessageParsingError
+
 from .message import Message, MessageType
 
 
@@ -72,7 +74,7 @@ class ScanStartMessage(Message):
 
         package_list = data.get("package_list")
         if not isinstance(package_list, list):
-            raise ValueError("package_list must contain a list")
+            raise MessageParsingError("package_list must contain a list")
 
         kwargs.update(
             {

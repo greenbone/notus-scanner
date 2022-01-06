@@ -72,15 +72,7 @@ class MQTTSubscriberTestCase(TestCase):
 
         subscriber = MQTTSubscriber(client)
 
-        message = ScanStartMessage(
-            scan_id="scan_1",
-            host_ip="1.1.1.1",
-            host_name="foo",
-            os_release="BarOS 1.0",
-            package_list=["foo-1.2.3-1.x86_64"],
-        )
-
-        subscriber.subscribe(message, callback)
+        subscriber.subscribe(ScanStartMessage, callback)
 
         client.subscribe.assert_called_with("scanner/package/cmd/notus", qos=1)
 

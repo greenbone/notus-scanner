@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from unittest import TestCase
+from notus.scanner.errors import MessageParsingError
 
 from notus.scanner.messages.message import MessageType
 from notus.scanner.messages.status import ScanStatus, ScanStatusMessage
@@ -124,7 +125,7 @@ class ScanStatusMessageTestCase(TestCase):
         }
 
         with self.assertRaisesRegex(
-            ValueError,
+            MessageParsingError,
             "Invalid message type MessageType.SCAN_START for ScanStatusMessage."
             " Must be MessageType.SCAN_STATUS.",
         ):

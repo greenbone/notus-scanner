@@ -20,6 +20,8 @@ from enum import Enum
 from typing import Dict, Union, Any, Optional
 from uuid import UUID
 
+from notus.scanner.errors import MessageParsingError
+
 from .message import Message, MessageType
 
 
@@ -77,16 +79,21 @@ class ResultMessage(Message):
     @classmethod
     def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
         kwargs = super()._parse(data)
-        kwargs.update(
-            {
-                "scan_id": data.get("scan_id"),
-                "host_ip": data.get("host_ip"),
-                "host_name": data.get("host_name"),
-                "oid": data.get("oid"),
-                "value": data.get("value"),
-                "port": data.get("port"),
-                "uri": data.get("uri"),
-                "result_type": ResultType(data.get("result_type")),
-            }
-        )
+        try:
+            kwargs.update(
+                {
+                    "scan_id": data.get("scan_id"),
+                    "host_ip": data.get("host_ip"),
+                    "host_name": data.get("host_name"),
+                    "oid": data.get("oid"),
+                    "value": data.get("value"),
+                    "port": data.get("port"),
+                    "uri": data.get("uri"),
+                    "result_type": ResultType(data.get("result_type")),
+                }
+            )
+        except ValueError as e:
+            raise MessageParsingError(
+                f"error while parsing 'result_type', {e}"
+            ) from e
         return kwargs

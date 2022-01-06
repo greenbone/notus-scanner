@@ -23,6 +23,8 @@ from typing import Callable, Type
 
 import paho.mqtt.client as mqtt
 
+from notus.scanner.errors import MessageParsingError
+
 from ..messages.message import Message
 
 from .publisher import Publisher
@@ -118,7 +120,7 @@ class MQTTSubscriber(Subscriber):
             )
             logger.debug("Got: %s", msg.payload)
             return
-        except (ValueError, TypeError) as e:
+        except MessageParsingError as e:
             logger.error(
                 "Could not parse message for topic %s. Error was %s",
                 msg.topic,
