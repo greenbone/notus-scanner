@@ -42,11 +42,11 @@ class Message:
         self,
         *,
         message_id: Optional[UUID] = None,
-        group_id: Optional[UUID] = None,
+        group_id: Optional[str] = None,
         created: Optional[datetime] = None,
     ):
         self.message_id = message_id if message_id else uuid4()
-        self.group_id = group_id if group_id else uuid4()
+        self.group_id = group_id if group_id else str(uuid4())
         self.created = created if created else datetime.utcnow()
 
     @classmethod
@@ -69,12 +69,7 @@ class Message:
             raise MessageParsingError(
                 f"error while parsing 'message_id', {e}"
             ) from e
-        try:
-            group_id = UUID(data.get("group_id"))
-        except (TypeError, ValueError) as e:
-            raise MessageParsingError(
-                f"error while parsing 'group_id', {e}"
-            ) from e
+        group_id = data.get("group_id")
         try:
             created = datetime.fromtimestamp(
                 float(data.get("created")), timezone.utc

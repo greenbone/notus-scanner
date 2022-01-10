@@ -29,7 +29,7 @@ class MessageTestCase(TestCase):
         message = Message()
 
         self.assertIsInstance(message.message_id, UUID)
-        self.assertIsInstance(message.group_id, UUID)
+        self.assertIsInstance(message.group_id, str)
         self.assertIsInstance(message.created, datetime)
 
     def test_serialize(self):
@@ -65,7 +65,7 @@ class MessageTestCase(TestCase):
             message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
         )
         self.assertEqual(
-            message.group_id, UUID("866350e8-1492-497e-b12b-c079287d51dd")
+            message.group_id, "866350e8-1492-497e-b12b-c079287d51dd"
         )
         self.assertEqual(
             message.created,
@@ -134,7 +134,7 @@ class MessageTestCase(TestCase):
             message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
         )
         self.assertEqual(
-            message.group_id, UUID("866350e8-1492-497e-b12b-c079287d51dd")
+            message.group_id, "866350e8-1492-497e-b12b-c079287d51dd"
         )
         self.assertEqual(
             message.created,
@@ -159,29 +159,6 @@ class MessageTestCase(TestCase):
         payload = (
             '{"message_type": "scan.start", '
             '"group_id": "866350e8-1492-497e-b12b-c079287d51dd", '
-            '"created": 1628512774.0}'
-        )
-        Message.message_type = MessageType.SCAN_START
-        with self.assertRaises(MessageParsingError):
-            Message.load(payload)
-        Message.message_type = None
-
-    def test_load_group_id_unvalid(self):
-        payload = (
-            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
-            '"message_type": "scan.start", '
-            '"group_id": "bar", '
-            '"created": 1628512774.0}'
-        )
-        Message.message_type = MessageType.SCAN_START
-        with self.assertRaises(MessageParsingError):
-            Message.load(payload)
-        Message.message_type = None
-
-    def test_load_group_id_missing(self):
-        payload = (
-            '{"message_id": "63026767-029d-417e-9148-77f4da49f49a", '
-            '"message_type": "scan.start", '
             '"created": 1628512774.0}'
         )
         Message.message_type = MessageType.SCAN_START
