@@ -129,7 +129,7 @@ class CliParser:
             "--disable-hashsum-verification",
             type=bool,
             default=False,
-            help="Disables hashsum verification (default: False)",
+            help="Disables hashsum verification (default: %(default)s)",
         )
         self.parser = parser
 
