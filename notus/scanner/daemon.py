@@ -20,7 +20,7 @@ import os
 import sys
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 
 from .cli import CliParser
 from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
@@ -42,6 +42,7 @@ from .utils import (
 
 from .loader.gpg_sha_verifier import (
     ReloadConfiguration,
+    VerificationResult,
     create_verify,
     reload_sha256sums,
 )
@@ -63,20 +64,12 @@ if SENTRY_DSN_NOTUS_SCANNER:
     )
 
 
-def run_daemon(
-    mqtt_broker_address: str,
-    mqtt_broker_port: int,
-    products_directory_path: Path,
-):
-    """Initialize the mqtt client, mqtt handler, notus scanner and run
-    forever
-    """
-
-    if not products_directory_path.is_dir():
-        raise AdvisoriesLoadingError(
-            f"Can't load advisories. {products_directory_path.absolute()} is"
-            " not a directory."
-        )
+def hashsum_verificator(
+    products_directory_path: Path, disable: bool
+) -> Callable[[Path], VerificationResult]:
+    if disable:
+        logger.info("hashsum verification is disabled")
+        return lambda _: VerificationResult.SUCCESS
 
     def on_hash_sum_verification_failure(
         _: Optional[Dict[str, str]]
@@ -92,7 +85,28 @@ def run_daemon(
     )
 
     sums = reload_sha256sums(sha_sum_reload_config)
-    verifier = create_verify(sums)
+    return create_verify(sums)
+
+
+def run_daemon(
+    mqtt_broker_address: str,
+    mqtt_broker_port: int,
+    products_directory_path: Path,
+    disable_hashsum_verification: bool,
+):
+    """Initialize the mqtt client, mqtt handler, notus scanner and run
+    forever
+    """
+
+    if not products_directory_path.is_dir():
+        raise AdvisoriesLoadingError(
+            f"Can't load advisories. {products_directory_path.absolute()} is"
+            " not a directory."
+        )
+
+    verifier = hashsum_verificator(
+        products_directory_path, disable_hashsum_verification
+    )
 
     loader = JSONAdvisoriesLoader(
         advisories_directory_path=products_directory_path, verify=verifier
@@ -145,6 +159,7 @@ def main():
         args.mqtt_broker_address,
         args.mqtt_broker_port,
         args.products_directory,
+        args.disable_hashsum_verification,
     )
 
 

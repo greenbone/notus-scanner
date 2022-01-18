@@ -105,6 +105,7 @@ products-directory = "/tmp/notus/advisories/products"
 pid-file = "/tmp/notus-scanner.pid"
 log-file = "/tmp/notus-scanner.log"
 log-level = "DEBUG"
+disable-hashsum-verification = true
 ```
 
 Each setting can be overridden via an environment variable or command line
@@ -118,7 +119,7 @@ argument.
 |mqtt-broker-port|NOTUS_SCANNER_MQTT_BROKER_PORT|1883|Port of the MQTT broker|
 |pid-file|NOTUS_SCANNER_PID_FILE|/run/notus-scanner/notus-scanner.pid|File for storing the process ID|
 |products-directory|NOTUS_SCANNER_PRODUCTS_DIRECTORY|/var/lib/openvas/plugins/notus/products|Directory for loading product advisories|
-
+|disable-hashsum-verification| NOTUS_DISABLE_HASHSUM_VERIFICATION | To disable hashsum verification of products |
 
 ## Support
 

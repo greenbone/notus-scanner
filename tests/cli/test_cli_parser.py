@@ -88,6 +88,10 @@ class CliParserTestCase(unittest.TestCase):
         args = self.parse_args(["-f"])
         self.assertTrue(args.foreground)
 
+    def test_disable_hashsum_verification(self):
+        args = self.parse_args(["--disable-hashsum-verification=true"])
+        self.assertTrue(args.disable_hashsum_verification)
+
     def test_defaults(self):
         args = self.parse_args([])
 
@@ -100,6 +104,7 @@ class CliParserTestCase(unittest.TestCase):
         self.assertEqual(args.mqtt_broker_port, DEFAULT_MQTT_BROKER_PORT)
         self.assertEqual(args.mqtt_broker_address, DEFAULT_MQTT_BROKER_ADDRESS)
         self.assertEqual(args.pid_file, DEFAULT_PID_FILE)
+        self.assertEqual(args.disable_hashsum_verification, False)
         self.assertFalse(args.foreground)
 
     def test_config_file_provide_mqtt_broker_address(self):

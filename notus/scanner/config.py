@@ -56,6 +56,11 @@ _CONFIG = (
         DEFAULT_MQTT_BROKER_PORT,
     ),
     ("pid-file", "NOTUS_SCANNER_PID_FILE", DEFAULT_PID_FILE),
+    (
+        "disable-hashsum-verification",
+        "NOTUS_DISABLE_HASHSUM_VERIFICATION",
+        False,
+    ),
 )
 
 

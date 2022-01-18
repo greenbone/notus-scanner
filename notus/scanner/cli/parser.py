@@ -125,7 +125,12 @@ class CliParser:
             type=int,
             help="Port of the MQTT broker. (default: %(default)s)",
         )
-
+        parser.add_argument(
+            "--disable-hashsum-verification",
+            type=bool,
+            default=False,
+            help="Disables hashsum verification (default: False)",
+        )
         self.parser = parser
 
     def _set_defaults(self, configfilename=None) -> None:
