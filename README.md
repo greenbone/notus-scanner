@@ -120,6 +120,7 @@ argument.
 |pid-file|NOTUS_SCANNER_PID_FILE|/run/notus-scanner/notus-scanner.pid|File for storing the process ID|
 |products-directory|NOTUS_SCANNER_PRODUCTS_DIRECTORY|/var/lib/openvas/plugins/notus/products|Directory for loading product advisories|
 |disable-hashsum-verification| NOTUS_DISABLE_HASHSUM_VERIFICATION | To disable hashsum verification of products |
+|cache-result-hostnames-seconds|NOTUS_CACHE_HOSTNAMES_SECONDS| Amount of seconds to cache hostnames for duplicate results. Set to 0 to disable cache.|
 
 ## Support
 

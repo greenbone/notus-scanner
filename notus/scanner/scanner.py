@@ -16,11 +16,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Generator, Iterable
+from typing import Callable, Generator, Iterable
 
 from notus.scanner.models.packages.deb import DEBPackage
 
 from .errors import AdvisoriesLoadingError
+from .hostname import HostNameDecision
 from .loader import AdvisoriesLoader
 from .messages.message import Message
 from .messages.result import ResultMessage
@@ -39,9 +40,11 @@ class NotusScanner:
         self,
         loader: AdvisoriesLoader,
         publisher: Publisher,
+        hostcache: Callable[[ScanStartMessage], HostNameDecision],
     ):
         self._loader = loader
         self._publisher = publisher
+        self._hostcache = hostcache
 
     def _publish(self, message: Message):
         """Try to publish a message
@@ -155,7 +158,12 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
                 message.os_release,
             )
             return
-
+        if self._hostcache(message) == HostNameDecision.STOP:
+            logger.debug(
+                "Skipping because host %s was already scanned.",
+                message.host_name,
+            )
+            return
         # Determine package type
         package_type = package_advisories.package_type
 

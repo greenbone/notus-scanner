@@ -131,6 +131,15 @@ class CliParser:
             default=False,
             help="Disables hashsum verification (default: %(default)s)",
         )
+        parser.add_argument(
+            "--cache-result-hostnames-seconds",
+            type=int,
+            default=300,
+            help=(
+                "Seconds to cache the hostname of results if present. "
+                "Set to 0 to disable. (default: %(default)s)"
+            ),
+        )
         self.parser = parser
 
     def _set_defaults(self, configfilename=None) -> None:

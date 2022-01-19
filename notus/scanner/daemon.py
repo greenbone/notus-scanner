@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import timedelta
 import logging
 import os
 import sys
@@ -46,6 +47,8 @@ from .loader.gpg_sha_verifier import (
     create_verify,
     reload_sha256sums,
 )
+
+from .hostname import HostNameCache
 
 from .__version__ import __version__
 
@@ -93,6 +96,7 @@ def run_daemon(
     mqtt_broker_port: int,
     products_directory_path: Path,
     disable_hashsum_verification: bool,
+    hostname_cache_seconds: int = 300,
 ):
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
@@ -124,9 +128,11 @@ def run_daemon(
         sys.exit(1)
 
     daemon = MQTTDaemon(client)
-
+    hostcache = HostNameCache(period=timedelta(seconds=hostname_cache_seconds))
     publisher = MQTTPublisher(client)
-    scanner = NotusScanner(loader=loader, publisher=publisher)
+    scanner = NotusScanner(
+        loader=loader, publisher=publisher, hostcache=hostcache.verify
+    )
 
     subscriber = MQTTSubscriber(client)
     subscriber.subscribe(ScanStartMessage, scanner.run_scan)

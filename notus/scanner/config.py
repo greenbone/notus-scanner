@@ -61,6 +61,11 @@ _CONFIG = (
         "NOTUS_DISABLE_HASHSUM_VERIFICATION",
         False,
     ),
+    (
+        "cache-result-hostnames-seconds",
+        "NOTUS_CACHE_HOSTNAMES_SECONDS",
+        300,
+    ),
 )
 
 
