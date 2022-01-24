@@ -19,7 +19,7 @@ from abc import abstractmethod
 import logging
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Any, Dict, Set
+from typing import Any, Callable, Dict, Set, Optional
 
 from ...errors import PackageError
 
@@ -70,11 +70,23 @@ class Package:
     full_name: str
     full_version: str
 
-    def __gt__(self, other: Any) -> bool:
+    def __guard_cmp(self, other: Any):
         if not isinstance(other, type(self)):
             raise PackageError(f"Can't compare {self!r} to {other!r}.")
 
+    def __gt__(self, other: Any) -> bool:
+        self.__guard_cmp(other)
         return self._compare(other) == PackageComparision.A_NEWER
+
+    def __lt__(self, other: Any) -> bool:
+        self.__guard_cmp(other)
+        return self._compare(other) == PackageComparision.B_NEWER
+
+    def __ge__(self, other: Any) -> bool:
+        return self.__gt__(other) or self.__eq__(other)
+
+    def __le__(self, other: Any) -> bool:
+        return self.__lt__(other) or self.__eq__(other)
 
     def __hash__(self) -> int:
         # allow to hash the package
@@ -97,6 +109,18 @@ class Package:
 
 
 @dataclass(frozen=True)
+class Verifier:
+    symbol: str
+    _verifier: Callable[[Package, Package], bool]
+
+    def __name__(self) -> str:
+        return self.symbol
+
+    def verify(self, expected: Package, actual: Package) -> bool:
+        return self._verifier(expected, actual)
+
+
+@dataclass(frozen=True)
 class AdvisoryReference:
     """A reference to a vulnerability advisory"""
 
@@ -109,6 +133,7 @@ class PackageAdvisory:
 
     package: Package
     advisory: AdvisoryReference
+    is_vulnerable: Callable[[Package], bool] = field(compare=False, hash=False)
 
 
 @dataclass(frozen=True)
@@ -124,11 +149,37 @@ class PackageAdvisories:
     ) -> Set[PackageAdvisory]:
         return self.advisories.get(package.name) or set()
 
+    @staticmethod
+    def is_vulnerable_from_symbol(symbol: Optional[str]):
+        """
+        is_vulnerable_from_symbol returns either a Verifier when the symbol
+        identifier contains a known operand or or >= if not.
+        """
+        if not symbol or symbol.startswith(">="):
+            return Verifier(">=", lambda a, b: a > b)
+        if symbol.startswith("<="):
+            return Verifier("<=", lambda a, b: a < b)
+        if symbol.startswith("="):
+            return Verifier("=", lambda a, b: a != b)
+        if symbol.startswith("<"):
+            return Verifier("<", lambda a, b: a <= b)
+        if symbol.startswith(">"):
+            return Verifier(">", lambda a, b: a >= b)
+
+        return Verifier(">=", lambda a, b: a > b)
+
     def add_advisory_for_package(
-        self, package: Package, advisory: AdvisoryReference
+        self,
+        package: Package,
+        advisory: AdvisoryReference,
+        verifier: Optional[str],
     ) -> None:
+
         advisories = self.get_package_advisories_for_package(package)
-        advisories.add(PackageAdvisory(package, advisory))
+        use_verifier = self.is_vulnerable_from_symbol(verifier)
+        is_vulnerable = lambda other: use_verifier.verify(package, other)
+
+        advisories.add(PackageAdvisory(package, advisory, is_vulnerable))
         self.advisories[package.name] = advisories
 
     def __len__(self) -> int:

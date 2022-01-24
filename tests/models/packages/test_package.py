@@ -111,7 +111,9 @@ class PackageAdvisoryTestCase(TestCase):
             oid="1.2.3.4.5",
         )
 
-        package_advisory = PackageAdvisory(package=package, advisory=advisory)
+        package_advisory = PackageAdvisory(
+            package=package, advisory=advisory, is_vulnerable=lambda _: False
+        )
 
         self.assertEqual(package_advisory.package, package)
         self.assertEqual(package_advisory.advisory, advisory)
@@ -130,7 +132,9 @@ class PackageAdvisoryTestCase(TestCase):
             oid="1.2.3.4.6",
         )
 
-        package_advisory = PackageAdvisory(package=package1, advisory=advisory1)
+        package_advisory = PackageAdvisory(
+            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+        )
 
         with self.assertRaises(FrozenInstanceError):
             package_advisory.package = package2
@@ -156,16 +160,16 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory1 = PackageAdvisory(
-            package=package1, advisory=advisory1
+            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
         )
         package_advisory2 = PackageAdvisory(
-            package=package2, advisory=advisory2
+            package=package2, advisory=advisory2, is_vulnerable=lambda _: False
         )
         package_advisory3 = PackageAdvisory(
-            package=package1, advisory=advisory1
+            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
         )
         package_advisory4 = PackageAdvisory(
-            package=package1, advisory=advisory2
+            package=package1, advisory=advisory2, is_vulnerable=lambda _: False
         )
 
         self.assertEqual(package_advisory1, package_advisory1)
@@ -190,16 +194,16 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory1 = PackageAdvisory(
-            package=package1, advisory=advisory1
+            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
         )
         package_advisory2 = PackageAdvisory(
-            package=package2, advisory=advisory2
+            package=package2, advisory=advisory2, is_vulnerable=lambda _: False
         )
         package_advisory3 = PackageAdvisory(
-            package=package1, advisory=advisory1
+            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
         )
         package_advisory4 = PackageAdvisory(
-            package=package1, advisory=advisory2
+            package=package1, advisory=advisory2, is_vulnerable=lambda _: False
         )
 
         self.assertEqual(hash(package_advisory1), hash(package_advisory1))
@@ -228,9 +232,29 @@ class PackageAdvisoriesTestCase(TestCase):
 
         self.assertEqual(len(package_advisories), 0)
 
-        package_advisories.add_advisory_for_package(package, advisory)
+        package_advisories.add_advisory_for_package(package, advisory, None)
 
         self.assertEqual(len(package_advisories), 1)
+
+    def test_default_is_vulnerable(self):
+        package_advisories = PackageAdvisories(PackageType.RPM)
+        package = RPMPackage.from_full_name(
+            "foo-1.2.3-3.aarch64",
+        )
+        advisory = AdvisoryReference(
+            oid="1.2.3.4.5",
+        )
+
+        other = RPMPackage.from_full_name(
+            "foo-1.2.4-3.aarch64",
+        )
+        package_advisories.add_advisory_for_package(package, advisory, None)
+        advisories = package_advisories.get_package_advisories_for_package(
+            other
+        )
+        self.assertEqual(1, len(advisories))
+        for adv in advisories:
+            self.assertFalse(adv.is_vulnerable(other))
 
     def test_add_duplicate_advisory_for_package(self):
         package_advisories = PackageAdvisories(package_type=PackageType.RPM)
@@ -249,23 +273,23 @@ class PackageAdvisoriesTestCase(TestCase):
 
         self.assertEqual(len(package_advisories), 0)
 
-        package_advisories.add_advisory_for_package(package1, advisory1)
+        package_advisories.add_advisory_for_package(package1, advisory1, None)
 
         self.assertEqual(len(package_advisories), 1)
 
-        package_advisories.add_advisory_for_package(package1, advisory1)
+        package_advisories.add_advisory_for_package(package1, advisory1, None)
 
         self.assertEqual(len(package_advisories), 1)
 
-        package_advisories.add_advisory_for_package(package1, advisory2)
+        package_advisories.add_advisory_for_package(package1, advisory2, None)
 
         self.assertEqual(len(package_advisories), 1)
 
-        package_advisories.add_advisory_for_package(package2, advisory1)
+        package_advisories.add_advisory_for_package(package2, advisory1, None)
 
         self.assertEqual(len(package_advisories), 1)
 
-        package_advisories.add_advisory_for_package(package2, advisory2)
+        package_advisories.add_advisory_for_package(package2, advisory2, None)
 
     def test_get_package_advisories_for_package(self):
         package_advisories = PackageAdvisories(package_type=PackageType.RPM)
@@ -284,9 +308,9 @@ class PackageAdvisoriesTestCase(TestCase):
 
         self.assertEqual(len(package_advisories), 0)
 
-        package_advisories.add_advisory_for_package(package1, advisory1)
-        package_advisories.add_advisory_for_package(package1, advisory2)
-        package_advisories.add_advisory_for_package(package2, advisory2)
+        package_advisories.add_advisory_for_package(package1, advisory1, None)
+        package_advisories.add_advisory_for_package(package1, advisory2, None)
+        package_advisories.add_advisory_for_package(package2, advisory2, None)
 
         advisories1 = package_advisories.get_package_advisories_for_package(
             package1

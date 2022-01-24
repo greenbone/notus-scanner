@@ -146,6 +146,8 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     )
                     continue
 
-                package_advisories.add_advisory_for_package(package, advisory)
+                package_advisories.add_advisory_for_package(
+                    package, advisory, package_dict.get("specifier")
+                )
 
         return package_advisories

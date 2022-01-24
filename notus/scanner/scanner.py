@@ -100,7 +100,7 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
                 package_advisories.get_package_advisories_for_package(package)
             )
             for package_advisory in package_advisory_list:
-                if package_advisory.package > package:
+                if package_advisory.is_vulnerable(package):
                     yield PackageVulnerability(
                         host_ip=host_ip,
                         host_name=host_name,
