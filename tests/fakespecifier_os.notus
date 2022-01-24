@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "package_type": "rpm",
+  "product_name": "FakeSpecifier OS",
+  "advisories": [
+    {
+      "oid": "0.0.0.0.0.0.0.0.0.0.0.1",
+      "fixed_packages": [
+        {
+          "full_name": "eq-9.2.15-1.x86_64",
+          "specifier": "="
+        },
+        {
+          "full_name": "lt-9.2.15-1.x86_64",
+          "specifier": "<"
+        },
+        {
+          "full_name": "le-9.2.15-1.x86_64",
+          "specifier": "<="
+        },
+        {
+          "full_name": "gt-9.2.15-1.x86_64",
+          "specifier": ">"
+        },
+        {
+          "full_name": "ge-9.2.15-1.x86_64",
+          "specifier": ">="
+        },
+        {
+          "full_name": "default-9.2.15-1.x86_64"
+        }
+      ]
+    }
+  ]
+}
