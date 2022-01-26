@@ -1,1 +1,3 @@
 notus/scanner/__version__.py
+notus/scanner/models/packages/deb.py
+notus/scanner/models/packages/rpm.py
