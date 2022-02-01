@@ -20,7 +20,7 @@ from enum import Enum
 from typing import Dict, Union, Any, Optional
 from uuid import UUID
 
-from notus.scanner.errors import MessageParsingError
+from ..errors import MessageParsingError
 
 from .message import Message, MessageType
 

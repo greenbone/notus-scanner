@@ -36,6 +36,7 @@ DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_MQTT_BROKER_ADDRESS = "localhost"
 DEFAULT_MQTT_BROKER_PORT = 1883
 DEFAULT_PID_FILE = "/run/notus-scanner/notus-scanner.pid"
+DEFULT_SSH_POLICY = "reject"
 
 _CONFIG = (
     (
@@ -60,6 +61,21 @@ _CONFIG = (
         "disable-hashsum-verification",
         "NOTUS_DISABLE_HASHSUM_VERIFICATION",
         False,
+    ),
+    (
+        "ssh-policy",
+        "NOTUS_SCANNER_SSH_POLICY",
+        DEFULT_SSH_POLICY,
+    ),
+    (
+        "ssh-host-keyfile",
+        "NOTUS_SCANNER_SSH_HOST_KEYFILE",
+        "",
+    ),
+    (
+        "ssh-system-host-keys",
+        "NOTUS_SCANNER_SSH_SYSTEM_HOST_KEYS",
+        True,
     ),
 )
 

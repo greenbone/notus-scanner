@@ -106,6 +106,7 @@ pid-file = "/tmp/notus-scanner.pid"
 log-file = "/tmp/notus-scanner.log"
 log-level = "DEBUG"
 disable-hashsum-verification = true
+ssh-policy = "add"
 ```
 
 Each setting can be overridden via an environment variable or command line
@@ -119,8 +120,23 @@ argument.
 |mqtt-broker-port|NOTUS_SCANNER_MQTT_BROKER_PORT|1883|Port of the MQTT broker|
 |pid-file|NOTUS_SCANNER_PID_FILE|/run/notus-scanner/notus-scanner.pid|File for storing the process ID|
 |products-directory|NOTUS_SCANNER_PRODUCTS_DIRECTORY|/var/lib/openvas/plugins/notus/products|Directory for loading product advisories|
-|disable-hashsum-verification| NOTUS_DISABLE_HASHSUM_VERIFICATION | To disable hashsum verification of products |
+|disable-hashsum-verification| NOTUS_DISABLE_HASHSUM_VERIFICATION | false | To disable hashsum verification of products |
+|ssh-policy| NOTUS_SCANNER_SSH_POLICY | reject | Set ssh policy (add, warn, reject) |
+|ssh-host-keyfile"| NOTUS_SCANNER_SSH_HOST_KEYFILE | None | Path to a keyfile which contains key of known host. Used for ssh connection |
+|ssh-system-host-keys| NOTUS_SCANNER_SSH_SYSTEM_HOST_KEYS | True | Enable loading the local known hosts keyfile of the current user |
 
+### SSH-Options
+
+The `ssh-policy` option determines what happens when connecting to a unknown
+host via ssh. There are 3 possible settings:
+- `add`: Policy for automatically adding the hostname and new key
+- `warn`: Policy for logging a warning for an unknown host key, but accepting it
+- `reject`: Policy for automatically rejecting the unknown hostname and key
+
+In order for the notus-scanner to find known hosts, there are two ways to add
+them. The `ssh-host-keyfile` option enables to pass a path to a keyfile which
+should contain keys from known hosts. In addition Notus-Scanner can try to
+load a local keyfile in the default path of the current user.
 ## Support
 
 For any question on the usage of Notus Scanner please use the

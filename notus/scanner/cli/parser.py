@@ -76,14 +76,17 @@ class CliParser:
             "-c",
             "--config",
             nargs="?",
-            help="Configuration file path. If not set %(prog)s "
-            f"tries to load {DEFAULT_USER_CONFIG_FILE} and "
-            f"{DEFAULT_CONFIG_FILE}.",
+            help=(
+                "Configuration file path. If not set %(prog)s "
+                f"tries to load {DEFAULT_USER_CONFIG_FILE} and "
+                f"{DEFAULT_CONFIG_FILE}."
+            ),
         )
         parser.add_argument(
             "--pid-file",
-            help="Location of the file for the process ID "
-            "(default: %(default)s)",
+            help=(
+                "Location of the file for the process ID (default: %(default)s)"
+            ),
         )
         parser.add_argument(
             "-l",
@@ -116,8 +119,10 @@ class CliParser:
             "-b",
             "--mqtt-broker-address",
             type=str,
-            help="Hostname or IP address of the MQTT broker. "
-            "(default: %(default)s)",
+            help=(
+                "Hostname or IP address of the MQTT broker. "
+                "(default: %(default)s)"
+            ),
         )
         parser.add_argument(
             "-p",
@@ -130,6 +135,33 @@ class CliParser:
             type=bool,
             default=False,
             help="Disables hashsum verification (default: %(default)s)",
+        )
+        parser.add_argument(
+            "--ssh-policy",
+            type=str,
+            default="reject",
+            help=(
+                "Choose Policy for new SSH-connections (add, warn, reject). For"
+                " more Information read Documentation. (defualt: %(default)s)"
+            ),
+        )
+        parser.add_argument(
+            "--ssh-host-keyfile",
+            type=str,
+            default="",
+            help=(
+                "Path to keyfile with known hosts for ssh-connection. (default:"
+                " None)"
+            ),
+        )
+        parser.add_argument(
+            "--ssh-system-host-keys",
+            type=bool,
+            default=True,
+            help=(
+                "Choose if known hosts for ssh should be loaded from the"
+                " system. (default: %(default)s)"
+            ),
         )
         self.parser = parser
 

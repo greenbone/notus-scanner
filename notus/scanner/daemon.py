@@ -20,10 +20,16 @@ import os
 import sys
 
 from pathlib import Path
+from os.path import isfile
 from typing import Callable, Dict, Optional
 
 from .cli import CliParser
-from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
+from .errors import (
+    AdvisoriesLoadingError,
+    NotAFielError,
+    Sha256SumLoadingError,
+    UnknownSSHPolicyError,
+)
 from .loader import JSONAdvisoriesLoader
 from .messaging.mqtt import (
     MQTTDaemon,
@@ -31,8 +37,8 @@ from .messaging.mqtt import (
     MQTTClient,
     MQTTSubscriber,
 )
-from .messages.start import ScanStartMessage
-from .scanner import NotusScanner
+from .messages.start import ScanHostsMessage, ScanStartMessage
+from .scanner import SSH_POLICY, NotusScanner
 from .utils import (
     go_to_background,
     create_pid,
@@ -93,6 +99,9 @@ def run_daemon(
     mqtt_broker_port: int,
     products_directory_path: Path,
     disable_hashsum_verification: bool,
+    ssh_policy: str,
+    ssh_host_keyfile: str,
+    ssh_system_host_keys: bool,
 ):
     """Initialize the mqtt client, mqtt handler, notus scanner and run
     forever
@@ -102,6 +111,14 @@ def run_daemon(
         raise AdvisoriesLoadingError(
             f"Can't load advisories. {products_directory_path.absolute()} is"
             " not a directory."
+        )
+
+    if not ssh_policy in SSH_POLICY:
+        raise UnknownSSHPolicyError(f"Unknown ssh_policy {ssh_policy}.")
+
+    if ssh_host_keyfile and not isfile(ssh_host_keyfile):
+        raise NotAFielError(
+            f"Can't load ssh host keyfile. {ssh_host_keyfile} is not a file"
         )
 
     verifier = hashsum_verificator(
@@ -126,10 +143,17 @@ def run_daemon(
     daemon = MQTTDaemon(client)
 
     publisher = MQTTPublisher(client)
-    scanner = NotusScanner(loader=loader, publisher=publisher)
+    scanner = NotusScanner(
+        loader=loader,
+        publisher=publisher,
+        ssh_policy=SSH_POLICY.get(ssh_policy),
+        ssh_host_keyfile=ssh_host_keyfile,
+        ssh_system_host_keys=ssh_system_host_keys,
+    )
 
     subscriber = MQTTSubscriber(client)
-    subscriber.subscribe(ScanStartMessage, scanner.run_scan)
+    subscriber.subscribe(ScanHostsMessage, scanner.scan_hosts_ssh)
+    subscriber.subscribe(ScanStartMessage, scanner.scan_host_package_list)
 
     daemon.run()
 
@@ -160,6 +184,9 @@ def main():
         args.mqtt_broker_port,
         args.products_directory,
         args.disable_hashsum_verification,
+        args.ssh_policy,
+        args.ssh_host_keyfile,
+        args.ssh_system_host_keys,
     )
 
 

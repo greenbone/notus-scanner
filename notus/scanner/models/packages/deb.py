@@ -65,6 +65,7 @@ class DEBPackage(Package):
         if not full_name:
             return None
 
+        full_name = full_name.strip()
         # Try to get data with
         try:
             name, epoch, upstream_version, debian_revision = _deb_compile.match(

@@ -24,6 +24,14 @@ class AdvisoriesLoadingError(NotusScannerError):
     """A problem while loading an Advisory has occurred"""
 
 
+class UnknownSSHPolicyError(NotusScannerError):
+    """Unknown given ssh policy for unknown host keys"""
+
+
+class NotAFielError(NotusScannerError):
+    """A problem while checking for a Filepath"""
+
+
 class Sha256SumLoadingError(NotusScannerError):
     """A problem while loading sha256sums has occurred"""
 

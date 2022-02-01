@@ -22,7 +22,7 @@ from unittest import TestCase
 from notus.scanner.errors import MessageParsingError
 
 from notus.scanner.messages.message import MessageType
-from notus.scanner.messages.start import ScanStartMessage
+from notus.scanner.messages.start import ScanHostsMessage, ScanStartMessage
 
 
 class ScanStartMessageTestCase(TestCase):
@@ -147,5 +147,114 @@ class ScanStartMessageTestCase(TestCase):
 
         with self.assertRaisesRegex(
             MessageParsingError, "package_list must contain a list"
+        ):
+            ScanStartMessage.deserialize(data)
+
+
+class ScanHostsMessageTestCase(TestCase):
+    def test_constructor(self):
+        message = ScanHostsMessage(
+            scan_id="scan_1",
+            hosts={"1.1.1.1": "foo"},
+            ssh_login="user",
+            ssh_password="pw",
+            ssh_port=42,
+        )
+
+        self.assertIsInstance(message.message_id, UUID)
+        self.assertIsInstance(message.group_id, str)
+        self.assertIsInstance(message.created, datetime)
+
+        self.assertEqual(message.message_type, MessageType.SCAN_START)
+        self.assertEqual(message.topic, "scanner/scan/cmd/notus")
+
+        self.assertEqual(message.scan_id, "scan_1")
+        self.assertEqual(message.hosts, {"1.1.1.1": "foo"})
+        self.assertEqual(message.ssh_login, "user")
+        self.assertEqual(message.ssh_password, "pw")
+        self.assertEqual(message.ssh_port, 42)
+
+    def test_serialize(self):
+        created = datetime.fromtimestamp(1628512774)
+        message_id = UUID("63026767-029d-417e-9148-77f4da49f49a")
+        group_id = "866350e8-1492-497e-b12b-c079287d51dd"
+        message = ScanHostsMessage(
+            message_id=message_id,
+            group_id=group_id,
+            created=created,
+            scan_id="scan_1",
+            hosts={"1.1.1.1": "foo"},
+            ssh_login="user",
+            ssh_password="pw",
+            ssh_port=42,
+        )
+
+        serialized = message.serialize()
+        self.assertEqual(serialized["created"], 1628512774.0)
+        self.assertEqual(
+            serialized["message_id"], "63026767-029d-417e-9148-77f4da49f49a"
+        )
+        self.assertEqual(
+            serialized["group_id"], "866350e8-1492-497e-b12b-c079287d51dd"
+        )
+        self.assertEqual(serialized["message_type"], "scan.start")
+        self.assertEqual(serialized["scan_id"], "scan_1")
+        self.assertEqual(serialized["hosts"], {"1.1.1.1": "foo"})
+        self.assertEqual(serialized["ssh_login"], "user")
+        self.assertEqual(serialized["ssh_password"], "pw")
+        self.assertEqual(serialized["ssh_port"], 42)
+
+    def test_deserialize(self):
+        data = {
+            "message_id": "63026767-029d-417e-9148-77f4da49f49a",
+            "group_id": "866350e8-1492-497e-b12b-c079287d51dd",
+            "created": 1628512774.0,
+            "message_type": "scan.start",
+            "scan_id": "scan_1",
+            "hosts": {"1.1.1.1": "foo"},
+            "ssh_login": "user",
+            "ssh_password": "pw",
+            "ssh_port": 42,
+        }
+
+        message = ScanHostsMessage.deserialize(data)
+        self.assertEqual(
+            message.message_id, UUID("63026767-029d-417e-9148-77f4da49f49a")
+        )
+        self.assertEqual(
+            message.group_id, "866350e8-1492-497e-b12b-c079287d51dd"
+        )
+        self.assertEqual(
+            message.created,
+            datetime.fromtimestamp(1628512774.0, tz=timezone.utc),
+        )
+        self.assertEqual(message.message_type, MessageType.SCAN_START)
+
+        self.assertEqual(message.scan_id, "scan_1")
+        self.assertEqual(message.hosts, {"1.1.1.1": "foo"})
+        self.assertEqual(message.ssh_login, "user")
+        self.assertEqual(message.ssh_password, "pw")
+        self.assertEqual(message.ssh_port, 42)
+
+        self.assertEqual(message.topic, "scanner/scan/cmd/notus")
+
+    def test_deserialize_invalid_message_type(self):
+        data = {
+            "message_id": "63026767-029d-417e-9148-77f4da49f49a",
+            "group_id": "866350e8-1492-497e-b12b-c079287d51dd",
+            "created": 1628512774.0,
+            "message_type": "scan.status",
+            "scan_id": "scan_1",
+            "hosts": {"1.1.1.1": "foo"},
+            "host_name": "foo",
+            "ssh_login": "user",
+            "ssh_password": "pw",
+            "ssh_port": 42,
+        }
+
+        with self.assertRaisesRegex(
+            MessageParsingError,
+            "Invalid message type MessageType.SCAN_STATUS for ScanStartMessage."
+            " Must be MessageType.SCAN_START.",
         ):
             ScanStartMessage.deserialize(data)
