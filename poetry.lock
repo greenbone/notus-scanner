@@ -323,7 +323,7 @@ dev = ["build", "pytest", "pytest-timeout"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.5.3"
+version = "1.5.4"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = true
@@ -430,7 +430,7 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8c326abfb4afdccefeaf5e14b38d7d16b6cc8e634f4d0525f27b716b25ede5b6"
+content-hash = "10b7e5ff6ecd989c03efb2a0f6ee16c2c3e5e2b3cfa42f827403cc4003d8b5bd"
 
 [metadata.files]
 astroid = [
@@ -606,8 +606,8 @@ rope = [
     {file = "rope-0.22.0.tar.gz", hash = "sha256:b00fbc064a26fc62d7220578a27fd639b2fad57213663cc396c137e92d73f10f"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.5.3.tar.gz", hash = "sha256:141da032f0fa4c56f9af6b361fda57360af1789576285bd1944561f9c274f9c0"},
-    {file = "sentry_sdk-1.5.3-py2.py3-none-any.whl", hash = "sha256:9aeff2a47f4038460296b920bf4d269284e8454e1c67547ee002ccafd9c2442b"},
+    {file = "sentry-sdk-1.5.4.tar.gz", hash = "sha256:f7e54567937ebcbe938c4df1075ec891587faeb7c74184b88cf2894e47c86116"},
+    {file = "sentry_sdk-1.5.4-py2.py3-none-any.whl", hash = "sha256:4fc7960a82c95d906a0514cf4d9aacba1743eb9863a5b7c2a01c525a7d9b21e6"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
