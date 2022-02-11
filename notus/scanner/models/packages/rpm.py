@@ -60,12 +60,14 @@ class RPMPackage(Package):
         if not full_name:
             return None
 
+        full_name = full_name.strip()
+
         try:
             name, version, release, architecture = _rpm_compile.match(
                 full_name
             ).groups()
             try:
-                arch = Architecture(architecture.strip())
+                arch = Architecture(architecture)
             except ValueError:
                 arch = Architecture.UNKNOWN
         except AttributeError:
@@ -94,13 +96,16 @@ class RPMPackage(Package):
         if not name or not full_version:
             return None
 
+        name = name.strip()
+        full_version = full_version.strip()
+
         version_match = _rpm_compile_version.match(full_version)
         if not version_match:
             return None
         version, release, architecture = version_match.groups()
 
         try:
-            arch = Architecture(architecture.strip())
+            arch = Architecture(architecture)
         except ValueError:
             arch = Architecture.UNKNOWN
 
