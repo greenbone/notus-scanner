@@ -38,9 +38,10 @@ class FakePublisher(Publisher):
     def publish(self, message: Message) -> None:
         serialized = message.serialize()
         values = str(serialized.get("value", "")).split("\n")
-        if len(values) > 2:
-            installed = values[1][len("Installed version: ") :].strip()
-            self.results.append(installed)
+        for value in values:
+            if value.find("Installed version:") >= 0:
+                installed = value[len("Installed version: ") :].strip()
+                self.results.append(installed)
 
 
 class VerifierTestCase(unittest.TestCase):
@@ -80,7 +81,7 @@ class VerifierTestCase(unittest.TestCase):
             for fps in fixed_packages
             for fp in fps
         )
-        # cases that should not appear in resul
+        # cases that should not appear in result
         not_in = []
         # cases that should appear in result
         is_in = []

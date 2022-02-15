@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Generator, Iterable
+from typing import Dict, Iterable, List
 
 from notus.scanner.models.packages.deb import DEBPackage
 
@@ -75,9 +75,16 @@ class NotusScanner:
     def _publish_result(
         self, scan_id: str, vulnerability: PackageVulnerability
     ) -> None:
-        report = f"""Vulnerable package: {vulnerability.package.name}
-Installed version: {vulnerability.package.full_name}
-Fixed version: {vulnerability.fixed_package.full_name}"""
+        report = ""
+        for package, fixed_package in vulnerability.packages.items():
+            report = (
+                report
+                + f"""
+Vulnerable package: {package.name}
+Installed version:  {package.full_name}
+Fixed version:      {fixed_package.full_name}
+"""
+            )
         message = ResultMessage(
             scan_id=scan_id,
             host_ip=vulnerability.host_ip,
@@ -93,21 +100,29 @@ Fixed version: {vulnerability.fixed_package.full_name}"""
         host_name: str,
         installed_packages: Iterable[Package],
         package_advisories: PackageAdvisories,
-    ) -> Generator[PackageVulnerability, None, None]:
-
+    ) -> List[PackageVulnerability]:
+        vulnerabilities: Dict[str, PackageVulnerability] = {}
         for package in installed_packages:
             package_advisory_list = (
                 package_advisories.get_package_advisories_for_package(package)
             )
             for package_advisory in package_advisory_list:
                 if package_advisory.is_vulnerable(package):
-                    yield PackageVulnerability(
-                        host_ip=host_ip,
-                        host_name=host_name,
-                        package=package,
-                        fixed_package=package_advisory.package,
-                        advisory=package_advisory.advisory,
-                    )
+                    oid = package_advisory.advisory.oid
+                    if oid in vulnerabilities:
+                        vulnerabilities[oid].add_package(
+                            package, package_advisory.package
+                        )
+                    else:
+                        vulnerabilities[oid] = PackageVulnerability(
+                            host_ip=host_ip,
+                            host_name=host_name,
+                            package=package,
+                            fixed_package=package_advisory.package,
+                            advisory=package_advisory.advisory,
+                        )
+
+        return vulnerabilities.values()
 
     def run_scan(
         self,
