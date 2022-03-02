@@ -14,3 +14,21 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+from typing import Optional
+from notus.scanner.models.packages.deb import DEBPackage
+from notus.scanner.models.packages.ebuild import EBuildPackage
+from notus.scanner.models.packages.package import Package, PackageType
+from notus.scanner.models.packages.rpm import RPMPackage
+
+
+def package_class_by_type(pt: PackageType) -> Optional[Package]:
+    """
+    package_class_by_type may returns Package if defined otherwise None
+    """
+    switcher = {
+        PackageType.RPM: RPMPackage,
+        PackageType.DEB: DEBPackage,
+        PackageType.EBUILD: EBuildPackage,
+    }
+    return switcher.get(pt)

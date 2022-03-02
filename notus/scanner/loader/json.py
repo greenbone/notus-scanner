@@ -21,16 +21,16 @@ import logging
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
+from notus.scanner.models.packages import package_class_by_type
+
 from .gpg_sha_verifier import VerificationResult
 
 from ..errors import AdvisoriesLoadingError
-from ..models.packages.deb import DEBPackage
 from ..models.packages.package import (
     AdvisoryReference,
     PackageAdvisories,
     PackageType,
 )
-from ..models.packages.rpm import RPMPackage
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -104,9 +104,10 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             logger.warning("%s invalid package type.", package_type_id)
             return None
         package_advisories = PackageAdvisories(package_type)
-        package_class = (
-            DEBPackage if PackageType.DEB == package_type else RPMPackage
-        )
+        package_class = package_class_by_type(package_type)
+        if not package_class:
+            logger.warning("%s has no package implementation", package_type_id)
+            return None
 
         for advisory_data in data.get("advisories", []):
             if not "oid" in advisory_data:
