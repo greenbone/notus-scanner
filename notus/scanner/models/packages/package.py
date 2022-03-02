@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 class PackageType(Enum):
     RPM = "rpm"
     DEB = "deb"
+    EBUILD = "ebuild"
 
 
 class PackageComparision(Enum):
@@ -63,7 +64,7 @@ class Architecture(Enum):
     NOTSET = "NOTSET"
 
 
-@dataclass
+@dataclass(eq=False)
 class Package:
     "Base class for different Package types"
     name: str
@@ -81,6 +82,10 @@ class Package:
     def __lt__(self, other: Any) -> bool:
         self.__guard_cmp(other)
         return self._compare(other) == PackageComparision.B_NEWER
+
+    def __eq__(self, other: Any) -> bool:
+        self.__guard_cmp(other)
+        return self._compare(other) == PackageComparision.EQUAL
 
     def __ge__(self, other: Any) -> bool:
         return self.__gt__(other) or self.__eq__(other)

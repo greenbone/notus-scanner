@@ -17,8 +17,7 @@
 
 import logging
 from typing import Dict, Iterable, List
-
-from notus.scanner.models.packages.deb import DEBPackage
+from notus.scanner.models.packages import package_class_by_type
 
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
@@ -27,8 +26,7 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages.package import Package, PackageAdvisories, PackageType
-from .models.packages.rpm import RPMPackage
+from .models.packages.package import Package, PackageAdvisories
 from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
@@ -174,9 +172,16 @@ Fixed version:      {fixed_package.full_name}
         # Determine package type
         package_type = package_advisories.package_type
 
-        package_class = (
-            DEBPackage if package_type == PackageType.DEB else RPMPackage
-        )
+        package_class = package_class_by_type(package_type)
+        if not package_class:
+            logger.error(
+                "Unable to start scan for %s: No package implementation for "
+                "OS-release %s found. Check if the OS-release is correct.",
+                message.host_ip,
+                message.os_release,
+            )
+            return
+
         may_installed = [
             package_class.from_full_name(name) for name in message.package_list
         ]
