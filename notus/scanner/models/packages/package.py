@@ -64,7 +64,7 @@ class Architecture(Enum):
     NOTSET = "NOTSET"
 
 
-@dataclass(eq=False)
+@dataclass
 class Package:
     "Base class for different Package types"
     name: str
