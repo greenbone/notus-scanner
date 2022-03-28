@@ -29,8 +29,8 @@ class EBuildPackageTestCase(TestCase):
         gentoo_examples.txt
         """
         currentp = Path(__file__).parent
-        with open(
-            f"{currentp}/gentoo_examples.txt", "r", encoding="utf-8"
+        with (currentp / "gentoo_examples.txt").open(
+            "r", encoding="utf-8"
         ) as file:
             fullname = file.readline()
             if not EBuildPackage.from_full_name(fullname):
