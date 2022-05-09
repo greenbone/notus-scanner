@@ -51,7 +51,7 @@ packaging = "<21.3"
 sentry = ["sentry-sdk"]
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.13.2"
+pylint = "^2.13.8"
 rope = "^0.23.0"
 autohooks-plugin-pylint = "^21.6.0"
 autohooks-plugin-black = "^21.12.0"
