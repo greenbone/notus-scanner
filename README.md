@@ -142,7 +142,7 @@ first.
 
 ## License
 
-Copyright (C) 2021 Greenbone Networks GmbH
+Copyright (C) 2021-2022 Greenbone Networks GmbH
 
 Licensed under the GNU Affero General Public License v3.0 or later.
 
