@@ -7,4 +7,4 @@ services:
       - "1883:1883"
     restart: on-failure
   notus-scanner:
-    image: ghcr.io/greenbone/notus-scanner
+    image: greenbone/notus-scanner
