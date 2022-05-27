@@ -11,7 +11,10 @@ RUN apt-get update && \
     gpg-agent \
     python3 \
     python3-pip \
-    python3-rpm && \
+    python3-rpm \
+    # gcc and python3-dev are required for psutil on arm
+    gcc \
+    python3-dev&& \
     apt-get remove --purge --auto-remove -y && \
     rm -rf /var/lib/apt/lists/*
 
@@ -21,6 +24,8 @@ RUN addgroup --gid 1001 --system notus && \
 COPY dist/* /notus
 
 RUN python3 -m pip install /notus/*
+
+RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
 
 RUN chown notus:notus /notus
 
