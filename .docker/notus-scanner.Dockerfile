@@ -7,6 +7,7 @@ WORKDIR /notus
 
 RUN apt-get update && \
     apt-get install --no-install-recommends --no-install-suggests -y \
+    gosu \
     gpg \
     gpg-agent \
     python3 \
@@ -22,14 +23,15 @@ RUN addgroup --gid 1001 --system notus && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group notus
 
 COPY dist/* /notus
+COPY .docker/entrypoint.sh /usr/local/bin/entrypoint
 
 RUN python3 -m pip install /notus/*
 
 RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
 
-RUN chown notus:notus /notus
+RUN chown notus:notus /notus && \
+    chmod 755 /usr/local/bin/entrypoint
 
-USER notus
+ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 
-ENTRYPOINT [ "notus-scanner" ]
-CMD ["-f", "--pid-file=/notus/notus-scanner.pid", "-b", "broker"]
+CMD ["notus-scanner", "-f", "--pid-file=/notus/notus-scanner.pid", "-b", "broker"]
