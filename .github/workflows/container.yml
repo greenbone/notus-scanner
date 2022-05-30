@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Gather container image tags
         id: container
         uses: greenbone/actions/container-image-tags@v1
