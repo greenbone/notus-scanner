@@ -1,0 +1,20 @@
+[Unit]
+Description=Notus Scanner
+Documentation=https://github.com/greenbone/notus-scanner
+After=mosquitto.service
+Wants=mosquitto.service
+ConditionKernelCommandLine=!recovery
+
+[Service]
+Type=forking
+User=gvm
+RuntimeDirectory=notus-scanner
+RuntimeDirectoryMode=2775
+PIDFile=/run/notus-scanner/notus-scanner.pid
+ExecStart=/usr/local/bin/notus-scanner
+SuccessExitStatus=SIGKILL
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
