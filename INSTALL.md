@@ -42,9 +42,9 @@ if you want to use a user specific configuration create it in `~/.config/notus-s
 [notus-scanner]
 mqtt-broker-address = "localhost"
 mqtt-broker-port = "1883"
-products-directory = "/var/lib/notus/advisories/products"
-pid-file = "/var/run/gvm/notus-scanner.pid"
-log-file = "/var/log/gvm/notus-scanner.log"
+products-directory = "/var/lib/openvas/plugins/notus/products"
+pid-file = "/var/run/notus-scanner/notus-scanner.pid"
+log-file = "/var/log/notus-scanner/notus-scanner.log"
 log-level = "INFO"
 disable-hashsum-verification = false
 ```
