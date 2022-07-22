@@ -31,7 +31,7 @@ from notus.scanner.errors import ConfigFileError
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_PRODUCTS_DIRECTORY = "/var/lib/openvas/plugins/notus/products"
+DEFAULT_PRODUCTS_DIRECTORY = "/var/lib/notus/products"
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_MQTT_BROKER_ADDRESS = "localhost"
 DEFAULT_MQTT_BROKER_PORT = 1883
