@@ -29,7 +29,8 @@ RUN python3 -m pip install /notus/*
 
 RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
 
-RUN chown notus:notus /notus && \
+RUN mkdir -p /var/lib/notus && \
+    chown -R notus:notus /notus /var/lib/notus && \
     chmod 755 /usr/local/bin/entrypoint
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
