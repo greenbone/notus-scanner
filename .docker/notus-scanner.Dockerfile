@@ -28,8 +28,10 @@ COPY .docker/entrypoint.sh /usr/local/bin/entrypoint
 RUN python3 -m pip install /notus/*
 
 RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
-RUN mkdir /run/notus-scanner
-RUN chown notus:notus /run/notus-scanner && \
+
+RUN mkdir /run/notus-scanner &&\
+    mkdir -p /var/lib/notus && \
+    chown -R notus:notus /notus /var/lib/notus /run/notus-scanner && \
     chmod 755 /usr/local/bin/entrypoint
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
