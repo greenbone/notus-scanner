@@ -305,7 +305,7 @@ python-versions = "*"
 
 [[package]]
 name = "pytoolconfig"
-version = "1.2.1"
+version = "1.2.2"
 description = "Python tool configuration"
 category = "dev"
 optional = false
@@ -651,8 +651,8 @@ python-gnupg = [
     {file = "python_gnupg-0.4.9-py2.py3-none-any.whl", hash = "sha256:012960bde4d25dad631bb7650f563dda5e7271248a73f3584240063a293d99d8"},
 ]
 pytoolconfig = [
-    {file = "pytoolconfig-1.2.1-py3-none-any.whl", hash = "sha256:5f291567f0363a7314406be4f2381ece4e552a8608d2629544679e4d36d0df2b"},
-    {file = "pytoolconfig-1.2.1.tar.gz", hash = "sha256:5ac82f78d731531f9f82e5cc7f5ebae9473b1404c0e75aa5ac0b8b41cd99b510"},
+    {file = "pytoolconfig-1.2.2-py3-none-any.whl", hash = "sha256:825d97b052e58b609c2684b04efeb543075588d33a4916a6dc2ae39676458c7d"},
+    {file = "pytoolconfig-1.2.2.tar.gz", hash = "sha256:2512a1f261a40e73cef2e58e786184261b60c802ae7ed01249342b1949ec3aa2"},
 ]
 requests = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
