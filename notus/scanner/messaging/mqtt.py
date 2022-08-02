@@ -89,6 +89,12 @@ class MQTTPublisher(Publisher):
 class MQTTSubscriber(Subscriber):
     def __init__(self, client: MQTTClient):
         self._client = client
+        # Save the active subscriptions on subscribe() so we can resubscribe
+        # after reconnect
+        self._subscriptions: dict = {}
+
+        self._client.on_connect = self.on_connect
+        self._client.user_data_set(self._subscriptions)
 
     def subscribe(
         self, message_class: Type[Message], callback: Callable[[Message], None]
@@ -100,6 +106,19 @@ class MQTTSubscriber(Subscriber):
 
         self._client.subscribe(message_class.topic, qos=QOS_AT_LEAST_ONCE)
         self._client.message_callback_add(message_class.topic, func)
+
+        self._subscriptions[message_class.topic] = func
+
+    @staticmethod
+    def on_connect(_client, _userdata, _flags, rc, _properties):
+        if rc == 0:
+            # If we previously had active subscription we subscribe to them
+            # again because they got lost after a broker disconnect.
+            # Userdata was set in __init__()
+            if _userdata:
+                for topic, func in _userdata.items():
+                    _client.subscribe(topic, qos=QOS_AT_LEAST_ONCE)
+                    _client.message_callback_add(topic, func)
 
     @staticmethod
     def _handle_message(
@@ -140,16 +159,8 @@ class MQTTDaemon:
         client: MQTTClient,
     ):
         self._client = client
-        self._client.on_connect = self.on_connect
 
         self._client.connect()
-
-    @staticmethod
-    def on_connect(_client, _userdata, _flags, rc, _properties):
-        if rc == 0:
-            logger.info("Connected to broker successfully")
-        else:
-            logger.error("Failed to connect to broker. Reason code %s", rc)
 
     def run(self):
         self._client.loop_forever()
