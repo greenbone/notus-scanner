@@ -158,6 +158,7 @@ class RPMPackageTestCase(TestCase):
         package = RPMPackage.from_full_name(
             "mesa-libgbm-11.2.2-2.20160614.x86_64"
         )
+
         self.assertEqual(package.arch, Architecture.X86_64)
         self.assertEqual(package.name, "mesa-libgbm")
         self.assertEqual(package.version, "11.2.2")

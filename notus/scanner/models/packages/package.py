@@ -31,6 +31,7 @@ class PackageType(Enum):
     RPM = "rpm"
     DEB = "deb"
     EBUILD = "ebuild"
+    SLACK = "slack"
 
 
 class PackageComparision(Enum):
