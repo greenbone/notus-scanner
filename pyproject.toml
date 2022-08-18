@@ -43,7 +43,7 @@ python = "^3.7"
 paho-mqtt = ">=1.5.1"
 psutil = "^5.9"
 sentry-sdk = {version = "^1.6.0", optional = true}
-python-gnupg = "^0.4.8"
+python-gnupg = "^0.4.6"
 tomli = ">=1.0.0"
 packaging = ">=20.5"
 
