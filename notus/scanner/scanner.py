@@ -100,6 +100,13 @@ Fixed version:      {fixed_package.full_name}
         package_advisories: PackageAdvisories,
     ) -> List[PackageVulnerability]:
         vulnerabilities: Dict[str, PackageVulnerability] = {}
+
+        logger.info(
+            "Start to identify vulnerable packages for %s (%s)",
+            host_ip,
+            host_name,
+        )
+
         for package in installed_packages:
             package_advisory_list = (
                 package_advisories.get_package_advisories_for_package(package)
@@ -168,6 +175,10 @@ Fixed version:      {fixed_package.full_name}
                 message.os_release,
             )
             return
+
+        logger.debug(
+            "Loaded advisories for %i packages", len(package_advisories)
+        )
 
         # Determine package type
         package_type = package_advisories.package_type

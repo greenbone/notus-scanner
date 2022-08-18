@@ -66,7 +66,9 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         # If there is a file but unable to verify it could be that the feed
         # is corrupted and the application should stop
         verify_result = self._verify(json_file_path)
-        if not verify_result == VerificationResult.SUCCESS:
+        if verify_result == VerificationResult.SUCCESS:
+            logger.debug("File '%s' verification successful.", json_file_path)
+        else:
             reason = (
                 "File verification failed."
                 if verify_result != VerificationResult.INVALID_NAME
