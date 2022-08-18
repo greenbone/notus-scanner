@@ -111,19 +111,19 @@ def run_daemon(
     loader = JSONAdvisoriesLoader(
         advisories_directory_path=products_directory_path, verify=verifier
     )
+    client = MQTTClient(
+        mqtt_broker_address=mqtt_broker_address,
+        mqtt_broker_port=mqtt_broker_port,
+    )
+    daemon: MQTTDaemon
     try:
-        client = MQTTClient(
-            mqtt_broker_address=mqtt_broker_address,
-            mqtt_broker_port=mqtt_broker_port,
-        )
+        daemon = MQTTDaemon(client)
     except ConnectionRefusedError:
         logger.error(
             "Could not connect to MQTT broker at %s. Connection refused.",
             mqtt_broker_address,
         )
         sys.exit(1)
-
-    daemon = MQTTDaemon(client)
 
     publisher = MQTTPublisher(client)
     scanner = NotusScanner(loader=loader, publisher=publisher)
