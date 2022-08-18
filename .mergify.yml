@@ -1,0 +1,18 @@
+pull_request_rules:
+  - name: backport main patches to stable branch
+    conditions:
+      - base=main
+      - label=backport-to-stable
+    actions:
+      backport:
+        branches:
+          - stable
+
+  - name: backport stable patches to main branch
+    conditions:
+      - base=stable
+      - label=backport-to-main
+    actions:
+      backport:
+        branches:
+          - main
