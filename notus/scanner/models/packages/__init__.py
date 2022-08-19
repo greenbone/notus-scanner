@@ -20,6 +20,7 @@ from notus.scanner.models.packages.deb import DEBPackage
 from notus.scanner.models.packages.ebuild import EBuildPackage
 from notus.scanner.models.packages.package import Package, PackageType
 from notus.scanner.models.packages.rpm import RPMPackage
+from .slackware import SlackPackage
 
 
 def package_class_by_type(pt: PackageType) -> Optional[Package]:
@@ -30,5 +31,6 @@ def package_class_by_type(pt: PackageType) -> Optional[Package]:
         PackageType.RPM: RPMPackage,
         PackageType.DEB: DEBPackage,
         PackageType.EBUILD: EBuildPackage,
+        PackageType.SLACK: SlackPackage,
     }
     return switcher.get(pt)
