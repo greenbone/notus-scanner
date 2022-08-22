@@ -14,9 +14,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Gather container image tags
-        id: container
-        uses: greenbone/actions/container-image-tags@v1
+      - name: Setup container meta information
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: greenbone/notus-scanner
+          labels: |
+            org.opencontainers.image.vendor=Greenbone
+            org.opencontainers.image.base.name=debian/stable-slim
+          flavor: latest=false # no latest container tag for git tags
+          tags: |
+            # create container tag for git tags
+            type=ref,event=tag
+            # use latest for stable branch
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'stable') }}
+            type=raw,value=stable,enable=${{ github.ref == format('refs/heads/{0}', 'stable') }}
+            # use unstable for main branch
+            type=raw,value=unstable,enable={{is_default_branch}}
       - name: Login to Dockerhub Container Registry
         uses: docker/login-action@v2
         with:
@@ -31,9 +45,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.container.outputs.image-tags }}
           file: .docker/notus-scanner.Dockerfile
           platforms: linux/amd64,linux/arm64
-          labels: |
-            org.opencontainers.image.vendor=Greenbone
-            org.opencontainers.image.revision=${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
