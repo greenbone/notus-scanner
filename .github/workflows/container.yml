@@ -22,12 +22,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Install poetry and dependencies
-        uses: greenbone/actions/poetry@v1
-        with:
-          version: 3.9
-      - name: Build wheel
-        run: poetry build -f wheel
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
