@@ -1,3 +1,22 @@
+FROM debian:stable-slim as builder
+
+COPY . /source
+
+WORKDIR /source
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends --no-install-suggests -y \
+    python3 \
+    python-is-python3 \
+    python3-pip && \
+    apt-get remove --purge --auto-remove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install --upgrade pip && \
+    python3 -m pip install poetry
+
+RUN rm -rf dist && poetry build -f wheel
+
 FROM debian:stable-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -12,17 +31,16 @@ RUN apt-get update && \
     gpg-agent \
     python3 \
     python3-pip \
-    python3-rpm \
     # gcc and python3-dev are required for psutil on arm
     gcc \
-    python3-dev&& \
+    python3-dev && \
     apt-get remove --purge --auto-remove -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN addgroup --gid 1001 --system notus && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group notus
 
-COPY dist/* /notus
+COPY --from=builder /source/dist/* /notus/
 COPY .docker/entrypoint.sh /usr/local/bin/entrypoint
 
 RUN python3 -m pip install /notus/*
