@@ -2,11 +2,7 @@ name: Container Image Builds
 
 on:
   push:
-<<<<<<< HEAD
-    branches: [ stable ]
-=======
     branches: [ main, stable ]
->>>>>>> f5bd937 (Change: Build notus-scanner container image for pull requests too)
     tags: ["v*"]
   pull_request:
     branches: [ main, stable ]
