@@ -16,10 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from typing import Optional
-from notus.scanner.models.packages.deb import DEBPackage
-from notus.scanner.models.packages.ebuild import EBuildPackage
-from notus.scanner.models.packages.package import Package, PackageType
-from notus.scanner.models.packages.rpm import RPMPackage
+
+from .deb import DEBPackage
+from .ebuild import EBuildPackage
+from .package import Package, PackageType
+from .rpm import RPMPackage
 from .slackware import SlackPackage
 
 

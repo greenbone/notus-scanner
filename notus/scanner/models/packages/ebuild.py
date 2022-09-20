@@ -33,10 +33,10 @@ of pep440 to guess immediately.
 
 import logging
 from dataclasses import dataclass
+
 from packaging.version import Version
 
 from .package import Package, PackageComparision
-
 
 logger = logging.getLogger(__name__)
 
