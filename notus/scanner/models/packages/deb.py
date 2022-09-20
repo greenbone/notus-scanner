@@ -25,7 +25,7 @@ from typing import Tuple
 
 from packaging.version import parse
 
-from .package import Package, PackageComparision
+from .package import Package, PackageComparison
 
 _deb_compile = re.compile(r"(.*)-(?:(\d*):)?(.*)-(.*)")
 _deb_compile_wo_revision = re.compile(r"(.*)-(?:(\d*):)?(.*)")
@@ -49,17 +49,17 @@ class DEBPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: Package) -> PackageComparision:
+    def _compare(self, other: Package) -> PackageComparison:
         a_version = parse(self.full_version)
         b_version = parse(other.full_version)
 
         if a_version == b_version:
-            return PackageComparision.EQUAL
+            return PackageComparison.EQUAL
 
         return (
-            PackageComparision.A_NEWER
+            PackageComparison.A_NEWER
             if a_version > b_version
-            else PackageComparision.B_NEWER
+            else PackageComparison.B_NEWER
         )
 
     @staticmethod
