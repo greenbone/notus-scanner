@@ -23,15 +23,16 @@ from .package import Package, PackageType
 from .rpm import RPMPackage
 from .slackware import SlackPackage
 
+__SWITCHER = {
+    PackageType.RPM: RPMPackage,
+    PackageType.DEB: DEBPackage,
+    PackageType.EBUILD: EBuildPackage,
+    PackageType.SLACK: SlackPackage,
+}
+
 
 def package_class_by_type(pt: PackageType) -> Optional[Package]:
     """
     package_class_by_type may returns Package if defined otherwise None
     """
-    switcher = {
-        PackageType.RPM: RPMPackage,
-        PackageType.DEB: DEBPackage,
-        PackageType.EBUILD: EBuildPackage,
-        PackageType.SLACK: SlackPackage,
-    }
-    return switcher.get(pt)
+    return __SWITCHER.get(pt)
