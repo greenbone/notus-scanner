@@ -24,7 +24,7 @@ from dataclasses import dataclass
 
 from packaging.version import parse
 
-from .package import Architecture, Package, PackageComparision
+from .package import Architecture, Package, PackageComparison
 
 _slack_compile = re.compile(r"(..*)-(..*)-(..*)-(\d)(?:_slack(..*))?")
 _slack_compile_version = re.compile(r"(..*)-(..*)-(\d)(?:_slack(..*))?")
@@ -44,21 +44,21 @@ class SlackPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: "SlackPackage") -> PackageComparision:
+    def _compare(self, other: "SlackPackage") -> PackageComparison:
         if self.arch != other.arch:
-            return PackageComparision.NOT_COMPARABLE
+            return PackageComparison.NOT_COMPARABLE
 
         if self.full_version == other.full_version:
-            return PackageComparision.EQUAL
+            return PackageComparison.EQUAL
 
         a_version = parse(self.version)
         b_version = parse(other.version)
 
         if a_version != b_version:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_version > b_version
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
         a_target = parse(self.target)
@@ -66,9 +66,9 @@ class SlackPackage(Package):
 
         if a_target and b_target and a_target != b_target:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_target > b_target
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
         a_build = parse(self.build)
@@ -76,9 +76,9 @@ class SlackPackage(Package):
 
         if a_build != b_build:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_build > b_build
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
     @staticmethod

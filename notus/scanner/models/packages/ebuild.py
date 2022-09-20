@@ -36,7 +36,7 @@ from dataclasses import dataclass
 
 from packaging.version import Version
 
-from .package import Package, PackageComparision
+from .package import Package, PackageComparison
 
 logger = logging.getLogger(__name__)
 
@@ -45,21 +45,21 @@ logger = logging.getLogger(__name__)
 class EBuildPackage(Package):
     """Represents a .ebuild based package"""
 
-    def _compare(self, other: Package) -> PackageComparision:
+    def _compare(self, other: Package) -> PackageComparison:
         # we don't want to deal with LegacyVersion
         a_version = Version(self.full_version)
         b_version = Version(other.full_version)
 
         if self.name != other.name:
-            return PackageComparision.NOT_COMPARABLE
+            return PackageComparison.NOT_COMPARABLE
 
         if a_version == b_version:
-            return PackageComparision.EQUAL
+            return PackageComparison.EQUAL
 
         return (
-            PackageComparision.A_NEWER
+            PackageComparison.A_NEWER
             if a_version > b_version
-            else PackageComparision.B_NEWER
+            else PackageComparison.B_NEWER
         )
 
     @staticmethod
