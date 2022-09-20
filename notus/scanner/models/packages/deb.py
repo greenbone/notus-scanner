@@ -20,8 +20,9 @@ Module for parsing and comparing Debian packages (.deb)
 
 import logging
 import re
-from typing import Tuple
 from dataclasses import dataclass
+from typing import Tuple
+
 from packaging.version import parse
 
 from .package import Package, PackageComparision

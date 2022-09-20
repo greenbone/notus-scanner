@@ -21,6 +21,7 @@ Module for parsing and comparing Slackware packages
 import logging
 import re
 from dataclasses import dataclass
+
 from packaging.version import parse
 
 from .package import Architecture, Package, PackageComparision

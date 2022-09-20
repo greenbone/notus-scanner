@@ -5,13 +5,10 @@
 import logging
 import re
 from dataclasses import dataclass
+
 from packaging.version import parse
 
-from .package import (
-    Package,
-    Architecture,
-    PackageComparision,
-)
+from .package import Architecture, Package, PackageComparision
 
 _rpm_re = re.compile(r"(\S+)-(?:(\d*):)?(.*)-(~?\w+[\w.]*)")
 
