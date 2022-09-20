@@ -13,7 +13,7 @@ homepage = "https://github.com/greenbone/notus-scanner"
 repository = "https://github.com/greenbone/notus-scanner"
 # Full list: https://pypi.org/pypi?%3Aaction=list_classifiers
 classifiers=[
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
   "Intended Audience :: Developers",
   "Intended Audience :: System Administrators",
