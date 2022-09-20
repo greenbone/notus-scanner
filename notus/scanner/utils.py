@@ -15,13 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
 import atexit
-import signal
-
 import logging
-
+import os
+import signal
+import sys
 from functools import partial
 from logging.handlers import SysLogHandler, WatchedFileHandler
 from pathlib import Path
@@ -30,7 +28,6 @@ from typing import Optional, Union
 import psutil
 
 from .__version__ import __version__
-
 
 logger = logging.getLogger(__name__)
 

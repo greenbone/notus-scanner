@@ -17,12 +17,11 @@
 
 import argparse
 import logging
-
 from pathlib import Path
 from typing import Any, Dict
 
-from ..config import Config
 from ..__version__ import __version__
+from ..config import Config
 
 ParserType = argparse.ArgumentParser
 Arguments = argparse.Namespace

@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import Enum
 import hashlib
-import os
 import logging
+import os
+from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
-from dataclasses import dataclass
 from gnupg import GPG
 
 OPENVAS_GPG_HOME = "/etc/openvas/gnupg"
