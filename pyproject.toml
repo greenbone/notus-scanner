@@ -55,6 +55,7 @@ pylint = "^2.13.9"
 rope = "^1.1.1"
 autohooks-plugin-pylint = ">=21.6.0"
 autohooks-plugin-black = ">=22.7.0"
+autohooks-plugin-isort = ">=22.8.0"
 pontos = ">=22.7.2"
 black = ">=22.6.0"
 
@@ -83,7 +84,11 @@ exclude = '''
 
 [tool.autohooks]
 mode = "poetry"
-pre-commit = ['autohooks.plugins.black', 'autohooks.plugins.pylint']
+pre-commit = ['autohooks.plugins.black', 'autohooks.plugins.isort', 'autohooks.plugins.pylint']
+
+[tool.isort]
+profile = "black"
+line_length = 80
 
 [tool.pontos.version]
 version-module-file = "notus/scanner/__version__.py"
