@@ -17,7 +17,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Union, Optional, Any
+from typing import Any, Dict, Optional, Union
 from uuid import UUID
 
 from .message import Message, MessageType

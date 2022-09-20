@@ -18,37 +18,33 @@
 import logging
 import os
 import sys
-
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
+from .__version__ import __version__
 from .cli import CliParser
 from .errors import AdvisoriesLoadingError, Sha256SumLoadingError
 from .loader import JSONAdvisoriesLoader
-from .messaging.mqtt import (
-    MQTTDaemon,
-    MQTTPublisher,
-    MQTTClient,
-    MQTTSubscriber,
-)
-from .messages.start import ScanStartMessage
-from .scanner import NotusScanner
-from .utils import (
-    go_to_background,
-    create_pid,
-    init_signal_handler,
-    init_logging,
-)
-
 from .loader.gpg_sha_verifier import (
     ReloadConfiguration,
     VerificationResult,
     create_verify,
     reload_sha256sums,
 )
-
-from .__version__ import __version__
-
+from .messages.start import ScanStartMessage
+from .messaging.mqtt import (
+    MQTTClient,
+    MQTTDaemon,
+    MQTTPublisher,
+    MQTTSubscriber,
+)
+from .scanner import NotusScanner
+from .utils import (
+    create_pid,
+    go_to_background,
+    init_logging,
+    init_signal_handler,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -16,21 +16,19 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
-from json.decoder import JSONDecodeError
 import logging
+from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Callable, Dict, Optional
 
-from notus.scanner.models.packages import package_class_by_type
-
-from .gpg_sha_verifier import VerificationResult
-
 from ..errors import AdvisoriesLoadingError
+from ..models.packages import package_class_by_type
 from ..models.packages.package import (
     AdvisoryReference,
     PackageAdvisories,
     PackageType,
 )
+from .gpg_sha_verifier import VerificationResult
 from .loader import AdvisoriesLoader
 
 logger = logging.getLogger(__name__)
@@ -80,7 +78,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             )
 
         if json_file_path.stat().st_size < 2:
-            # the minimim size of a json file is 2 bytes ({} or [])
+            # the minimum size of a json file is 2 bytes ({} or [])
             return None
 
         with json_file_path.open("r", encoding="utf-8") as f:

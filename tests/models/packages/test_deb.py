@@ -17,7 +17,6 @@
 
 from unittest import TestCase
 
-
 from notus.scanner.models.packages.deb import DEBPackage
 
 

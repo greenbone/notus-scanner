@@ -18,16 +18,12 @@
 """ Test module for command line arguments.
 """
 
-import unittest
 import tempfile
-
+import unittest
 from pathlib import Path
 from typing import List
 
-from notus.scanner.cli.parser import (
-    CliParser,
-    Arguments,
-)
+from notus.scanner.cli.parser import Arguments, CliParser
 from notus.scanner.config import (
     DEFAULT_LOG_LEVEL,
     DEFAULT_MQTT_BROKER_ADDRESS,

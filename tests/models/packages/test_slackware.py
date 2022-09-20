@@ -17,7 +17,6 @@
 
 from unittest import TestCase
 
-
 from notus.scanner.models.packages.package import Architecture
 from notus.scanner.models.packages.slackware import SlackPackage
 

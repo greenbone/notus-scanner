@@ -17,11 +17,10 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Union, Any, Optional
+from typing import Any, Dict, Optional, Union
 from uuid import UUID
 
-from notus.scanner.errors import MessageParsingError
-
+from ..errors import MessageParsingError
 from .message import Message, MessageType
 
 

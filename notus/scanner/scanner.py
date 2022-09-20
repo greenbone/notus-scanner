@@ -17,7 +17,6 @@
 
 import logging
 from typing import Dict, Iterable, List
-from notus.scanner.models.packages import package_class_by_type
 
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
@@ -26,6 +25,7 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
+from .models.packages import package_class_by_type
 from .models.packages.package import Package, PackageAdvisories
 from .models.vulnerability import PackageVulnerability
 
