@@ -53,20 +53,12 @@ sentry = ["sentry-sdk"]
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.13.9"
-<<<<<<< HEAD
 rope = "^1.3.0"
-autohooks-plugin-pylint = "^21.6.0"
-autohooks-plugin-black = "^22.7.0"
-black = {version = "22.8.0", python = "^3.7"}
-pontos = "^22.7.2"
-=======
-rope = "^1.1.1"
 autohooks-plugin-pylint = ">=21.6.0"
 autohooks-plugin-black = ">=22.7.0"
 autohooks-plugin-isort = ">=22.8.0"
 pontos = ">=22.7.2"
 black = ">=22.6.0"
->>>>>>> bc48804 (Add autohooks-plugin-isort for import sorting via git hook)
 
 [tool.poetry.scripts]
 notus-scanner = "notus.scanner.daemon:main"

@@ -582,11 +582,7 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-<<<<<<< HEAD
-content-hash = "f8b5db046f8dff7653780b178ca15a7e1ea5ad4c8c32de1643483427d0a1789d"
-=======
-content-hash = "2ad1e048b93b126ebc8772c4edfb864d7c1a463789b278bbff76dc18f9fafc26"
->>>>>>> bc48804 (Add autohooks-plugin-isort for import sorting via git hook)
+content-hash = "6605f9b574c8545f639629e7d46af1deff51e50a6537cd920cc0d98c8bda07e7"
 
 [metadata.files]
 anyio = [
@@ -786,11 +782,7 @@ psutil = [
     {file = "psutil-5.9.2-cp39-cp39-win_amd64.whl", hash = "sha256:68b35cbff92d1f7103d8f1db77c977e72f49fcefae3d3d2b91c76b0e7aef48b8"},
     {file = "psutil-5.9.2.tar.gz", hash = "sha256:feb861a10b6c3bb00701063b37e4afc754f8217f0f09c42280586bd6ac712b5c"},
 ]
-<<<<<<< HEAD
-pygments = [
-=======
 Pygments = [
->>>>>>> bc48804 (Add autohooks-plugin-isort for import sorting via git hook)
     {file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42"},
     {file = "Pygments-2.13.0.tar.gz", hash = "sha256:56a8508ae95f98e2b9bdf93a6be5ae3f7d8af858b43e02c5a2ff083726be40c1"},
 ]
