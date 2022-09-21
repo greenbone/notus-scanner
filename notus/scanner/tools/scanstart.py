@@ -17,7 +17,6 @@
 
 import argparse
 import logging
-
 from pathlib import Path
 from uuid import uuid4
 

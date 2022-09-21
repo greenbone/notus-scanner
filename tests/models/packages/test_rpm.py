@@ -17,9 +17,8 @@
 
 from unittest import TestCase
 
-
-from notus.scanner.models.packages.rpm import RPMPackage
 from notus.scanner.models.packages.package import Architecture
+from notus.scanner.models.packages.rpm import RPMPackage
 
 
 class RPMPackageTestCase(TestCase):

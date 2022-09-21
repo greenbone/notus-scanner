@@ -17,16 +17,13 @@
 
 import json
 import logging
-
 from functools import partial
 from typing import Callable, Type
 
 import paho.mqtt.client as mqtt
 
-from notus.scanner.errors import MessageParsingError
-
+from ..errors import MessageParsingError
 from ..messages.message import Message
-
 from .publisher import Publisher
 from .subscriber import Subscriber
 

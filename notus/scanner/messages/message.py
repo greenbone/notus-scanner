@@ -16,10 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
-
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
 from ..errors import MessageParsingError

@@ -17,18 +17,18 @@
 
 from dataclasses import FrozenInstanceError
 from unittest import TestCase
-from notus.scanner.errors import PackageError
 
+from notus.scanner.errors import PackageError
+from notus.scanner.models.packages.deb import DEBPackage
 from notus.scanner.models.packages.package import (
-    Package,
     AdvisoryReference,
     Architecture,
+    Package,
     PackageAdvisories,
     PackageAdvisory,
     PackageType,
 )
 from notus.scanner.models.packages.rpm import RPMPackage
-from notus.scanner.models.packages.deb import DEBPackage
 
 
 class PackageTestCase(TestCase):

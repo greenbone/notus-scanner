@@ -16,11 +16,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime, timezone
+from unittest import TestCase
 from uuid import UUID
 
-from unittest import TestCase
 from notus.scanner.errors import MessageParsingError
-
 from notus.scanner.messages.message import MessageType
 from notus.scanner.messages.result import ResultMessage, ResultType
 

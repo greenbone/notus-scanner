@@ -19,10 +19,7 @@ from dataclasses import FrozenInstanceError
 from datetime import datetime
 from unittest import TestCase
 
-from notus.scanner.models.advisory import (
-    Advisory,
-    Severity,
-)
+from notus.scanner.models.advisory import Advisory, Severity
 
 
 class AdvisoryTestCase(TestCase):

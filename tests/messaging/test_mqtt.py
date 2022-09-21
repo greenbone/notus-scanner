@@ -16,9 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
-from uuid import UUID
-
 from unittest import TestCase, mock
+from uuid import UUID
 
 from notus.scanner.messages.start import ScanStartMessage
 from notus.scanner.messaging.mqtt import (
