@@ -16,9 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from pathlib import Path
+from typing import Dict, Optional
 from unittest import TestCase
 from unittest.mock import Mock, patch
-from typing import Dict, Optional
 
 from notus.scanner.loader.gpg_sha_verifier import (
     ReloadConfiguration,

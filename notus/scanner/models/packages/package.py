@@ -15,14 +15,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from abc import abstractmethod
 import logging
-from enum import Enum
+from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Set, Optional
+from enum import Enum
+from typing import Any, Callable, Dict, Optional, Set
 
 from ...errors import PackageError
-
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +33,11 @@ class PackageType(Enum):
     SLACK = "slack"
 
 
-class PackageComparision(Enum):
+class PackageComparison(Enum):
     EQUAL = 0  # a and b are equal
     A_NEWER = 1  # a is newer than b
     B_NEWER = 2  # b is newer than a
-    # a and b are not compareable. e.g. different architectures
+    # a and b are not comparable. e.g. different architectures
     NOT_COMPARABLE = 3
 
 
@@ -78,15 +77,15 @@ class Package:
 
     def __gt__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparision.A_NEWER
+        return self._compare(other) == PackageComparison.A_NEWER
 
     def __lt__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparision.B_NEWER
+        return self._compare(other) == PackageComparison.B_NEWER
 
     def __eq__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparision.EQUAL
+        return self._compare(other) == PackageComparison.EQUAL
 
     def __ge__(self, other: Any) -> bool:
         return self.__gt__(other) or self.__eq__(other)
@@ -100,7 +99,7 @@ class Package:
         return hash(self.full_name)
 
     @abstractmethod
-    def _compare(self, other: Any) -> PackageComparision:
+    def _compare(self, other: Any) -> PackageComparison:
         raise NotImplementedError()
 
     @staticmethod

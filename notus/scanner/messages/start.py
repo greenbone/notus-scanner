@@ -16,11 +16,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
-from typing import Dict, Union, Any, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
-from notus.scanner.errors import MessageParsingError
-
+from ..errors import MessageParsingError
 from .message import Message, MessageType
 
 

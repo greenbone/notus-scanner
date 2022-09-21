@@ -18,7 +18,6 @@
 from pathlib import Path
 from unittest import TestCase
 
-
 from notus.scanner.models.packages.ebuild import EBuildPackage
 
 

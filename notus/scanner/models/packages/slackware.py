@@ -1,28 +1,30 @@
-# slightly adjusted from https://github.com/ihiji/version_utils
+# Copyright (C) 2021-2022 Greenbone Networks GmbH
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
-
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-slackware module for version_utils
-
-Contains dpkg parsing and comparison operations for version_utils.
-Public methods include:
-
-    * :any:`compare_packages`: compare two dpkg package strings, e.g.
-      ``gcc-4.4.7-16.el6.x86_64`` and ``gcc-4.4.7-17.el6.x86_64``
-    * :any:`compare_versions`: compare two dpkg version strings (the
-      bit between the dashes in an dpkg package string)
-    * :any:`package`: parse an dpkg package string to get name, epoch,
-      version, release, and architecture information. Returns as a
-      :any:`common.Package` object.
+Module for parsing and comparing Slackware packages
 """
 
 import logging
 import re
 from dataclasses import dataclass
+
 from packaging.version import parse
 
-from .package import Architecture, Package, PackageComparision
+from .package import Architecture, Package, PackageComparison
 
 _slack_compile = re.compile(r"(..*)-(..*)-(..*)-(\d)(?:_slack(..*))?")
 _slack_compile_version = re.compile(r"(..*)-(..*)-(\d)(?:_slack(..*))?")
@@ -33,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SlackPackage(Package):
-    """Represents a skackware based package"""
+    """Represents a Slackware based package"""
 
     build: str
     target: str
@@ -42,21 +44,21 @@ class SlackPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: "SlackPackage") -> PackageComparision:
+    def _compare(self, other: "SlackPackage") -> PackageComparison:
         if self.arch != other.arch:
-            return PackageComparision.NOT_COMPARABLE
+            return PackageComparison.NOT_COMPARABLE
 
         if self.full_version == other.full_version:
-            return PackageComparision.EQUAL
+            return PackageComparison.EQUAL
 
         a_version = parse(self.version)
         b_version = parse(other.version)
 
         if a_version != b_version:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_version > b_version
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
         a_target = parse(self.target)
@@ -64,9 +66,9 @@ class SlackPackage(Package):
 
         if a_target and b_target and a_target != b_target:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_target > b_target
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
         a_build = parse(self.build)
@@ -74,9 +76,9 @@ class SlackPackage(Package):
 
         if a_build != b_build:
             return (
-                PackageComparision.A_NEWER
+                PackageComparison.A_NEWER
                 if a_build > b_build
-                else PackageComparision.B_NEWER
+                else PackageComparison.B_NEWER
             )
 
     @staticmethod

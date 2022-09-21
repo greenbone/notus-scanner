@@ -19,14 +19,13 @@ import argparse
 import atexit
 import logging
 import signal
-
 from functools import partial
 
 from ..cli.parser import log_level
 from ..config import DEFAULT_MQTT_BROKER_ADDRESS, DEFAULT_MQTT_BROKER_PORT
-from ..messaging.mqtt import MQTTClient, MQTTSubscriber
-from ..messages.status import ScanStatusMessage
 from ..messages.result import ResultMessage
+from ..messages.status import ScanStatusMessage
+from ..messaging.mqtt import MQTTClient, MQTTSubscriber
 
 
 def print_scan_status(message: ScanStatusMessage):
