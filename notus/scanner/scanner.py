@@ -16,7 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Iterable
+from typing import Dict, Iterable, List
+
 from notus.scanner.models.packages import package_class_by_type
 
 from .errors import AdvisoriesLoadingError
@@ -26,9 +27,8 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages import package_class_by_type
 from .models.packages.package import Package, PackageAdvisories
-from .models.vulnerability import PackageVulnerabilities, Vulnerability
+from .models.vulnerability import PackageVulnerability
 
 logger = logging.getLogger(__name__)
 
@@ -71,28 +71,27 @@ class NotusScanner:
         )
         self._publish(scan_status_message)
 
-    def _publish_results(
-        self, scan_id: str, vulnerabilities: PackageVulnerabilities
+    def _publish_result(
+        self, scan_id: str, vulnerability: PackageVulnerability
     ) -> None:
         report = ""
-        for oid, vuls in vulnerabilities.vulnerabilities.items():
-            for vul in vuls:
-                report = (
-                    report
-                    + f"""
-    Vulnerable package: {vul.package.name}
-    Installed version:  {vul.package.full_name}
-    Fixed version:      {vul.advisory.symbol}{vul.advisory.package.full_name}
-    """
-                )
-            message = ResultMessage(
-                scan_id=scan_id,
-                host_ip=vulnerabilities.host_ip,
-                host_name=vulnerabilities.host_name,
-                oid=oid,
-                value=report,
+        for package, fixed_package in vulnerability.packages.items():
+            report = (
+                report
+                + f"""
+Vulnerable package:   {package.name}
+Installed version:    {package.full_name}
+Fixed version:      {fixed_package.symbol:>2}{fixed_package.package.full_name}
+"""
             )
-            self._publish(message)
+        message = ResultMessage(
+            scan_id=scan_id,
+            host_ip=vulnerability.host_ip,
+            host_name=vulnerability.host_name,
+            oid=vulnerability.advisory.oid,
+            value=report,
+        )
+        self._publish(message)
 
     def _start_scan(
         self,
@@ -100,19 +99,29 @@ class NotusScanner:
         host_name: str,
         installed_packages: Iterable[Package],
         package_advisories: PackageAdvisories,
-    ) -> PackageVulnerabilities:
-        vulnerabilities = PackageVulnerabilities(host_ip, host_name)
+    ) -> List[PackageVulnerability]:
+        vulnerabilities: Dict[str, PackageVulnerability] = {}
         for package in installed_packages:
             package_advisory_list = (
                 package_advisories.get_package_advisories_for_package(package)
             )
             for package_advisory in package_advisory_list:
                 if package_advisory.is_vulnerable(package):
-                    vulnerabilities.add_vulnerability(
-                        package_advisory.advisory.oid,
-                        Vulnerability(package, package_advisory),
-                    )
-        return vulnerabilities
+                    oid = package_advisory.advisory.oid
+                    if oid in vulnerabilities:
+                        vulnerabilities[oid].add_package(
+                            package, package_advisory
+                        )
+                    else:
+                        vulnerabilities[oid] = PackageVulnerability(
+                            host_ip=host_ip,
+                            host_name=host_name,
+                            package=package,
+                            fixed=package_advisory,
+                            advisory=package_advisory.advisory,
+                        )
+
+        return vulnerabilities.values()
 
     def run_scan(
         self,
@@ -161,10 +170,6 @@ class NotusScanner:
             )
             return
 
-        logger.debug(
-            "Loaded advisories for %i packages", len(package_advisories)
-        )
-
         # Determine package type
         package_type = package_advisories.package_type
 
@@ -190,19 +195,18 @@ class NotusScanner:
 
         self._start_host(message.scan_id, message.host_ip)
 
+        i = 0
         try:
-            vulnerabilities = self._start_scan(
+            for vulnerability in self._start_scan(
                 host_ip=message.host_ip,
                 host_name=message.host_name,
                 installed_packages=installed_packages,
                 package_advisories=package_advisories,
-            )
-            self._publish_results(message.scan_id, vulnerabilities)
+            ):
+                i += 1
+                self._publish_result(message.scan_id, vulnerability)
 
-            logger.info(
-                "Total number of vulnerable packages -> %d",
-                vulnerabilities.num_vul,
-            )
+            logger.info("Total number of vulnerable packages -> %d", i)
 
             self._finish_host(message.scan_id, message.host_ip)
 
