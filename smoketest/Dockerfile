@@ -1,4 +1,4 @@
-FROM ghcr.io/greenbone/vulnerability-tests:community-staging AS nasl-feed
+FROM greenbone/vulnerability-tests AS nasl-feed
 # use latest version
 RUN mv `ls -d /var/lib/openvas/* | sort -r | head -n 1`/vt-data/nasl /nasl
 
