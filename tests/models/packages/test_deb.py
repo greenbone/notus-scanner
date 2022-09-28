@@ -186,6 +186,13 @@ class DEBPackageTestCase(TestCase):
         self.assertEqual(package.debian_revision, "")
         self.assertEqual(package.full_name, "ucf-3.0038+nmu1")
 
+        package = DEBPackage.from_full_name("apport-symptoms-020")
+        self.assertEqual(package.name, "apport-symptoms")
+        self.assertEqual(package.epoch, "0")
+        self.assertEqual(package.upstream_version, "020")
+        self.assertEqual(package.debian_revision, "")
+        self.assertEqual(package.full_name, "apport-symptoms-020")
+
     def test_from_name_and_full_version(self):
         """it should be possible to create packages from name and full
         version"""
