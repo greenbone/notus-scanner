@@ -138,6 +138,7 @@ class PackageAdvisory:
 
     package: Package
     advisory: AdvisoryReference
+    symbol: str
     is_vulnerable: Callable[[Package], bool] = field(compare=False, hash=False)
 
 
@@ -184,7 +185,11 @@ class PackageAdvisories:
         use_verifier = self.is_vulnerable_from_symbol(verifier)
         is_vulnerable = lambda other: use_verifier.verify(package, other)
 
-        advisories.add(PackageAdvisory(package, advisory, is_vulnerable))
+        advisories.add(
+            PackageAdvisory(
+                package, advisory, verifier if verifier else ">=", is_vulnerable
+            )
+        )
         self.advisories[package.name] = advisories
 
     def __len__(self) -> int:

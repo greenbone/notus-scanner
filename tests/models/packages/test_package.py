@@ -112,7 +112,10 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory = PackageAdvisory(
-            package=package, advisory=advisory, is_vulnerable=lambda _: False
+            package=package,
+            advisory=advisory,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
 
         self.assertEqual(package_advisory.package, package)
@@ -133,7 +136,10 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory = PackageAdvisory(
-            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory1,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
 
         with self.assertRaises(FrozenInstanceError):
@@ -160,16 +166,28 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory1 = PackageAdvisory(
-            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory1,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory2 = PackageAdvisory(
-            package=package2, advisory=advisory2, is_vulnerable=lambda _: False
+            package=package2,
+            advisory=advisory2,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory3 = PackageAdvisory(
-            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory1,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory4 = PackageAdvisory(
-            package=package1, advisory=advisory2, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory2,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
 
         self.assertEqual(package_advisory1, package_advisory1)
@@ -194,16 +212,28 @@ class PackageAdvisoryTestCase(TestCase):
         )
 
         package_advisory1 = PackageAdvisory(
-            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory1,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory2 = PackageAdvisory(
-            package=package2, advisory=advisory2, is_vulnerable=lambda _: False
+            package=package2,
+            advisory=advisory2,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory3 = PackageAdvisory(
-            package=package1, advisory=advisory1, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory1,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
         package_advisory4 = PackageAdvisory(
-            package=package1, advisory=advisory2, is_vulnerable=lambda _: False
+            package=package1,
+            advisory=advisory2,
+            symbol=">=",
+            is_vulnerable=lambda _: False,
         )
 
         self.assertEqual(hash(package_advisory1), hash(package_advisory1))
