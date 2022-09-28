@@ -18,6 +18,8 @@
 import logging
 from typing import Dict, Iterable, List
 
+from notus.scanner.models.packages import package_class_by_type
+
 from .errors import AdvisoriesLoadingError
 from .loader import AdvisoriesLoader
 from .messages.message import Message
@@ -25,7 +27,6 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages import package_class_by_type
 from .models.packages.package import Package, PackageAdvisories
 from .models.vulnerability import PackageVulnerability
 
@@ -78,9 +79,9 @@ class NotusScanner:
             report = (
                 report
                 + f"""
-Vulnerable package: {package.name}
-Installed version:  {package.full_name}
-Fixed version:      {fixed_package.full_name}
+Vulnerable package:   {package.name}
+Installed version:    {package.full_name}
+Fixed version:      {fixed_package.symbol:>2}{fixed_package.package.full_name}
 """
             )
         message = ResultMessage(
@@ -100,13 +101,6 @@ Fixed version:      {fixed_package.full_name}
         package_advisories: PackageAdvisories,
     ) -> List[PackageVulnerability]:
         vulnerabilities: Dict[str, PackageVulnerability] = {}
-
-        logger.info(
-            "Start to identify vulnerable packages for %s (%s)",
-            host_ip,
-            host_name,
-        )
-
         for package in installed_packages:
             package_advisory_list = (
                 package_advisories.get_package_advisories_for_package(package)
@@ -116,14 +110,14 @@ Fixed version:      {fixed_package.full_name}
                     oid = package_advisory.advisory.oid
                     if oid in vulnerabilities:
                         vulnerabilities[oid].add_package(
-                            package, package_advisory.package
+                            package, package_advisory
                         )
                     else:
                         vulnerabilities[oid] = PackageVulnerability(
                             host_ip=host_ip,
                             host_name=host_name,
                             package=package,
-                            fixed_package=package_advisory.package,
+                            fixed=package_advisory,
                             advisory=package_advisory.advisory,
                         )
 
@@ -175,10 +169,6 @@ Fixed version:      {fixed_package.full_name}
                 message.os_release,
             )
             return
-
-        logger.debug(
-            "Loaded advisories for %i packages", len(package_advisories)
-        )
 
         # Determine package type
         package_type = package_advisories.package_type

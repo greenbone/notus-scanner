@@ -16,16 +16,17 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
+from typing import List, Optional, Tuple
 import unittest
 from pathlib import Path
-from typing import List, Optional, Tuple
 
-from notus.scanner.loader.gpg_sha_verifier import VerificationResult
-from notus.scanner.loader.json import JSONAdvisoriesLoader
-from notus.scanner.messages.message import Message
+
 from notus.scanner.messages.start import ScanStartMessage
+from notus.scanner.messages.message import Message
 from notus.scanner.messaging.publisher import Publisher
 from notus.scanner.scanner import NotusScanner
+from notus.scanner.loader.gpg_sha_verifier import VerificationResult
+from notus.scanner.loader.json import JSONAdvisoriesLoader
 
 _here = Path(__file__).parent
 
@@ -39,7 +40,7 @@ class FakePublisher(Publisher):
         values = str(serialized.get("value", "")).split("\n")
         for value in values:
             if value.find("Installed version:") >= 0:
-                installed = value[len("Installed version: ") :].strip()
+                installed = value.split(":")[1].strip()
                 self.results.append(installed)
 
 
@@ -84,10 +85,8 @@ class VerifierTestCase(unittest.TestCase):
         not_in = []
         # cases that should appear in result
         is_in = []
-        for verylongvariablenamecaseforpylint in cases:
-            c_not_in, c_is_in = self.per_symbol(
-                *verylongvariablenamecaseforpylint
-            )
+        for case in cases:
+            c_not_in, c_is_in = self.per_symbol(*case)
             not_in = not_in + c_not_in
             is_in = is_in + c_is_in
         # packagelist is both combined
