@@ -27,8 +27,8 @@ from packaging.version import parse
 
 from .package import Package, PackageComparison
 
-_deb_compile = re.compile(r"(.*)-(?:(\d*):)?(.*)-(.*)")
-_deb_compile_wo_revision = re.compile(r"(.*)-(?:(\d*):)?(.*)")
+_deb_compile = re.compile(r"(.*)-(?:(\d*):)?(\d.*)-(.*)")
+_deb_compile_wo_revision = re.compile(r"(.*)-(?:(\d*):)?(\d.*)")
 _deb_compile_version = re.compile(r"(?:(\d*):)?(\d.*)-(.*)")
 _deb_compile_version_wo_revision = re.compile(r"(?:(\d*):)?(\d.*)")
 
