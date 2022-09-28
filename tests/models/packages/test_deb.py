@@ -102,6 +102,16 @@ class DEBPackageTestCase(TestCase):
         )
         self.assertLess(package1, package2)
 
+        package2 = DEBPackage(
+            name="foo-bar",
+            epoch="1",
+            upstream_version="1.2.3~rc",
+            debian_revision="4",
+            full_name="foo-bar-1:1.2.3~rc-4",
+            full_version="1:1.2.3~rc-4",
+        )
+        self.assertLess(package2, package1)
+
     def test_compare_equal(self):
         """packages with the same data should be equal"""
         package1 = DEBPackage(
