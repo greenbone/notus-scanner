@@ -49,12 +49,29 @@ class DEBPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: Package) -> PackageComparison:
-        a_version = parse(self.full_version)
-        b_version = parse(other.full_version)
-
-        if a_version == b_version:
+    def _compare(self, other: "DEBPackage") -> PackageComparison:
+        if self.full_version == other.full_version:
             return PackageComparison.EQUAL
+
+        if self.epoch != other.epoch:
+            return (
+                PackageComparison.A_NEWER
+                if self.epoch > other.epoch
+                else PackageComparison.B_NEWER
+            )
+
+        a_version = parse(self.upstream_version)
+        b_version = parse(other.upstream_version)
+
+        if a_version != b_version:
+            return (
+                PackageComparison.A_NEWER
+                if a_version > b_version
+                else PackageComparison.B_NEWER
+            )
+
+        a_version = parse(self.debian_revision)
+        b_version = parse(other.debian_revision)
 
         return (
             PackageComparison.A_NEWER
