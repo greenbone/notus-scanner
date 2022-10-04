@@ -50,6 +50,12 @@ func (a *Advisory) FindByFullName(fullname string) *FixedPackage {
 }
 
 func (a *Advisory) Find(value string) *FixedPackage {
+	if strings.HasPrefix(value, ">") || strings.HasPrefix(value, "<") || strings.HasPrefix(value, "=") {
+		value = value[1:]
+		if strings.HasPrefix(value, "=") {
+			value = value[1:]
+		}
+	}
 	if found := a.FindByFullName(value); found != nil {
 		return found
 	}
