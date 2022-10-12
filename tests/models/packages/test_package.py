@@ -26,6 +26,7 @@ from notus.scanner.models.packages.package import (
     Package,
     PackageAdvisories,
     PackageAdvisory,
+    PackageComparison,
     PackageType,
 )
 from notus.scanner.models.packages.rpm import RPMPackage
@@ -82,6 +83,57 @@ class PackageTestCase(TestCase):
         with self.assertRaises(PackageError):
             if package1 > package2:
                 self.fail("PackageError should occur")
+
+    def test_version_compare(self):
+        version_a = "1.2.3"
+        version_b = "1.2.3"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.EQUAL)
+
+        version_a = "1.2.3"
+        version_b = "1.2.12"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3"
+        version_b = "1.2.3a"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3~rc0"
+        version_b = "1.2.3"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3a"
+        version_b = "1.2.3b"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3a"
+        version_b = "1.2.3-2"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2"
+        version_b = "1.2.3"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.1.1c"
+        version_b = "1.1.1k"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3.1"
+        version_b = "1.2.3_a"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
+        version_a = "1.2.3_a"
+        version_b = "1.2.3_1"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
 
 
 class ArchitectureTestCase(TestCase):

@@ -122,6 +122,29 @@ class SlackPackageTestCase(TestCase):
         self.assertFalse(package5 > package1)
         self.assertFalse(package1 > package5)
 
+    def test_compare_gt_different_name(self):
+        """different packagtes should not be comparable"""
+        package1 = SlackPackage(
+            name="foo",
+            version="1.2.3",
+            build="4",
+            arch=Architecture.X86_64,
+            target="15.0",
+            full_name="foo-1.2.3-x86_64-4_slack15.0",
+            full_version="1.2.3-x86_64-4_slack15.0",
+        )
+        package2 = SlackPackage(
+            name="bar",
+            version="1.2.3",
+            build="4",
+            arch=Architecture.X86_64,
+            target="15.0",
+            full_name="bar-1.2.3-x86_64-4_slack15.0",
+            full_version="1.2.3-x86_64-4_slack15.0",
+        )
+        self.assertFalse(package2 > package1)
+        self.assertFalse(package1 > package2)
+
     def test_compare_less(self):
         """packages should be comparable"""
         package1 = SlackPackage(

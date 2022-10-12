@@ -45,21 +45,18 @@ class SlackPackage(Package):
     __hash__ = Package.__hash__
 
     def _compare(self, other: "SlackPackage") -> PackageComparison:
+        if self.name != other.name:
+            return PackageComparison.NOT_COMPARABLE
+
         if self.arch != other.arch:
             return PackageComparison.NOT_COMPARABLE
 
         if self.full_version == other.full_version:
             return PackageComparison.EQUAL
 
-        a_version = parse(self.version)
-        b_version = parse(other.version)
-
-        if a_version != b_version:
-            return (
-                PackageComparison.A_NEWER
-                if a_version > b_version
-                else PackageComparison.B_NEWER
-            )
+        comp = self.version_compare(self.version, other.version)
+        if comp != PackageComparison.EQUAL:
+            return comp
 
         a_target = parse(self.target)
         b_target = parse(other.target)
@@ -70,16 +67,11 @@ class SlackPackage(Package):
                 if a_target > b_target
                 else PackageComparison.B_NEWER
             )
+        comp = self.version_compare(self.target, other.target)
+        if comp != PackageComparison.EQUAL:
+            return comp
 
-        a_build = parse(self.build)
-        b_build = parse(other.build)
-
-        if a_build != b_build:
-            return (
-                PackageComparison.A_NEWER
-                if a_build > b_build
-                else PackageComparison.B_NEWER
-            )
+        return self.version_compare(self.build, other.build)
 
     @staticmethod
     def from_full_name(full_name: str):
