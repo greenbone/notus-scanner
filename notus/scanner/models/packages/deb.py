@@ -23,8 +23,6 @@ import re
 from dataclasses import dataclass
 from typing import Tuple
 
-from packaging.version import parse
-
 from .package import Package, PackageComparison
 
 _deb_compile = re.compile(r"(.*)-(?:(\d*):)?(\d.*)-(.*)")
@@ -50,6 +48,9 @@ class DEBPackage(Package):
     __hash__ = Package.__hash__
 
     def _compare(self, other: "DEBPackage") -> PackageComparison:
+        if self.name != other.name:
+            return PackageComparison.NOT_COMPARABLE
+
         if self.full_version == other.full_version:
             return PackageComparison.EQUAL
 
@@ -60,24 +61,13 @@ class DEBPackage(Package):
                 else PackageComparison.B_NEWER
             )
 
-        a_version = parse(self.upstream_version)
-        b_version = parse(other.upstream_version)
-
-        if a_version != b_version:
-            return (
-                PackageComparison.A_NEWER
-                if a_version > b_version
-                else PackageComparison.B_NEWER
-            )
-
-        a_version = parse(self.debian_revision)
-        b_version = parse(other.debian_revision)
-
-        return (
-            PackageComparison.A_NEWER
-            if a_version > b_version
-            else PackageComparison.B_NEWER
+        comp = self.version_compare(
+            self.upstream_version, other.upstream_version
         )
+        if comp != PackageComparison.EQUAL:
+            return comp
+
+        return self.version_compare(self.debian_revision, other.debian_revision)
 
     @staticmethod
     def from_full_name(full_name: str):

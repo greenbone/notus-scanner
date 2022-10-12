@@ -93,6 +93,27 @@ class RPMPackageTestCase(TestCase):
         self.assertFalse(package4 > package1)
         self.assertFalse(package1 > package4)
 
+    def test_compare_gt_different_name(self):
+        """different packagtes should not be comparable"""
+        package1 = RPMPackage(
+            name="foo",
+            version="1.2.3",
+            release="4",
+            arch=Architecture.X86_64,
+            full_name="foo-1.2.3-4.x86_64",
+            full_version="1.2.3-4.x86_64",
+        )
+        package2 = RPMPackage(
+            name="bar",
+            version="1.2.3",
+            release="4",
+            arch=Architecture.X86_64,
+            full_name="bar-1.2.3-4.x86_64",
+            full_version="1.2.3-4.x86_64",
+        )
+        self.assertFalse(package2 > package1)
+        self.assertFalse(package1 > package2)
+
     def test_compare_less(self):
         """packages should be comparable"""
         package1 = RPMPackage(
