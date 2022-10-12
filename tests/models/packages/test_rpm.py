@@ -253,3 +253,33 @@ class RPMPackageTestCase(TestCase):
         self.assertEqual(package.version, "1.6.3")
         self.assertEqual(package.release, "26.h1")
         self.assertEqual(package.full_name, "cups-libs-1.6.3-26.h1.x86_64")
+
+    def test_exceptions(self):
+        """tests for the exceptions _fips and .ksplice"""
+        package1 = RPMPackage.from_full_name("gnutls-3.6.16-4.el8.x86_64")
+        package2 = RPMPackage.from_full_name(
+            "gnutls-3.6.16-4.0.1.el8_fips.x86_64"
+        )
+
+        self.assertFalse(package1 > package2)
+        self.assertFalse(package2 > package1)
+
+        package1 = RPMPackage.from_full_name("gnutls-3.6.16-4.el8_fips.x86_64")
+
+        self.assertTrue(package2 > package1)
+
+        package1 = RPMPackage.from_full_name(
+            "openssl-libs-1.0.2k-24.0.3.el7_8.x86_64"
+        )
+        package2 = RPMPackage.from_full_name(
+            "openssl-libs-1.0.2k-24.0.3.ksplice1.el7_9.x86_64"
+        )
+
+        self.assertFalse(package1 > package2)
+        self.assertFalse(package2 > package1)
+
+        package1 = RPMPackage.from_full_name(
+            "openssl-libs-1.0.2k-24.0.3.ksplice1.el7_8.x86_64"
+        )
+
+        self.assertTrue(package2 > package1)
