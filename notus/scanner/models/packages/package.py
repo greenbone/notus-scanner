@@ -16,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import re
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
@@ -24,6 +25,9 @@ from typing import Any, Callable, Dict, Optional, Set
 from ...errors import PackageError
 
 logger = logging.getLogger(__name__)
+
+
+version_component_re = re.compile(r"(\d+ | .)", re.X)
 
 
 class PackageType(Enum):
@@ -97,6 +101,67 @@ class Package:
         # allow to hash the package
         # the full name identifies the package
         return hash(self.full_name)
+
+    @staticmethod
+    def version_compare(version_a: str, version_b: str) -> PackageComparison:
+        """Compares two versions"""
+        if version_a == version_b:
+            return PackageComparison.EQUAL
+
+        a_parts = version_component_re.split(version_a)
+        b_parts = version_component_re.split(version_b)
+
+        for i in range(max(len(a_parts), len(b_parts))):
+            if i < len(a_parts):
+                a_part = a_parts[i]
+            else:
+                return (
+                    PackageComparison.B_NEWER
+                    if b_parts[i] != "~"
+                    else PackageComparison.A_NEWER
+                )
+            if i < len(b_parts):
+                b_part = b_parts[i]
+            else:
+                return (
+                    PackageComparison.A_NEWER
+                    if a_part != "~"
+                    else PackageComparison.B_NEWER
+                )
+            if a_part == b_part:
+                continue
+
+            if a_part.isnumeric() and b_part.isnumeric():
+                return (
+                    PackageComparison.A_NEWER
+                    if int(a_part) > int(b_part)
+                    else PackageComparison.B_NEWER
+                )
+            if a_part.isnumeric() or b_part.isnumeric():
+                return (
+                    PackageComparison.A_NEWER
+                    if a_part.isnumeric()
+                    else PackageComparison.B_NEWER
+                )
+
+            if a_part.isalpha() and b_part.isalpha():
+                return (
+                    PackageComparison.A_NEWER
+                    if a_part.lower() > b_part.lower()
+                    else PackageComparison.B_NEWER
+                )
+            if a_part.isalpha() or b_part.isalpha():
+                return (
+                    PackageComparison.A_NEWER
+                    if b_part.isalpha() or b_part == "~"
+                    else PackageComparison.B_NEWER
+                )
+
+            return (
+                PackageComparison.A_NEWER
+                if a_part != "~" and a_part > b_part or b_part == "~"
+                else PackageComparison.B_NEWER
+            )
 
     @abstractmethod
     def _compare(self, other: Any) -> PackageComparison:

@@ -51,22 +51,22 @@ class DEBPackageTestCase(TestCase):
         )
         self.assertGreater(package2, package1)
 
-    def test_compare_gt_different_architecture(self):
-        """packages of different architecture should not be comparable"""
+    def test_compare_gt_different_name(self):
+        """different packagtes should not be comparable"""
         package1 = DEBPackage(
-            name="foo-bar",
+            name="foo",
             epoch="1",
             upstream_version="1.2.3",
             debian_revision="4",
-            full_name="foo-bar-1:1.2.3-4",
+            full_name="foo-1:1.2.3-4",
             full_version="1:1.2.3-4",
         )
         package2 = DEBPackage(
-            name="foo-bar",
+            name="bar",
             epoch="1",
             upstream_version="1.2.3",
             debian_revision="4",
-            full_name="foo-bar-1:1.2.3-4",
+            full_name="bar-1:1.2.3-4",
             full_version="1:1.2.3-4",
         )
         self.assertFalse(package2 > package1)

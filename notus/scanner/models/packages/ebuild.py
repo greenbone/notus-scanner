@@ -34,8 +34,6 @@ of pep440 to guess immediately.
 import logging
 from dataclasses import dataclass
 
-from packaging.version import Version
-
 from .package import Package, PackageComparison
 
 logger = logging.getLogger(__name__)
@@ -46,21 +44,13 @@ class EBuildPackage(Package):
     """Represents a .ebuild based package"""
 
     def _compare(self, other: Package) -> PackageComparison:
-        # we don't want to deal with LegacyVersion
-        a_version = Version(self.full_version)
-        b_version = Version(other.full_version)
-
         if self.name != other.name:
             return PackageComparison.NOT_COMPARABLE
 
-        if a_version == b_version:
+        if self.full_version == other.full_version:
             return PackageComparison.EQUAL
 
-        return (
-            PackageComparison.A_NEWER
-            if a_version > b_version
-            else PackageComparison.B_NEWER
-        )
+        return self.version_compare(self.full_version, other.full_version)
 
     @staticmethod
     def from_full_name(full_name: str):
