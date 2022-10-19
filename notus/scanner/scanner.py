@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Dict, Iterable, List
+from typing import Iterable, List, Optional, Set
 
 from notus.scanner.models.packages import package_class_by_type
 
@@ -27,8 +27,8 @@ from .messages.result import ResultMessage
 from .messages.start import ScanStartMessage
 from .messages.status import ScanStatus, ScanStatusMessage
 from .messaging.publisher import Publisher
-from .models.packages.package import Package, PackageAdvisories
-from .models.vulnerability import PackageVulnerability
+from .models.packages.package import Package, PackageAdvisories, PackageAdvisory
+from .models.vulnerability import Vulnerabilities, Vulnerability
 
 logger = logging.getLogger(__name__)
 
@@ -71,64 +71,72 @@ class NotusScanner:
         )
         self._publish(scan_status_message)
 
-    def _publish_result(
-        self, scan_id: str, vulnerability: PackageVulnerability
+    def _publish_results(
+        self,
+        scan_id: str,
+        host_ip: str,
+        host_name: str,
+        vulnerabilities: Vulnerabilities,
     ) -> None:
-        report = ""
-        for package, fixed_package in vulnerability.packages.items():
-            report = (
-                report
-                + f"""
-Vulnerable package:   {package.name}
-Installed version:    {package.full_name}
-Fixed version:      {fixed_package.symbol:>2}{fixed_package.package.full_name}
-"""
+        for oid, vulnerability in vulnerabilities.get().items():
+            report = ""
+            fixed_packages: List[PackageAdvisory]
+            for package, fixed_packages in vulnerability.get().items():
+                fixed_package = fixed_packages.pop(0)
+                report = (
+                    report + f"\n{'Vulnerable package:':<22}{package.name}\n"
+                    f"{'Installed version:':<22}{package.full_name}\n"
+                    f"{'Fixed version:':<20}{fixed_package.symbol:>2}"
+                    f"{fixed_package.package.full_name}\n"
+                )
+                for fixed_package in fixed_packages:
+                    report = (
+                        report + f"{'':<20}{fixed_package.symbol:>2}"
+                        f"{fixed_package.package.full_name}\n"
+                    )
+
+            message = ResultMessage(
+                scan_id=scan_id,
+                host_ip=host_ip,
+                host_name=host_name,
+                oid=oid,
+                value=report,
             )
-        message = ResultMessage(
-            scan_id=scan_id,
-            host_ip=vulnerability.host_ip,
-            host_name=vulnerability.host_name,
-            oid=vulnerability.advisory.oid,
-            value=report,
-        )
-        self._publish(message)
+            self._publish(message)
+
+    @staticmethod
+    def _check_package(
+        package: Package, package_advisory_list: Set[PackageAdvisory]
+    ) -> Optional[Vulnerability]:
+        vul = Vulnerability()
+
+        for package_advisory in package_advisory_list:
+
+            if not package_advisory.is_vulnerable(package):
+                return
+            vul.add(package, package_advisory)
+
+        return vul
 
     def _start_scan(
         self,
-        host_ip: str,
-        host_name: str,
         installed_packages: Iterable[Package],
         package_advisories: PackageAdvisories,
-    ) -> List[PackageVulnerability]:
-        vulnerabilities: Dict[str, PackageVulnerability] = {}
+    ) -> Vulnerabilities:
 
-        logger.info(
-            "Start to identify vulnerable packages for %s (%s)",
-            host_ip,
-            host_name,
-        )
+        vulnerabilities = Vulnerabilities()
 
         for package in installed_packages:
-            package_advisory_list = (
+            package_advisory_oids = (
                 package_advisories.get_package_advisories_for_package(package)
             )
-            for package_advisory in package_advisory_list:
-                if package_advisory.is_vulnerable(package):
-                    oid = package_advisory.advisory.oid
-                    if oid in vulnerabilities:
-                        vulnerabilities[oid].add_package(
-                            package, package_advisory
-                        )
-                    else:
-                        vulnerabilities[oid] = PackageVulnerability(
-                            host_ip=host_ip,
-                            host_name=host_name,
-                            package=package,
-                            fixed=package_advisory,
-                            advisory=package_advisory.advisory,
-                        )
+            for oid, package_advisory_list in package_advisory_oids.items():
 
-        return vulnerabilities.values()
+                vul = self._check_package(package, package_advisory_list)
+                if vul:
+                    vulnerabilities.add(oid, vul)
+
+        return vulnerabilities
 
     def run_scan(
         self,
@@ -206,18 +214,27 @@ Fixed version:      {fixed_package.symbol:>2}{fixed_package.package.full_name}
 
         self._start_host(message.scan_id, message.host_ip)
 
-        i = 0
+        logger.info(
+            "Start to identify vulnerable packages for %s (%s)",
+            message.host_ip,
+            message.host_name,
+        )
         try:
-            for vulnerability in self._start_scan(
-                host_ip=message.host_ip,
-                host_name=message.host_name,
+            vulnerabilities = self._start_scan(
                 installed_packages=installed_packages,
                 package_advisories=package_advisories,
-            ):
-                i += 1
-                self._publish_result(message.scan_id, vulnerability)
+            )
+            self._publish_results(
+                message.scan_id,
+                message.host_ip,
+                message.host_name,
+                vulnerabilities,
+            )
 
-            logger.info("Total number of vulnerable packages -> %d", i)
+            logger.info(
+                "Total number of vulnerable packages -> %d",
+                len(vulnerabilities),
+            )
 
             self._finish_host(message.scan_id, message.host_ip)
 

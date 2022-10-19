@@ -16,17 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
-from typing import List, Optional, Tuple
 import unittest
 from pathlib import Path
+from typing import List, Optional, Tuple
 
-
-from notus.scanner.messages.start import ScanStartMessage
-from notus.scanner.messages.message import Message
-from notus.scanner.messaging.publisher import Publisher
-from notus.scanner.scanner import NotusScanner
 from notus.scanner.loader.gpg_sha_verifier import VerificationResult
 from notus.scanner.loader.json import JSONAdvisoriesLoader
+from notus.scanner.messages.message import Message
+from notus.scanner.messages.start import ScanStartMessage
+from notus.scanner.messaging.publisher import Publisher
+from notus.scanner.scanner import NotusScanner
 
 _here = Path(__file__).parent
 
@@ -109,6 +108,7 @@ class VerifierTestCase(unittest.TestCase):
         )
         scanner.run_scan(msg)
         results = set(publisher.results)
+
         self.assertEqual(len(results), len(publisher.results))
 
         self.assertEqual(set(), results.intersection(not_in_results))
