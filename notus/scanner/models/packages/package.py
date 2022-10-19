@@ -162,6 +162,7 @@ class Package:
                 if a_part != "~" and a_part > b_part or b_part == "~"
                 else PackageComparison.B_NEWER
             )
+        return PackageComparison.EQUAL
 
     @abstractmethod
     def _compare(self, other: Any) -> PackageComparison:
@@ -213,12 +214,14 @@ class PackageAdvisories:
     package"""
 
     package_type: PackageType
-    advisories: Dict[str, Set[PackageAdvisory]] = field(default_factory=dict)
+    advisories: Dict[str, Dict[str, Set[PackageAdvisory]]] = field(
+        default_factory=dict
+    )
 
     def get_package_advisories_for_package(
         self, package: Package
-    ) -> Set[PackageAdvisory]:
-        return self.advisories.get(package.name) or set()
+    ) -> Dict[str, Set[PackageAdvisory]]:
+        return self.advisories.get(package.name) or dict()
 
     @staticmethod
     def is_vulnerable_from_symbol(symbol: Optional[str]):
@@ -250,7 +253,10 @@ class PackageAdvisories:
         use_verifier = self.is_vulnerable_from_symbol(verifier)
         is_vulnerable = lambda other: use_verifier.verify(package, other)
 
-        advisories.add(
+        if not advisory.oid in advisories:
+            advisories[advisory.oid] = set()
+
+        advisories[advisory.oid].add(
             PackageAdvisory(
                 package, advisory, verifier if verifier else ">=", is_vulnerable
             )

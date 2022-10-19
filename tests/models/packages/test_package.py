@@ -335,8 +335,9 @@ class PackageAdvisoriesTestCase(TestCase):
             other
         )
         self.assertEqual(1, len(advisories))
-        for adv in advisories:
-            self.assertFalse(adv.is_vulnerable(other))
+        for package_advisories in advisories.values():
+            for adv in package_advisories:
+                self.assertFalse(adv.is_vulnerable(other))
 
     def test_add_duplicate_advisory_for_package(self):
         package_advisories = PackageAdvisories(package_type=PackageType.RPM)
