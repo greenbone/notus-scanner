@@ -80,8 +80,16 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
             package2
         )
 
+        oid = "1.3.6.1.4.1.25623.1.1.2.2016.1008"
+
         self.assertEqual(len(package_advisories1), 1)
         self.assertEqual(len(package_advisories2), 1)
+
+        self.assertIn(oid, package_advisories1.keys())
+        self.assertIn(oid, package_advisories2.keys())
+
+        package_advisories1 = package_advisories1[oid]
+        package_advisories2 = package_advisories2[oid]
 
         # get first PackageAdvisory from the sets
         package_advisory1 = next(iter(package_advisories1))
