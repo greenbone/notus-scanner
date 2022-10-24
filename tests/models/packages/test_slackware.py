@@ -17,7 +17,6 @@
 
 from unittest import TestCase
 
-from notus.scanner.models.packages.package import Architecture
 from notus.scanner.models.packages.slackware import SlackPackage
 
 
@@ -28,7 +27,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -37,7 +36,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.4",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.4-x86_64-4_slack15.0",
             full_version="1.2.4-x86_64-4_slack15.0",
@@ -48,7 +47,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="5",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-5_slack15.0",
             full_version="1.2.3-x86_64-5_slack15.0",
@@ -59,7 +58,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.1",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.1",
             full_version="1.2.3-x86_64-4_slack15.1",
@@ -72,7 +71,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -81,7 +80,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.AARCH64,
+            arch="aarch64",
             target="15.0",
             full_name="foo-bar-1.2.3-aarch64-4_slack15.0",
             full_version="1.2.3-aarch64-4_slack15.0",
@@ -90,7 +89,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.4",
             build="4",
-            arch=Architecture.AARCH64,
+            arch="aarch64",
             target="15.0",
             full_name="foo-bar-1.2.4-aarch64-4_slack15.0",
             full_version="1.2.4-aarch64-4_slack15.0",
@@ -99,7 +98,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="5",
-            arch=Architecture.AARCH64,
+            arch="aarch64",
             target="15.0",
             full_name="foo-bar-1.2.3-aarch64-5_slack15.0",
             full_version="1.2.3-aarch64-5_slack15.0",
@@ -108,7 +107,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.AARCH64,
+            arch="aarch64",
             target="15.1",
             full_name="foo-bar-1.2.3-aarch64-4_slack15.1",
             full_version="1.2.3-aarch64-4_slack15.1",
@@ -128,7 +127,7 @@ class SlackPackageTestCase(TestCase):
             name="foo",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -137,7 +136,7 @@ class SlackPackageTestCase(TestCase):
             name="bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -151,7 +150,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -160,7 +159,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.4",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.4-x86_64-4_slack15.0",
             full_version="1.2.4-x86_64-4_slack15.0",
@@ -171,7 +170,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="5",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-5_slack15.0",
             full_version="1.2.3-x86_64-5_slack15.0",
@@ -182,7 +181,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.1",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.1",
             full_version="1.2.3-x86_64-4_slack15.1",
@@ -195,7 +194,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -204,7 +203,7 @@ class SlackPackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             build="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             target="15.0",
             full_name="foo-bar-1.2.3-x86_64-4_slack15.0",
             full_version="1.2.3-x86_64-4_slack15.0",
@@ -217,10 +216,10 @@ class SlackPackageTestCase(TestCase):
         self.assertIsNone(SlackPackage.from_full_name(None))
 
         package = SlackPackage.from_full_name("flac-1.3.4-foo-1_slack15.0")
-        self.assertEqual(package.arch, Architecture.UNKNOWN)
+        self.assertEqual(package.arch, "foo")
 
         package = SlackPackage.from_full_name("flac-1.3.4-x86_64-1_slack15.0")
-        self.assertEqual(package.arch, Architecture.X86_64)
+        self.assertEqual(package.arch, "x86_64")
         self.assertEqual(package.name, "flac")
         self.assertEqual(package.version, "1.3.4")
         self.assertEqual(package.build, "1")
@@ -229,7 +228,7 @@ class SlackPackageTestCase(TestCase):
         self.assertEqual(package.full_name, "flac-1.3.4-x86_64-1_slack15.0")
 
         package = SlackPackage.from_full_name("kernel-source-5.15.27-noarch-1")
-        self.assertEqual(package.arch, Architecture.NOARCH)
+        self.assertEqual(package.arch, "noarch")
         self.assertEqual(package.name, "kernel-source")
         self.assertEqual(package.version, "5.15.27")
         self.assertEqual(package.build, "1")
@@ -238,7 +237,7 @@ class SlackPackageTestCase(TestCase):
         self.assertEqual(package.full_name, "kernel-source-5.15.27-noarch-1")
 
         package = SlackPackage.from_full_name("libjpeg-v8a-x86_64-2")
-        self.assertEqual(package.arch, Architecture.X86_64)
+        self.assertEqual(package.arch, "x86_64")
         self.assertEqual(package.name, "libjpeg")
         self.assertEqual(package.version, "v8a")
         self.assertEqual(package.build, "2")
@@ -247,7 +246,7 @@ class SlackPackageTestCase(TestCase):
         self.assertEqual(package.full_name, "libjpeg-v8a-x86_64-2")
 
         package = SlackPackage.from_full_name(" libjpeg-v8a-x86_64-2\r\n")
-        self.assertEqual(package.arch, Architecture.X86_64)
+        self.assertEqual(package.arch, "x86_64")
         self.assertEqual(package.name, "libjpeg")
         self.assertEqual(package.version, "v8a")
         self.assertEqual(package.build, "2")
@@ -259,7 +258,7 @@ class SlackPackageTestCase(TestCase):
         self.assertIsNone(package)
 
         package = SlackPackage.from_full_name("libjpeg-v8a-foo-2")
-        self.assertEqual(package.arch, Architecture.UNKNOWN)
+        self.assertEqual(package.arch, "foo")
 
     def test_from_name_and_full_version(self):
         """it should be possible to create packages from name and full
@@ -269,7 +268,7 @@ class SlackPackageTestCase(TestCase):
         package = SlackPackage.from_name_and_full_version(
             "flac", "1.3.4-x86_64-1_slack15.0"
         )
-        self.assertEqual(package.arch, Architecture.X86_64)
+        self.assertEqual(package.arch, "x86_64")
         self.assertEqual(package.name, "flac")
         self.assertEqual(package.version, "1.3.4")
         self.assertEqual(package.build, "1")
@@ -283,4 +282,4 @@ class SlackPackageTestCase(TestCase):
         self.assertIsNone(package)
 
         package = SlackPackage.from_name_and_full_version("flac", "1.3.4-foo-1")
-        self.assertEqual(package.arch, Architecture.UNKNOWN)
+        self.assertEqual(package.arch, "foo")

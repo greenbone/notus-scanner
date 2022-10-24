@@ -6,7 +6,7 @@ import logging
 import re
 from dataclasses import dataclass
 
-from .package import Architecture, Package, PackageComparison
+from .package import Package, PackageComparison
 
 _rpm_re = re.compile(r"(\S+)-(?:(\d*):)?(.*)-(~?\w+[\w.]*)")
 
@@ -62,19 +62,15 @@ class RPMPackage(Package):
         full_name = full_name.strip()
 
         try:
-            name, version, release, architecture = _rpm_compile.match(
+            name, version, release, arch = _rpm_compile.match(
                 full_name
             ).groups()
-            try:
-                arch = Architecture(architecture)
-            except ValueError:
-                arch = Architecture.UNKNOWN
         except AttributeError:
             try:
                 name, version, release = _rpm_compile_no_arch.match(
                     full_name
                 ).groups()
-                arch = Architecture.NOTSET
+                arch = ""
             except AttributeError:
                 logger.warning(
                     "The rpm package %s could not be parsed", full_name
@@ -87,7 +83,7 @@ class RPMPackage(Package):
             release=release,
             arch=arch,
             full_name=full_name,
-            full_version=f"{version}-{release}.{arch.value}",
+            full_version=f"{version}-{release}.{arch}",
         )
 
     @staticmethod
@@ -101,12 +97,7 @@ class RPMPackage(Package):
         version_match = _rpm_compile_version.match(full_version)
         if not version_match:
             return None
-        version, release, architecture = version_match.groups()
-
-        try:
-            arch = Architecture(architecture)
-        except ValueError:
-            arch = Architecture.UNKNOWN
+        version, release, arch = version_match.groups()
 
         return RPMPackage(
             name=name,
