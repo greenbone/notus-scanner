@@ -33,7 +33,7 @@ class EBuildPackageTestCase(TestCase):
         ) as file:
             fullname = file.readline()
             if not EBuildPackage.from_full_name(fullname):
-                self.fail(f"{fullname} is not parseable for EBuildPackage.")
+                self.fail(f"{fullname} is not parsable for EBuildPackage.")
 
     def test_guard(self):
         self.assertIsNone(EBuildPackage.from_full_name(""))
