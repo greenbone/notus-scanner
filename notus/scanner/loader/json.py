@@ -23,11 +23,7 @@ from typing import Callable, Dict, Optional
 
 from ..errors import AdvisoriesLoadingError
 from ..models.packages import package_class_by_type
-from ..models.packages.package import (
-    AdvisoryReference,
-    PackageAdvisories,
-    PackageType,
-)
+from ..models.packages.package import PackageAdvisories, PackageType
 from .gpg_sha_verifier import VerificationResult
 from .loader import AdvisoriesLoader
 
@@ -127,7 +123,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                 )
                 continue
 
-            advisory = AdvisoryReference(oid)
+            advisory = oid
 
             for package_dict in fixed_packages:
                 full_name = package_dict.get("full_name")

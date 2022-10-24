@@ -95,11 +95,11 @@ class JSONAdvisoriesLoaderTestCase(TestCase):
         package_advisory1 = next(iter(package_advisories1))
         package_advisory2 = next(iter(package_advisories2))
 
-        self.assertEqual(package_advisory1.advisory, package_advisory2.advisory)
+        self.assertEqual(package_advisory1.oid, package_advisory2.oid)
 
-        advisory = package_advisory1.advisory
+        advisory = package_advisory1.oid
 
-        self.assertEqual(advisory.oid, "1.3.6.1.4.1.25623.1.1.2.2016.1008")
+        self.assertEqual(advisory, "1.3.6.1.4.1.25623.1.1.2.2016.1008")
 
     def test_invalid_package_type(self):
         loader = JSONAdvisoriesLoader(
