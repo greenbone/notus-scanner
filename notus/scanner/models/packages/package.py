@@ -157,18 +157,6 @@ class Package:
 
 
 @dataclass(frozen=True)
-class Verifier:
-    symbol: str
-    _verifier: Callable[[Package, Package], bool]
-
-    def __name__(self) -> str:
-        return self.symbol
-
-    def verify(self, expected: Package, actual: Package) -> bool:
-        return self._verifier(expected, actual)
-
-
-@dataclass(frozen=True)
 class AdvisoryReference:
     """A reference to a vulnerability advisory"""
 
@@ -195,29 +183,18 @@ class PackageAdvisories:
         default_factory=dict
     )
 
+    comparison_map = {
+        ">=": lambda a, b: a > b,
+        "<=": lambda a, b: a < b,
+        "=": lambda a, b: a != b,
+        "<": lambda a, b: a <= b,
+        ">": lambda a, b: a >= b,
+    }
+
     def get_package_advisories_for_package(
         self, package: Package
     ) -> Dict[str, Set[PackageAdvisory]]:
         return self.advisories.get(package.name) or dict()
-
-    @staticmethod
-    def is_vulnerable_from_symbol(symbol: Optional[str]):
-        """
-        is_vulnerable_from_symbol returns either a Verifier when the symbol
-        identifier contains a known operand or or >= if not.
-        """
-        if not symbol or symbol.startswith(">="):
-            return Verifier(">=", lambda a, b: a > b)
-        if symbol.startswith("<="):
-            return Verifier("<=", lambda a, b: a < b)
-        if symbol.startswith("="):
-            return Verifier("=", lambda a, b: a != b)
-        if symbol.startswith("<"):
-            return Verifier("<", lambda a, b: a <= b)
-        if symbol.startswith(">"):
-            return Verifier(">", lambda a, b: a >= b)
-
-        return Verifier(">=", lambda a, b: a > b)
 
     def add_advisory_for_package(
         self,
@@ -225,18 +202,18 @@ class PackageAdvisories:
         advisory: AdvisoryReference,
         verifier: Optional[str],
     ) -> None:
-
+        if verifier not in self.comparison_map:
+            verifier = ">="
         advisories = self.get_package_advisories_for_package(package)
-        use_verifier = self.is_vulnerable_from_symbol(verifier)
-        is_vulnerable = lambda other: use_verifier.verify(package, other)
+        is_vulnerable = lambda other: self.comparison_map[verifier](
+            package, other
+        )
 
         if not advisory.oid in advisories:
             advisories[advisory.oid] = set()
 
         advisories[advisory.oid].add(
-            PackageAdvisory(
-                package, advisory, verifier if verifier else ">=", is_vulnerable
-            )
+            PackageAdvisory(package, advisory, verifier, is_vulnerable)
         )
         self.advisories[package.name] = advisories
 
