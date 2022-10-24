@@ -21,7 +21,6 @@ Module for parsing and comparing Debian packages (.deb)
 import logging
 import re
 from dataclasses import dataclass
-from typing import Tuple
 
 from .package import Package, PackageComparison
 
@@ -32,9 +31,6 @@ _deb_compile_version_wo_revision = re.compile(r"(?:(\d*):)?(\d.*)")
 
 
 logger = logging.getLogger(__name__)
-
-# Epoch, Version, Revision Tuple
-EVRTuple = Tuple[str, str, str]
 
 
 @dataclass
