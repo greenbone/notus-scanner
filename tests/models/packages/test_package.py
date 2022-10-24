@@ -21,7 +21,6 @@ from unittest import TestCase
 from notus.scanner.errors import PackageError
 from notus.scanner.models.packages.deb import DEBPackage
 from notus.scanner.models.packages.package import (
-    AdvisoryReference,
     Package,
     PackageAdvisories,
     PackageAdvisory,
@@ -140,19 +139,17 @@ class PackageAdvisoryTestCase(TestCase):
         package = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
-        advisory = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
+        advisory = "1.2.3.4.5"
 
         package_advisory = PackageAdvisory(
             package=package,
-            advisory=advisory,
+            oid=advisory,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
 
         self.assertEqual(package_advisory.package, package)
-        self.assertEqual(package_advisory.advisory, advisory)
+        self.assertEqual(package_advisory.oid, advisory)
 
     def test_immutability(self):
         package1 = RPMPackage.from_full_name(
@@ -161,16 +158,12 @@ class PackageAdvisoryTestCase(TestCase):
         package2 = RPMPackage.from_full_name(
             "bar-1.2.3-3.aarch64",
         )
-        advisory1 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
-        advisory2 = AdvisoryReference(
-            oid="1.2.3.4.6",
-        )
+        advisory1 = "1.2.3.4.5"
+        advisory2 = "1.2.3.4.6"
 
         package_advisory = PackageAdvisory(
             package=package1,
-            advisory=advisory1,
+            oid=advisory1,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
@@ -179,10 +172,10 @@ class PackageAdvisoryTestCase(TestCase):
             package_advisory.package = package2
 
         with self.assertRaises(FrozenInstanceError):
-            package_advisory.advisory = advisory2
+            package_advisory.oid = advisory2
 
         self.assertEqual(package_advisory.package, package1)
-        self.assertEqual(package_advisory.advisory, advisory1)
+        self.assertEqual(package_advisory.oid, advisory1)
 
     def test_equal(self):
         package1 = RPMPackage.from_full_name(
@@ -191,34 +184,30 @@ class PackageAdvisoryTestCase(TestCase):
         package2 = RPMPackage.from_full_name(
             "bar-1.2.3-3.aarch64",
         )
-        advisory1 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
-        advisory2 = AdvisoryReference(
-            oid="1.2.3.4.6",
-        )
+        advisory1 = "1.2.3.4.5"
+        advisory2 = "1.2.3.4.6"
 
         package_advisory1 = PackageAdvisory(
             package=package1,
-            advisory=advisory1,
+            oid=advisory1,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory2 = PackageAdvisory(
             package=package2,
-            advisory=advisory2,
+            oid=advisory2,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory3 = PackageAdvisory(
             package=package1,
-            advisory=advisory1,
+            oid=advisory1,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory4 = PackageAdvisory(
             package=package1,
-            advisory=advisory2,
+            oid=advisory2,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
@@ -237,34 +226,31 @@ class PackageAdvisoryTestCase(TestCase):
         package2 = RPMPackage.from_full_name(
             "bar-1.2.3-3.aarch64",
         )
-        advisory1 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
-        advisory2 = AdvisoryReference(
-            oid="1.2.3.4.6",
-        )
+        advisory1 = "1.2.3.4.5"
+
+        advisory2 = "1.2.3.4.6"
 
         package_advisory1 = PackageAdvisory(
             package=package1,
-            advisory=advisory1,
+            oid=advisory1,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory2 = PackageAdvisory(
             package=package2,
-            advisory=advisory2,
+            oid=advisory2,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory3 = PackageAdvisory(
             package=package1,
-            advisory=advisory1,
+            oid=advisory1,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
         package_advisory4 = PackageAdvisory(
             package=package1,
-            advisory=advisory2,
+            oid=advisory2,
             symbol=">=",
             is_vulnerable=lambda _: False,
         )
@@ -289,9 +275,7 @@ class PackageAdvisoriesTestCase(TestCase):
         package = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
-        advisory = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
+        advisory = "1.2.3.4.5"
 
         self.assertEqual(len(package_advisories), 0)
 
@@ -304,9 +288,7 @@ class PackageAdvisoriesTestCase(TestCase):
         package = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
-        advisory = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
+        advisory = "1.2.3.4.5"
 
         other = RPMPackage.from_full_name(
             "foo-1.2.4-3.aarch64",
@@ -328,12 +310,8 @@ class PackageAdvisoriesTestCase(TestCase):
         package2 = RPMPackage.from_full_name(
             "foo-1.2.3-3.aarch64",
         )
-        advisory1 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
-        advisory2 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
+        advisory1 = "1.2.3.4.5"
+        advisory2 = "1.2.3.4.5"
 
         self.assertEqual(len(package_advisories), 0)
 
@@ -363,12 +341,8 @@ class PackageAdvisoriesTestCase(TestCase):
         package2 = RPMPackage.from_full_name(
             "bar-1.2.3-3.aarch64",
         )
-        advisory1 = AdvisoryReference(
-            oid="1.2.3.4.5",
-        )
-        advisory2 = AdvisoryReference(
-            oid="1.2.3.4.6",
-        )
+        advisory1 = "1.2.3.4.5"
+        advisory2 = "1.2.3.4.6"
 
         self.assertEqual(len(package_advisories), 0)
 
