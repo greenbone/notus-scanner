@@ -45,29 +45,6 @@ class PackageComparison(Enum):
     NOT_COMPARABLE = 3
 
 
-class Architecture(Enum):
-    NOARCH = "noarch"
-    SOURCE = "src"
-    ALL = "all"
-    I386 = "i386"
-    I586 = "i586"
-    I686 = "i686"
-    X86_64 = "x86_64"
-    ARMV7L = "armv7l"
-    ARMV6L = "armv6l"
-    AARCH64 = "aarch64"
-    AMD64 = "amd64"
-    IA64 = "ia64"
-    PPC = "ppc"
-    PPC64 = "ppc64"
-    PPC64LE = "ppc64le"
-    S390 = "s390"
-    S390X = "s390x"
-    AARCH64_ILP32 = "aarch64_ilp32"
-    UNKNOWN = "UNKNOWN"
-    NOTSET = "NOTSET"
-
-
 @dataclass
 class Package:
     "Base class for different Package types"

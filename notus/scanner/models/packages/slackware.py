@@ -24,7 +24,7 @@ from dataclasses import dataclass
 
 from packaging.version import parse
 
-from .package import Architecture, Package, PackageComparison
+from .package import Package, PackageComparison
 
 _slack_compile = re.compile(r"(..*)-(..*)-(..*)-(\d)(?:_slack(..*))?")
 _slack_compile_version = re.compile(r"(..*)-(..*)-(\d)(?:_slack(..*))?")
@@ -80,7 +80,7 @@ class SlackPackage(Package):
 
         full_name = full_name.strip()
         try:
-            name, version, architecture, build, target = _slack_compile.match(
+            name, version, arch, build, target = _slack_compile.match(
                 full_name
             ).groups()
         except AttributeError:
@@ -89,12 +89,7 @@ class SlackPackage(Package):
             )
             return None
 
-        try:
-            arch = Architecture(architecture)
-        except ValueError:
-            arch = Architecture.UNKNOWN
-
-        full_version = f"{version}-{arch.value}-{build}"
+        full_version = f"{version}-{arch}-{build}"
 
         if target:
             full_version = f"{full_version}_slack{target}"
@@ -116,7 +111,7 @@ class SlackPackage(Package):
         name = name.strip()
         full_version = full_version.strip()
         try:
-            version, architecture, build, target = _slack_compile_version.match(
+            version, arch, build, target = _slack_compile_version.match(
                 full_version
             ).groups()
         except AttributeError:
@@ -125,11 +120,6 @@ class SlackPackage(Package):
                 f"{name}-{full_version}",
             )
             return None
-
-        try:
-            arch = Architecture(architecture)
-        except ValueError:
-            arch = Architecture.UNKNOWN
 
         return SlackPackage(
             name=name,
