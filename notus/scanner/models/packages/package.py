@@ -156,19 +156,12 @@ class Package:
         raise NotImplementedError()
 
 
-@dataclass(frozen=True)
-class AdvisoryReference:
-    """A reference to a vulnerability advisory"""
-
-    oid: str
-
-
 @dataclass(frozen=True, unsafe_hash=True)
 class PackageAdvisory:
     """Connects a package with an advisory"""
 
     package: Package
-    advisory: AdvisoryReference
+    oid: str
     symbol: str
     is_vulnerable: Callable[[Package], bool] = field(compare=False, hash=False)
 
@@ -199,7 +192,7 @@ class PackageAdvisories:
     def add_advisory_for_package(
         self,
         package: Package,
-        advisory: AdvisoryReference,
+        advisory: str,
         verifier: Optional[str],
     ) -> None:
         if verifier not in self.comparison_map:
@@ -209,10 +202,10 @@ class PackageAdvisories:
             package, other
         )
 
-        if not advisory.oid in advisories:
-            advisories[advisory.oid] = set()
+        if not advisory in advisories:
+            advisories[advisory] = set()
 
-        advisories[advisory.oid].add(
+        advisories[advisory].add(
             PackageAdvisory(package, advisory, verifier, is_vulnerable)
         )
         self.advisories[package.name] = advisories
