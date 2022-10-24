@@ -16,7 +16,7 @@ _rpm_compile_version = re.compile(r"([^-]+)-([^-]+)\.([^-]+)")
 
 logger = logging.getLogger(__name__)
 
-excpetions = [
+exceptions = [
     "_fips",
     ".ksplice",
 ]
@@ -39,7 +39,7 @@ class RPMPackage(Package):
         if self.arch != other.arch:
             return PackageComparison.NOT_COMPARABLE
 
-        for e in excpetions:
+        for e in exceptions:
             if (self.full_version.find(e) > -1) != (
                 other.full_version.find(e) > -1
             ):
