@@ -8,8 +8,6 @@ from dataclasses import dataclass
 
 from .package import Package, PackageComparison
 
-_rpm_re = re.compile(r"(\S+)-(?:(\d*):)?(.*)-(~?\w+[\w.]*)")
-
 _rpm_compile_no_arch = re.compile("(.*)-([^-]+)-([^-]+)")
 _rpm_compile = re.compile(r"(.*)-([^-]+)-([^-]+)\.([^-]+)")
 _rpm_compile_version = re.compile(r"([^-]+)-([^-]+)\.([^-]+)")
