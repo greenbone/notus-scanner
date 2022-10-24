@@ -71,18 +71,17 @@ class DEBPackage(Package):
             return None
 
         full_name = full_name.strip()
+
+        match = _deb_compile.match(full_name)
         # Try to get data with
-        try:
-            name, epoch, upstream_version, debian_revision = _deb_compile.match(
-                full_name
-            ).groups()
-        except AttributeError:
-            try:
-                name, epoch, upstream_version = _deb_compile_wo_revision.match(
-                    full_name
-                ).groups()
+        if match:
+            name, epoch, upstream_version, debian_revision = match.groups()
+        else:
+            match = _deb_compile_wo_revision.match(full_name)
+            if match:
+                name, epoch, upstream_version = match.groups()
                 debian_revision = ""
-            except AttributeError:
+            else:
                 logger.warning(
                     "The deb package %s could not be parsed", full_name
                 )
@@ -112,22 +111,22 @@ class DEBPackage(Package):
             return None
         name = name.strip()
         full_version = full_version.strip()
-        try:
+        match = _deb_compile_version.match(full_version)
+        if match:
             (
                 epoch,
                 upstream_version,
                 debian_revision,
-            ) = _deb_compile_version.match(full_version).groups()
-        except AttributeError:
-            try:
+            ) = match.groups()
+        else:
+            match = _deb_compile_version_wo_revision.match(full_version)
+            if match:
                 (
                     epoch,
                     upstream_version,
-                ) = _deb_compile_version_wo_revision.match(
-                    full_version
-                ).groups()
+                ) = match.groups()
                 debian_revision = ""
-            except AttributeError:
+            else:
                 logger.warning(
                     "The deb package %s %s could not be parsed",
                     name,
