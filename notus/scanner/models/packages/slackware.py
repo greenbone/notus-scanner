@@ -79,11 +79,10 @@ class SlackPackage(Package):
             return None
 
         full_name = full_name.strip()
-        try:
-            name, version, arch, build, target = _slack_compile.match(
-                full_name
-            ).groups()
-        except AttributeError:
+        match = _slack_compile.match(full_name)
+        if match:
+            name, version, arch, build, target = match.groups()
+        else:
             logger.warning(
                 "The slack package %s could not be parsed", full_name
             )
@@ -110,11 +109,10 @@ class SlackPackage(Package):
             return None
         name = name.strip()
         full_version = full_version.strip()
-        try:
-            version, arch, build, target = _slack_compile_version.match(
-                full_version
-            ).groups()
-        except AttributeError:
+        match = _slack_compile_version.match(full_version)
+        if match:
+            version, arch, build, target = match.groups()
+        else:
             logger.warning(
                 "The slack package %s could not be parsed",
                 f"{name}-{full_version}",

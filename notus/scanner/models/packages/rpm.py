@@ -61,17 +61,15 @@ class RPMPackage(Package):
 
         full_name = full_name.strip()
 
-        try:
-            name, version, release, arch = _rpm_compile.match(
-                full_name
-            ).groups()
-        except AttributeError:
-            try:
-                name, version, release = _rpm_compile_no_arch.match(
-                    full_name
-                ).groups()
+        match = _rpm_compile.match(full_name)
+        if match:
+            name, version, release, arch = match.groups()
+        else:
+            match = _rpm_compile_no_arch.match(full_name)
+            if match:
+                name, version, release = match.groups()
                 arch = ""
-            except AttributeError:
+            else:
                 logger.warning(
                     "The rpm package %s could not be parsed", full_name
                 )
