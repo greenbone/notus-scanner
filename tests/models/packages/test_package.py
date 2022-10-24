@@ -22,7 +22,6 @@ from notus.scanner.errors import PackageError
 from notus.scanner.models.packages.deb import DEBPackage
 from notus.scanner.models.packages.package import (
     AdvisoryReference,
-    Architecture,
     Package,
     PackageAdvisories,
     PackageAdvisory,
@@ -68,7 +67,7 @@ class PackageTestCase(TestCase):
             name="foo-bar",
             version="1.2.3",
             release="4",
-            arch=Architecture.X86_64,
+            arch="x86_64",
             full_name="foo-bar-1.2.3-4.x86_64",
             full_version="1.2.3-4.x86_64",
         )
@@ -134,24 +133,6 @@ class PackageTestCase(TestCase):
         version_b = "1.2.3_1"
         ret = Package.version_compare(version_a, version_b)
         self.assertEqual(ret, PackageComparison.B_NEWER)
-
-
-class ArchitectureTestCase(TestCase):
-    def test_none(self):
-        with self.assertRaises(ValueError):
-            Architecture(None)
-
-    def test_unknown(self):
-        with self.assertRaises(ValueError):
-            Architecture("foo")
-
-    def test_known(self):
-        self.assertEqual(Architecture.AARCH64, Architecture("aarch64"))
-        self.assertEqual(Architecture.ARMV6L, Architecture("armv6l"))
-        self.assertEqual(Architecture.ARMV7L, Architecture("armv7l"))
-        self.assertEqual(Architecture.I386, Architecture("i386"))
-        self.assertEqual(Architecture.I686, Architecture("i686"))
-        self.assertEqual(Architecture.X86_64, Architecture("x86_64"))
 
 
 class PackageAdvisoryTestCase(TestCase):
