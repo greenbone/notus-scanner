@@ -52,7 +52,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"
         )
-        # since the data is comming from the outside it should not crash
+        # since the data is coming from the outside it should not crash
         # on wrongfully send data instead print a warning and return None
         if not json_file_path.exists():
             logger.log(
