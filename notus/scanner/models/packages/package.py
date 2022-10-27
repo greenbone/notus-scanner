@@ -163,7 +163,10 @@ class PackageAdvisory:
     package: Package
     oid: str
     symbol: str
-    is_vulnerable: Callable[[Package], bool] = field(compare=False, hash=False)
+    # returns None when not comparable otherwise true or false
+    is_vulnerable: Callable[[Package], Optional[bool]] = field(
+        compare=False, hash=False
+    )
 
 
 @dataclass(frozen=True)
@@ -176,12 +179,26 @@ class PackageAdvisories:
         default_factory=dict
     )
 
+    is_comparable = (
+        lambda a, b: a._compare(b) != PackageComparison.NOT_COMPARABLE
+    )
+
     comparison_map = {
-        ">=": lambda a, b: a > b,
-        "<=": lambda a, b: a < b,
-        "=": lambda a, b: a != b,
-        "<": lambda a, b: a <= b,
-        ">": lambda a, b: a >= b,
+        ">=": lambda a, b: a > b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "<=": lambda a, b: a < b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "=": lambda a, b: a != b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "<": lambda a, b: a <= b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        ">": lambda a, b: a >= b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
     }
 
     def get_package_advisories_for_package(

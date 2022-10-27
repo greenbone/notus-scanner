@@ -28,7 +28,31 @@
         },
         {
           "full_name": "default-9.2.15-1.x86_64"
+        },
+        {
+          "full_name": "eq-9.2.15-1.aarch64",
+          "specifier": "="
+        },
+        {
+          "full_name": "lt-9.2.15-1.aarch64",
+          "specifier": "<"
+        },
+        {
+          "full_name": "le-9.2.15-1.aarch64",
+          "specifier": "<="
+        },
+        {
+          "full_name": "gt-9.2.15-1.aarch64",
+          "specifier": ">"
+        },
+        {
+          "full_name": "ge-9.2.15-1.aarch64",
+          "specifier": ">="
+        },
+        {
+          "full_name": "default-9.2.15-1.aarch64"
         }
+
       ]
     }
   ]
