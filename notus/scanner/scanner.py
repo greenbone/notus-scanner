@@ -119,7 +119,7 @@ class NotusScanner:
                 package_advisory.package,
             )
             is_vulnerable = package_advisory.is_vulnerable(package)
-            if is_vulnerable == None:
+            if is_vulnerable is None:
                 continue
             elif not is_vulnerable:
                 return
