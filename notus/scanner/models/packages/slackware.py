@@ -44,7 +44,7 @@ class SlackPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: "SlackPackage") -> PackageComparison:
+    def compare(self, other: "SlackPackage") -> PackageComparison:
         if self.name != other.name:
             return PackageComparison.NOT_COMPARABLE
 
