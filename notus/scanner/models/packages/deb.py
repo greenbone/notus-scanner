@@ -43,7 +43,7 @@ class DEBPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: "DEBPackage") -> PackageComparison:
+    def compare(self, other: "DEBPackage") -> PackageComparison:
         if self.name != other.name:
             return PackageComparison.NOT_COMPARABLE
 
