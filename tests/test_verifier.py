@@ -111,6 +111,9 @@ class VerifierTestCase(unittest.TestCase):
 
         self.assertEqual(len(results), len(publisher.results))
 
-        self.assertEqual(set(), results.intersection(not_in_results))
+        self.assertEqual(
+            set(),
+            results.intersection(not_in_results),
+        )
 
         self.assertEqual(set(in_results), results.intersection(in_results))

@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 class EBuildPackage(Package):
     """Represents a .ebuild based package"""
 
-    def _compare(self, other: Package) -> PackageComparison:
+    def compare(self, other: Package) -> PackageComparison:
         if self.name != other.name:
             return PackageComparison.NOT_COMPARABLE
 

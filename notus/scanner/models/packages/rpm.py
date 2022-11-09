@@ -30,7 +30,7 @@ class RPMPackage(Package):
 
     __hash__ = Package.__hash__
 
-    def _compare(self, other: "RPMPackage") -> PackageComparison:
+    def compare(self, other: "RPMPackage") -> PackageComparison:
         if self.name != other.name:
             return PackageComparison.NOT_COMPARABLE
 

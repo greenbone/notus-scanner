@@ -58,15 +58,15 @@ class Package:
 
     def __gt__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparison.A_NEWER
+        return self.compare(other) == PackageComparison.A_NEWER
 
     def __lt__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparison.B_NEWER
+        return self.compare(other) == PackageComparison.B_NEWER
 
     def __eq__(self, other: Any) -> bool:
         self.__guard_cmp(other)
-        return self._compare(other) == PackageComparison.EQUAL
+        return self.compare(other) == PackageComparison.EQUAL
 
     def __ge__(self, other: Any) -> bool:
         return self.__gt__(other) or self.__eq__(other)
@@ -142,7 +142,7 @@ class Package:
         return PackageComparison.EQUAL
 
     @abstractmethod
-    def _compare(self, other: Any) -> PackageComparison:
+    def compare(self, other: Any) -> PackageComparison:
         raise NotImplementedError()
 
     @staticmethod
@@ -163,7 +163,10 @@ class PackageAdvisory:
     package: Package
     oid: str
     symbol: str
-    is_vulnerable: Callable[[Package], bool] = field(compare=False, hash=False)
+    # returns None when not comparable otherwise true or false
+    is_vulnerable: Callable[[Package], Optional[bool]] = field(
+        compare=False, hash=False
+    )
 
 
 @dataclass(frozen=True)
@@ -176,12 +179,26 @@ class PackageAdvisories:
         default_factory=dict
     )
 
+    is_comparable = (
+        lambda a, b: a.compare(b) != PackageComparison.NOT_COMPARABLE
+    )
+
     comparison_map = {
-        ">=": lambda a, b: a > b,
-        "<=": lambda a, b: a < b,
-        "=": lambda a, b: a != b,
-        "<": lambda a, b: a <= b,
-        ">": lambda a, b: a >= b,
+        ">=": lambda a, b: a > b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "<=": lambda a, b: a < b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "=": lambda a, b: a != b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        "<": lambda a, b: a <= b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
+        ">": lambda a, b: a >= b
+        if PackageAdvisories.is_comparable(a, b)
+        else None,
     }
 
     def get_package_advisories_for_package(
