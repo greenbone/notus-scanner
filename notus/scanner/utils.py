@@ -46,41 +46,46 @@ def create_pid(pid_file: str) -> bool:
     """Check if there is an already running daemon and creates the pid file.
     Otherwise gives an error."""
 
-    pid = str(os.getpid())
-    new_process = psutil.Process(int(pid))
+    pid = os.getpid()
+    new_process = psutil.Process(pid)
     new_process_name = new_process.name()
 
     pid_path = Path(pid_file)
 
     if pid_path.is_file():
         process_name = None
-        current_pid = pid_path.read_text(encoding="utf-8")
-
+        current_pid = pid_path.read_text(encoding="utf-8").strip()
         try:
-            process = psutil.Process(int(current_pid))
-            process_name = process.name()
-        except psutil.NoSuchProcess:
-            pass
+            current_pid = int(current_pid)
+        except (TypeError, ValueError):
+            current_pid = None
 
-        if process_name == new_process_name:
-            logger.error(
-                "There is an already running process. See %s.",
-                str(pid_path.absolute()),
-            )
-            return False
-        else:
-            logger.debug(
-                "There is an existing pid file '%s', but the PID %s belongs to "
-                "the process %s. It seems that %s was abruptly stopped. "
-                "Removing the pid file.",
-                str(pid_path.absolute()),
-                current_pid,
-                process_name,
-                new_process_name,
-            )
+        if current_pid:
+            try:
+                process = psutil.Process(current_pid)
+                process_name = process.name()
+            except psutil.NoSuchProcess:
+                pass
+
+            if process_name == new_process_name:
+                logger.error(
+                    "There is an already running process. See %s.",
+                    str(pid_path.absolute()),
+                )
+                return False
+            else:
+                logger.debug(
+                    "There is an existing pid file '%s', but the PID %s belongs"
+                    " to the process %s. It seems that %s was abruptly stopped."
+                    " Removing the pid file.",
+                    str(pid_path.absolute()),
+                    current_pid,
+                    process_name,
+                    new_process_name,
+                )
 
     try:
-        pid_path.write_text(pid, encoding="utf-8")
+        pid_path.write_text(str(pid), encoding="utf-8")
     except (FileNotFoundError, PermissionError) as e:
         logger.error(
             "Failed to create pid file %s. %s", str(pid_path.absolute()), e
