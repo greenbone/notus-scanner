@@ -133,6 +133,13 @@ class PackageTestCase(TestCase):
         ret = Package.version_compare(version_a, version_b)
         self.assertEqual(ret, PackageComparison.B_NEWER)
 
+        version_a = "20211016ubuntu0.20.04.1"
+        version_b = "20211016~20.04.1"
+        ret = Package.version_compare(version_a, version_b)
+        self.assertEqual(ret, PackageComparison.A_NEWER)
+        ret = Package.version_compare(version_a=version_b, version_b=version_a)
+        self.assertEqual(ret, PackageComparison.B_NEWER)
+
 
 class PackageAdvisoryTestCase(TestCase):
     def test_constructor(self):
