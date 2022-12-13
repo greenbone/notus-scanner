@@ -127,11 +127,17 @@ class Package:
                     if a_part.lower() > b_part.lower()
                     else PackageComparison.B_NEWER
                 )
-            if a_part.isalpha() or b_part.isalpha():
+            if a_part.isalpha():
                 return (
                     PackageComparison.A_NEWER
-                    if b_part.isalpha() or b_part == "~"
+                    if b_part == "~"
                     else PackageComparison.B_NEWER
+                )
+            if b_part.isalpha():
+                return (
+                    PackageComparison.B_NEWER
+                    if a_part == "~"
+                    else PackageComparison.A_NEWER
                 )
 
             return (
