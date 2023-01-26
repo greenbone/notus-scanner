@@ -53,7 +53,7 @@ sentry = ["sentry-sdk"]
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.13.9"
-rope = "^1.6.0"
+rope = "^1.7.0"
 autohooks-plugin-pylint = ">=21.6.0"
 autohooks-plugin-black = ">=22.7.0"
 autohooks-plugin-isort = ">=22.8.0"
