@@ -135,8 +135,11 @@ def init_logging(
     )
     if foreground:
         console = logging.StreamHandler()
+        logfile = WatchedFileHandler(log_file)
         console.setFormatter(formatter)
+        logfile.setFormatter(formatter)
         rootlogger.addHandler(console)
+        rootlogger.addHandler(logfile)
     elif log_file:
         logfile = WatchedFileHandler(log_file)
         logfile.setFormatter(formatter)
