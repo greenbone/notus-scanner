@@ -21,12 +21,16 @@ Module to store Notus Scanner configuration settings
 
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
-import tomli
-
 from notus.scanner.errors import ConfigFileError
+
+if sys.version_info >= (3, 11):
+    import tomllib as toml
+else:
+    import tomli as toml
 
 logger = logging.getLogger(__name__)
 
@@ -70,12 +74,12 @@ class Config:
     def load(self, filepath: Path) -> None:
         try:
             content = filepath.read_text(encoding="utf-8")
-            config_data = tomli.loads(content)
+            config_data = toml.loads(content)
         except IOError as e:
             raise ConfigFileError(
                 f"Can't load config file {filepath.absolute()}. Error was {e}."
             ) from e
-        except tomli.TOMLDecodeError as e:
+        except toml.TOMLDecodeError as e:
             raise ConfigFileError(
                 f"Can't load config file. {filepath.absolute()} is not a valid "
                 "TOML file."
