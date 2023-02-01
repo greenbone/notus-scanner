@@ -46,7 +46,7 @@ paho-mqtt = ">=1.5.1"
 psutil = "^5.9"
 sentry-sdk = {version = "^1.14.0", optional = true}
 python-gnupg = "^0.5.0"
-tomli = "<3.0.0"
+tomli = {version = "<3.0.0", python = "<3.11"}
 packaging = "<23.1"
 
 [tool.poetry.extras]
