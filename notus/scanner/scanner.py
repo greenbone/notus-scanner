@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Iterable, List, Set, Optional
+from typing import Iterable, List, Optional, Set
 
 from notus.scanner.models.packages import package_class_by_type
 
@@ -108,7 +108,6 @@ class NotusScanner:
     def _check_package(
         package: Package, package_advisory_list: Set[PackageAdvisory]
     ) -> Optional[Vulnerability]:
-
         vul = Vulnerability()
         for package_advisory in package_advisory_list:
             logger.debug(
@@ -133,7 +132,6 @@ class NotusScanner:
         installed_packages: Iterable[Package],
         package_advisories: PackageAdvisories,
     ) -> Vulnerabilities:
-
         vulnerabilities = Vulnerabilities()
 
         for package in installed_packages:
@@ -141,7 +139,6 @@ class NotusScanner:
                 package_advisories.get_package_advisories_for_package(package)
             )
             for oid, package_advisory_list in package_advisory_oids.items():
-
                 vul = self._check_package(package, package_advisory_list)
                 if vul and vul.vulnerability:
                     vulnerabilities.add(oid, vul)
