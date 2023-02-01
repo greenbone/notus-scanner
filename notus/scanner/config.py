@@ -25,12 +25,12 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
+from notus.scanner.errors import ConfigFileError
+
 if sys.version_info >= (3, 11):
     import tomllib as toml
 else:
     import tomli as toml
-
-from notus.scanner.errors import ConfigFileError
 
 logger = logging.getLogger(__name__)
 
