@@ -31,14 +31,16 @@ from .__version__ import __version__
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_SYS_LOG_DEVICE = "/dev/log"
+
 
 def go_to_background() -> None:
     """Daemonize the running process."""
     try:
         if os.fork():
             sys.exit()
-    except OSError as errmsg:
-        logger.error("Fork failed: %s", errmsg)
+    except OSError as err:
+        logger.error("Fork failed: %s", err)
         sys.exit(1)
 
 
@@ -127,27 +129,23 @@ def init_logging(
     log_file: Optional[str] = None,
     foreground: Optional[bool] = False,
 ):
-
-    rootlogger = logging.getLogger()
-    rootlogger.setLevel(log_level)
+    root_logger = logging.getLogger()
+    root_logger.setLevel(log_level)
 
     formatter = logging.Formatter(
         f"%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s"
     )
     if foreground:
-        console = logging.StreamHandler()
-        logfile = WatchedFileHandler(log_file)
-        console.setFormatter(formatter)
-        logfile.setFormatter(formatter)
-        rootlogger.addHandler(console)
-        rootlogger.addHandler(logfile)
-    elif log_file:
-        logfile = WatchedFileHandler(log_file)
-        logfile.setFormatter(formatter)
-        rootlogger.addHandler(logfile)
-    else:
-        syslog = SysLogHandler("/dev/log")
-        syslog.setFormatter(formatter)
-        rootlogger.addHandler(syslog)
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        root_logger.addHandler(console_handler)
+    if log_file:
+        log_file_handler = WatchedFileHandler(log_file)
+        log_file_handler.setFormatter(formatter)
+        root_logger.addHandler(log_file_handler)
+    if not foreground and not log_file:
+        syslog_handler = SysLogHandler(DEFAULT_SYS_LOG_DEVICE)
+        syslog_handler.setFormatter(formatter)
+        root_logger.addHandler(syslog_handler)
 
-    return rootlogger
+    return root_logger
