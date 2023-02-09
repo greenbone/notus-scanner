@@ -129,14 +129,8 @@ def init_logging(
     log_file: Optional[str] = None,
     foreground: Optional[bool] = False,
 ):
-<<<<<<< HEAD
-
-    rootlogger = logging.getLogger()
-    rootlogger.setLevel(log_level)
-=======
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
->>>>>>> f690fe2 (Improve variable names)
 
     formatter = logging.Formatter(
         f"%(asctime)s {name}: %(levelname)s: (%(name)s) %(message)s"
