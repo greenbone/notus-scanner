@@ -85,7 +85,7 @@ or additionally forward your issue to the Greenbone Support Portal.
 
 ## Maintainer
 
-This project is maintained by [Greenbone Networks GmbH][Greenbone Networks]
+This project is maintained by [Greenbone AG][Greenbone Networks]
 
 ## Contributing
 
@@ -97,7 +97,7 @@ first.
 
 ## License
 
-Copyright (C) 2021-2022 Greenbone Networks GmbH
+Copyright (C) 2021-2022 Greenbone AG
 
 Licensed under the GNU Affero General Public License v3.0 or later.
 
