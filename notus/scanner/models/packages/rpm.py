@@ -8,9 +8,8 @@ from dataclasses import dataclass
 
 from .package import Package, PackageComparison
 
-_rpm_compile_no_arch = re.compile("(.*)-([^-]+)-([^-]+)")
-_rpm_compile = re.compile(r"(.*)-([^-]+)-([^-]+)\.([^-]+)")
-_rpm_compile_version = re.compile(r"([^-]+)-([^-]+)\.([^-]+)")
+_rpm_compile = re.compile(r"^(.*)-(?:(\d+):)?([^-]+)-([^-]+)\.([^-]+)$")
+_rpm_compile_version = re.compile(r"^(?:(\d+):)?([^-]+)-([^-]+)\.([^-]+)$")
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +23,7 @@ exceptions = [
 class RPMPackage(Package):
     """Represents a RPM package"""
 
+    epoch: int
     version: str
     release: str
     arch: str
@@ -46,6 +46,13 @@ class RPMPackage(Package):
         if self.full_version == other.full_version:
             return PackageComparison.EQUAL
 
+        if self.epoch != other.epoch:
+            return (
+                PackageComparison.A_NEWER
+                if self.epoch > other.epoch
+                else PackageComparison.B_NEWER
+            )
+
         comp = self.version_compare(self.version, other.version)
         if comp != PackageComparison.EQUAL:
             return comp
@@ -60,26 +67,31 @@ class RPMPackage(Package):
         full_name = full_name.strip()
 
         match = _rpm_compile.match(full_name)
-        if match:
-            name, version, release, arch = match.groups()
+        # Check if given package string could be parsed
+        if not match:
+            logger.warning("The rpm package %s could not be parsed", full_name)
+            return None
+
+        name, epoch, version, release, arch = match.groups()
+
+        if not epoch:
+            epoch = 0
         else:
-            match = _rpm_compile_no_arch.match(full_name)
-            if match:
-                name, version, release = match.groups()
-                arch = ""
-            else:
-                logger.warning(
-                    "The rpm package %s could not be parsed", full_name
-                )
-                return None
+            epoch = int(epoch)
+
+        # Prepare full_version string
+        epoch_str = ""
+        if epoch != 0:
+            epoch_str = f"{epoch}:"
 
         return RPMPackage(
             name=name,
+            epoch=epoch,
             version=version,
             release=release,
             arch=arch,
             full_name=full_name,
-            full_version=f"{version}-{release}.{arch}",
+            full_version=f"{epoch_str}{version}-{release}.{arch}",
         )
 
     @staticmethod
@@ -90,13 +102,23 @@ class RPMPackage(Package):
         name = name.strip()
         full_version = full_version.strip()
 
-        version_match = _rpm_compile_version.match(full_version)
-        if not version_match:
+        match = _rpm_compile_version.match(full_version)
+        if not match:
+            logger.warning(
+                "The rpm package %s-%s could not be parsed", name, full_version
+            )
             return None
-        version, release, arch = version_match.groups()
+
+        epoch, version, release, arch = match.groups()
+
+        if not epoch:
+            epoch = 0
+        else:
+            epoch = int(epoch)
 
         return RPMPackage(
             name=name,
+            epoch=epoch,
             version=version,
             release=release,
             arch=arch,
