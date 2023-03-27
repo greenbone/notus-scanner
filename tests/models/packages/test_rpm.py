@@ -25,6 +25,7 @@ class RPMPackageTestCase(TestCase):
         """packages should be comparable"""
         package1 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
@@ -33,6 +34,7 @@ class RPMPackageTestCase(TestCase):
         )
         package2 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.4",
             release="4",
             arch="x86_64",
@@ -43,6 +45,7 @@ class RPMPackageTestCase(TestCase):
 
         package2 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="5",
             arch="x86_64",
@@ -55,6 +58,7 @@ class RPMPackageTestCase(TestCase):
         """packages of different architecture should not be comparable"""
         package1 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
@@ -63,6 +67,7 @@ class RPMPackageTestCase(TestCase):
         )
         package2 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="aarch64",
@@ -71,6 +76,7 @@ class RPMPackageTestCase(TestCase):
         )
         package3 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.4",
             release="4",
             arch="aarch64",
@@ -79,6 +85,7 @@ class RPMPackageTestCase(TestCase):
         )
         package4 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="5",
             arch="aarch64",
@@ -92,10 +99,34 @@ class RPMPackageTestCase(TestCase):
         self.assertFalse(package4 > package1)
         self.assertFalse(package1 > package4)
 
+    def test_compare_gt_different_epoch(self):
+        """packages from different architectures should not be comparable"""
+        package1 = RPMPackage(
+            name="foo-bar",
+            epoch="0",
+            version="1.2.3",
+            release="4",
+            arch="x86_64",
+            full_name="foo-bar-1.2.3-4.x86_64",
+            full_version="1.2.3-4.x86_64",
+        )
+        package2 = RPMPackage(
+            name="foo-bar",
+            epoch="0",
+            version="1.2.3",
+            release="4",
+            arch="aarch64",
+            full_name="foo-bar-1.2.3-4.aarch64",
+            full_version="1.2.3-4.aarch64",
+        )
+        self.assertFalse(package1 > package2)
+        self.assertFalse(package2 > package1)
+
     def test_compare_gt_different_name(self):
-        """different packagtes should not be comparable"""
+        """different packages should not be comparable"""
         package1 = RPMPackage(
             name="foo",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
@@ -104,6 +135,7 @@ class RPMPackageTestCase(TestCase):
         )
         package2 = RPMPackage(
             name="bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
@@ -117,6 +149,7 @@ class RPMPackageTestCase(TestCase):
         """packages should be comparable"""
         package1 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
@@ -125,6 +158,7 @@ class RPMPackageTestCase(TestCase):
         )
         package2 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.4",
             release="4",
             arch="x86_64",
@@ -135,6 +169,7 @@ class RPMPackageTestCase(TestCase):
 
         package2 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="5",
             arch="x86_64",
@@ -146,33 +181,39 @@ class RPMPackageTestCase(TestCase):
     def test_compare_equal(self):
         """packages with the same data should be equal"""
         package1 = RPMPackage(
-            name="foo-bar",
-            version="1.2.3",
-            release="4",
+            name="docker-engine",
+            epoch="0",
+            version="18.09.0.200",
+            release="200.h47.28.15.eulerosv2r10",
             arch="x86_64",
-            full_name="foo-bar-1.2.3-4.x86_64",
-            full_version="1.2.3-4.x86_64",
+            full_name=(
+                "docker-engine-18.09.0.200-200.h47.28.15.eulerosv2r10.x86_64"
+            ),
+            full_version="18.09.0.200-200.h47.28.15.eulerosv2r10.x86_64",
         )
         package2 = RPMPackage(
-            name="foo-bar",
-            version="1.2.3",
-            release="4",
+            name="docker-engine",
+            epoch="1",
+            version="18.09.0",
+            release="200.h62.33.19.eulerosv2r10",
             arch="x86_64",
-            full_name="foo-bar-1.2.3-4.x86_64",
-            full_version="1.2.3-4.x86_64",
+            full_name=(
+                "docker-engine-1:18.09.0-200.h62.33.19.eulerosv2r10.x86_64"
+            ),
+            full_version="1:18.09.0-200.h62.33.19.eulerosv2r10.x86_64",
         )
 
-        self.assertEqual(package1, package2)
+        self.assertTrue(package2 > package1)
 
     def test_from_full_name(self):
         """it should be possible to create packages via the full name"""
         self.assertIsNone(RPMPackage.from_full_name(None))
 
-        package = RPMPackage.from_full_name("keyutils-1.5.8-3.foo")
-        self.assertEqual(package.arch, "foo")
+        package = RPMPackage.from_full_name("keyutils-1.5.8-3.amd64")
+        self.assertEqual(package.arch, "amd64")
 
-        package = RPMPackage.from_full_name("keyutils-1.5.8-3")
-        self.assertEqual(package.arch, "")
+        package = RPMPackage.from_full_name("keyutils-1.5.8-3.noarch")
+        self.assertEqual(package.arch, "noarch")
 
         package = RPMPackage.from_full_name(
             "mesa-libgbm-11.2.2-2.20160614.x86_64"
@@ -258,6 +299,21 @@ class RPMPackageTestCase(TestCase):
         )
 
         package = RPMPackage.from_full_name(" libtool-ltdl-2.4.2-21.x86_64\r\n")
+        self.assertEqual(package.arch, "x86_64")
+
+        package = RPMPackage.from_full_name(
+            "docker-engine-1:18.09.0-200.h62.33.19.eulerosv2r10.x86_64"
+        )
+        self.assertEqual(
+            package.full_name,
+            "docker-engine-1:18.09.0-200.h62.33.19.eulerosv2r10.x86_64",
+        )
+        self.assertEqual(
+            package.full_version, "1:18.09.0-200.h62.33.19.eulerosv2r10.x86_64"
+        )
+        self.assertEqual(package.epoch, 1)
+        self.assertEqual(package.version, "18.09.0")
+        self.assertEqual(package.release, "200.h62.33.19.eulerosv2r10")
         self.assertEqual(package.arch, "x86_64")
 
     def test_from_name_and_full_version(self):

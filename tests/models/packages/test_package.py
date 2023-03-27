@@ -64,6 +64,7 @@ class PackageTestCase(TestCase):
     def test_gt_package_error(self):
         package1 = RPMPackage(
             name="foo-bar",
+            epoch="0",
             version="1.2.3",
             release="4",
             arch="x86_64",
