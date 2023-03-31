@@ -9,7 +9,7 @@ Besides Python Notus Scanner also needs to have
 
 To retrieve package-lists and publish results Notus needs a MQTT broker running.
 
-To install a local MQTT-broker on debian you can execute:
+To install a local MQTT-broker on Debian you can execute:
 
 ```
 $ apt-get install mosquitto 
