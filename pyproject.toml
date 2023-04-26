@@ -47,7 +47,7 @@ psutil = "^5.9"
 sentry-sdk = {version = "^1.18.0", optional = true}
 python-gnupg = "^0.5.0"
 tomli = {version = "<3.0.0", python = "<3.11"}
-packaging = "<23.1"
+packaging = "<23.2"
 
 [tool.poetry.extras]
 sentry = ["sentry-sdk"]
