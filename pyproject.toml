@@ -44,7 +44,7 @@ packages = [
 python = "^3.7"
 paho-mqtt = ">=1.5.1"
 psutil = "^5.9"
-sentry-sdk = {version = "^1.18.0", optional = true}
+sentry-sdk = {version = "^1.22.2", optional = true}
 python-gnupg = "^0.5.0"
 tomli = {version = "<3.0.0", python = "<3.11"}
 packaging = "<23.2"
@@ -53,7 +53,7 @@ packaging = "<23.2"
 sentry = ["sentry-sdk"]
 
 [tool.poetry.dev-dependencies]
-rope = "^1.7.0"
+rope = "^1.8.0"
 autohooks-plugin-pylint = ">=21.6.0"
 autohooks-plugin-black = ">=22.7.0"
 autohooks-plugin-isort = ">=22.8.0"
