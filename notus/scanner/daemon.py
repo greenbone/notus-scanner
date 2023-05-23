@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Callable, Dict, Optional
@@ -35,17 +34,6 @@ from .utils import (
 )
 
 logger = logging.getLogger(__name__)
-
-SENTRY_DSN_NOTUS_SCANNER = os.environ.get("SENTRY_DSN_NOTUS_SCANNER")
-if SENTRY_DSN_NOTUS_SCANNER:
-    import sentry_sdk  # pylint: disable=import-error
-
-    sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
-        SENTRY_DSN_NOTUS_SCANNER,
-        traces_sample_rate=1.0,
-        server_name=os.environ.get("SENTRY_SERVER_NAME"),
-        environment=os.environ.get("SENTRY_ENVIRONMENT"),
-    )
 
 
 def hashsum_verificator(
