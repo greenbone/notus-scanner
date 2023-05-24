@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 Greenbone AG
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 C_NETWORK_NAME := notus-smoketests
 C_IMAGE_PRFX := ghcr.io/greenbone
 C_IMAGE_TAG := latest
