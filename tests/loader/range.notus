@@ -1,0 +1,144 @@
+{
+    "version": "1.0",
+    "package_type": "deb",
+    "product_name": "Range Test",
+    "advisories": [
+        {
+            "oid": "1.3.6.1.4.1.25623.1.1.7.2.2023.10089729899100",
+            "fixed_packages": [
+                {
+                    "range": [
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "15.11.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "15.11.11",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "range": [
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "16.0.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "16.0.7",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "range": [
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "16.1.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "gitlab-ce",
+                            "full_version": "16.1.2",
+                            "specifier": ">="
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "oid": "1.3.6.1.4.1.25623.1.1.7.2.2023.0988598199100",
+            "fixed_packages": [
+                {
+                    "name": "grafana",
+                    "full_version": "8.5.24",
+                    "specifier": ">="
+                },
+                {
+                    "range": [
+                        {
+                            "name": "grafana",
+                            "full_version": "9.0.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "grafana",
+                            "full_version": "9.2.17",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "range": [
+                        {
+                            "name": "grafana",
+                            "full_version": "9.3.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "grafana",
+                            "full_version": "9.3.13",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "range": [
+                        {
+                            "name": "grafana",
+                            "full_version": "9.4.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "grafana",
+                            "full_version": "9.4.9",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "name": "grafana8",
+                    "full_version": "8.5.24",
+                    "specifier": ">="
+                },
+                {
+                    "name": "grafana9",
+                    "full_version": "9.2.17",
+                    "specifier": ">="
+                },
+                {
+                    "range": [
+                        {
+                            "name": "grafana9",
+                            "full_version": "9.3.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "grafana9",
+                            "full_version": "9.3.13",
+                            "specifier": ">="
+                        }
+                    ]
+                },
+                {
+                    "range": [
+                        {
+                            "name": "grafana9",
+                            "full_version": "9.4.0",
+                            "specifier": "<"
+                        },
+                        {
+                            "name": "grafana9",
+                            "full_version": "9.4.9",
+                            "specifier": ">="
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

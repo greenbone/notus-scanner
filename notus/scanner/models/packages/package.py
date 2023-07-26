@@ -150,6 +150,15 @@ class Package:
         raise NotImplementedError()
 
 
+@dataclass
+class PackageRange:
+    name: str
+    verifier1: str
+    verifier2: str
+    package1: Package
+    package2: Package
+
+
 @dataclass(frozen=True, unsafe_hash=True)
 class PackageAdvisory:
     """Connects a package with an advisory"""
@@ -173,9 +182,9 @@ class PackageAdvisories:
         default_factory=dict
     )
 
-    is_comparable = (
-        lambda a, b: a.compare(b) != PackageComparison.NOT_COMPARABLE
-    )
+    @staticmethod
+    def is_comparable(package1: Package, package2: Package):
+        return package1.compare(package2) != PackageComparison.NOT_COMPARABLE
 
     comparison_map = {
         ">=": lambda a, b: a > b
@@ -196,9 +205,9 @@ class PackageAdvisories:
     }
 
     def get_package_advisories_for_package(
-        self, package: Package
+        self, package_name: str
     ) -> Dict[str, Set[PackageAdvisory]]:
-        return self.advisories.get(package.name) or dict()
+        return self.advisories.get(package_name) or dict()
 
     def add_advisory_for_package(
         self,
@@ -208,10 +217,10 @@ class PackageAdvisories:
     ) -> None:
         if verifier not in self.comparison_map:
             verifier = ">="
-        advisories = self.get_package_advisories_for_package(package)
-        is_vulnerable = lambda other: self.comparison_map[verifier](
-            package, other
-        )
+        advisories = self.get_package_advisories_for_package(package.name)
+
+        def is_vulnerable(other: Package) -> Optional[bool]:
+            return self.comparison_map[verifier](package, other)
 
         if not advisory in advisories:
             advisories[advisory] = set()
@@ -220,6 +229,45 @@ class PackageAdvisories:
             PackageAdvisory(package, advisory, verifier, is_vulnerable)
         )
         self.advisories[package.name] = advisories
+
+    def add_range_advisory_for_package(
+        self,
+        package_range: PackageRange,
+        advisory: str,
+    ) -> None:
+        advisories = self.get_package_advisories_for_package(package_range.name)
+        if package_range.verifier1 in self.comparison_map:
+            package_range.verifier1 = "<"
+        if package_range.verifier2 in self.comparison_map:
+            package_range.verifier2 = ">="
+
+        def is_vulnerable(other: Package) -> Optional[bool]:
+            return self.comparison_map[package_range.verifier1](
+                package_range.package1, other
+            ) and self.comparison_map[package_range.verifier2](
+                package_range.package2, other
+            )
+
+        if not advisory in advisories:
+            advisories[advisory] = set()
+
+        advisories[advisory].add(
+            PackageAdvisory(
+                package_range.package1,
+                advisory,
+                package_range.verifier1,
+                is_vulnerable,
+            )
+        )
+        advisories[advisory].add(
+            PackageAdvisory(
+                package_range.package2,
+                advisory,
+                package_range.verifier2,
+                is_vulnerable,
+            )
+        )
+        self.advisories[package_range.name] = advisories
 
     def __len__(self) -> int:
         return len(self.advisories)

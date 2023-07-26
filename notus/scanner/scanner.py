@@ -105,10 +105,8 @@ class NotusScanner:
                 package_advisory.package,
             )
             is_vulnerable = package_advisory.is_vulnerable(package)
-            if is_vulnerable is None:
+            if not is_vulnerable:
                 continue
-            elif not is_vulnerable:
-                return
 
             vul.add(package, package_advisory)
 
@@ -123,7 +121,9 @@ class NotusScanner:
 
         for package in installed_packages:
             package_advisory_oids = (
-                package_advisories.get_package_advisories_for_package(package)
+                package_advisories.get_package_advisories_for_package(
+                    package.name
+                )
             )
             for oid, package_advisory_list in package_advisory_oids.items():
                 vul = self._check_package(package, package_advisory_list)
@@ -171,9 +171,11 @@ class NotusScanner:
         if not package_advisories:
             # Probably a wrong or not supported OS-release
             logger.error(
-                "Unable to start scan for %s: No advisories for OS-release %s"
-                " found. Check if the OS-release is correct and the"
-                " corresponding advisories are given.",
+                (
+                    "Unable to start scan for %s: No advisories for OS-release"
+                    " %s found. Check if the OS-release is correct and the"
+                    " corresponding advisories are given."
+                ),
                 message.host_ip,
                 message.os_release,
             )
@@ -189,8 +191,10 @@ class NotusScanner:
         package_class = package_class_by_type(package_type)
         if not package_class:
             logger.error(
-                "Unable to start scan for %s: No package implementation for "
-                "OS-release %s found. Check if the OS-release is correct.",
+                (
+                    "Unable to start scan for %s: No package implementation for"
+                    " OS-release %s found. Check if the OS-release is correct."
+                ),
                 message.host_ip,
                 message.os_release,
             )
