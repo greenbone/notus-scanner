@@ -44,7 +44,7 @@ packages = [
 python = "^3.7"
 paho-mqtt = ">=1.5.1"
 psutil = "^5.9"
-python-gnupg = "^0.5.0"
+python-gnupg = "^0.5.1"
 tomli = {version = "<3.0.0", python = "<3.11"}
 packaging = "<23.2"
 
