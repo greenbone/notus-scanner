@@ -174,7 +174,10 @@ class PackageAdvisories:
     )
 
     is_comparable = (
-        lambda a, b: a.compare(b) != PackageComparison.NOT_COMPARABLE
+        lambda a, b: a.compare(  # pylint: disable=unnecessary-lambda-assignment
+            b
+        )
+        != PackageComparison.NOT_COMPARABLE
     )
 
     comparison_map = {
@@ -209,7 +212,9 @@ class PackageAdvisories:
         if verifier not in self.comparison_map:
             verifier = ">="
         advisories = self.get_package_advisories_for_package(package)
-        is_vulnerable = lambda other: self.comparison_map[verifier](
+        is_vulnerable = lambda other: self.comparison_map[  # pylint: disable=unnecessary-lambda-assignment
+            verifier
+        ](
             package, other
         )
 
