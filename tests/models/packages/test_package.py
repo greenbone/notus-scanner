@@ -291,7 +291,7 @@ class PackageAdvisoriesTestCase(TestCase):
         )
         package_advisories.add_advisory_for_package(package, advisory, None)
         advisories = package_advisories.get_package_advisories_for_package(
-            other
+            other.name
         )
         self.assertEqual(1, len(advisories))
         for package_advisories in advisories.values():
@@ -347,10 +347,10 @@ class PackageAdvisoriesTestCase(TestCase):
         package_advisories.add_advisory_for_package(package2, advisory2, None)
 
         advisories1 = package_advisories.get_package_advisories_for_package(
-            package1
+            package1.name
         )
         advisories2 = package_advisories.get_package_advisories_for_package(
-            package2
+            package2.name
         )
         self.assertEqual(len(advisories1), 2)
         self.assertEqual(len(advisories2), 1)

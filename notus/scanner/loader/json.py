@@ -11,7 +11,12 @@ from typing import Callable, Dict, Optional
 
 from ..errors import AdvisoriesLoadingError
 from ..models.packages import package_class_by_type
-from ..models.packages.package import PackageAdvisories, PackageType
+from ..models.packages.package import (
+    Package,
+    PackageAdvisories,
+    PackageRange,
+    PackageType,
+)
 from .gpg_sha_verifier import VerificationResult
 from .loader import AdvisoriesLoader
 
@@ -75,6 +80,32 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
                     "while decoding JSON data."
                 ) from None
 
+    @staticmethod
+    def _get_package_from_package_dict(
+        package_class: Package,
+        package_dict: Dict[str, str],
+        operating_system: str,
+    ) -> Optional[Package]:
+        full_name = package_dict.get("full_name")
+        if full_name:
+            package = package_class.from_full_name(full_name)
+        else:
+            package = package_class.from_name_and_full_version(
+                package_dict.get("name"),
+                package_dict.get("full_version"),
+            )
+        if not package:
+            logger.warning(
+                (
+                    "could not parse fixed package information from"
+                    " %s in %s: version range must contain exactly"
+                    " 2 entries"
+                ),
+                package_dict,
+                operating_system,
+            )
+        return package
+
     def load_package_advisories(
         self, operating_system: str
     ) -> Optional[PackageAdvisories]:
@@ -114,25 +145,52 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             advisory = oid
 
             for package_dict in fixed_packages:
-                full_name = package_dict.get("full_name")
-                if full_name:
-                    package = package_class.from_full_name(full_name)
-                else:
-                    package = package_class.from_name_and_full_version(
-                        package_dict.get("name"),
-                        package_dict.get("full_version"),
-                    )
-                if not package:
-                    logger.warning(
-                        "Could not parse fixed package information from %s "
-                        "in %s",
-                        package_dict,
-                        operating_system,
-                    )
-                    continue
+                version_range = package_dict.get("range")
+                if version_range:
+                    if len(version_range) != 2:
+                        logger.warning(
+                            (
+                                "could not parse fixed package information from"
+                                " %s in %s: version range must contain exactly"
+                                " 2 entries"
+                            ),
+                            package_dict,
+                            operating_system,
+                        )
+                        continue
+                    package_dict1 = version_range[0]
+                    package_dict2 = version_range[1]
 
-                package_advisories.add_advisory_for_package(
-                    package, advisory, package_dict.get("specifier")
-                )
+                    package1 = self._get_package_from_package_dict(
+                        package_class, package_dict1, operating_system
+                    )
+                    if not package1:
+                        continue
+                    package2 = self._get_package_from_package_dict(
+                        package_class, package_dict2, operating_system
+                    )
+                    if not package2:
+                        continue
+                    package_range = PackageRange(
+                        name=package1.name,
+                        verifier1=package_dict1.get("specifier"),
+                        verifier2=package_dict2.get("specifier"),
+                        package1=package1,
+                        package2=package2,
+                    )
+                    package_advisories.add_range_advisory_for_package(
+                        package_range, advisory
+                    )
+                else:
+                    package = self._get_package_from_package_dict(
+                        package_class, package_dict, operating_system
+                    )
+                    if not package:
+                        logger.warning("No Package")
+
+                        continue
+                    package_advisories.add_advisory_for_package(
+                        package, advisory, package_dict.get("specifier")
+                    )
 
         return package_advisories
