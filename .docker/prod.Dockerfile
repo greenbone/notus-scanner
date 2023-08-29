@@ -12,8 +12,8 @@ RUN apt-get update && \
     apt-get remove --purge --auto-remove -y && \
     rm -rf /var/lib/apt/lists/*
 
-RUN python -m pip install --upgrade pip && \
-    python3 -m pip install poetry
+RUN python -m pip install --upgrade --break-system-packages pip && \
+    python3 -m pip install --break-system-packages poetry
 
 RUN rm -rf dist && poetry build -f wheel
 
@@ -44,7 +44,7 @@ RUN addgroup --gid 1001 --system notus && \
 COPY --from=builder /source/dist/* /notus/
 COPY .docker/entrypoint.sh /usr/local/bin/entrypoint
 
-RUN python3 -m pip install /notus/*
+RUN python3 -m pip install  --break-system-packages /notus/*
 
 RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
 

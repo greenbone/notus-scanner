@@ -33,7 +33,7 @@ RUN apt-get update && \
     python3-pip && \
     apt-get remove --purge --auto-remove -y && \
     rm -rf /var/lib/apt/lists/*
-RUN python3 -m pip install poetry
+RUN python3 -m pip install --break-system-packages poetry
 RUN rm -rf dist && poetry build -f wheel
 
 # we want to start ospd-openvas, mosquitto, redis as well as notus on the same
@@ -63,7 +63,7 @@ RUN apt-get update && \
 
 COPY --from=builder /source/dist/* /usr/local/src/notus/
 
-RUN python3 -m pip install /usr/local/src/notus/*
+RUN python3 -m pip install --break-system-packages /usr/local/src/notus/*
 
 RUN apt-get purge -y gcc python3-dev && apt-get autoremove -y
 

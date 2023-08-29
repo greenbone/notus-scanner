@@ -44,8 +44,12 @@ class VerifierTestCase(unittest.TestCase):
         """
         returns not_in_result and in result
         """
-        greater = lambda: name.replace("15", "16")
-        smaller = lambda: name.replace("15", "14")
+        greater = lambda: name.replace(  # pylint: disable=unnecessary-lambda-assignment
+            "15", "16"
+        )
+        smaller = lambda: name.replace(  # pylint: disable=unnecessary-lambda-assignment
+            "15", "14"
+        )  # pylint: disable=unnecessary-lambda-assignment
         if not verifier:
             return [greater(), name], [smaller()]
         if verifier == ">":
