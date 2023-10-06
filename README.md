@@ -25,7 +25,7 @@ containers like Docker or virtual machines. Neither of these need to be actively
 running for scanning.
 
 The Notus Scanner is implemented in Python and published under an Open Source
-license. Greenbone Networks maintains and extends it since it is embedded in the
+license. Greenbone AG maintains and extends it since it is embedded in the
 Greenbone Professional Edition as well as in the Greenbone Cloud Services.
 
 Greenbone also keeps the vulnerability information up-to-date via the feed on a
@@ -79,13 +79,13 @@ For further information about installation and configuration read [install descr
 ## Support
 
 For any question on the usage of Notus Scanner please use the
-[Greenbone Community Portal]. If you found a problem with the software, please
+[Greenbone Community Forum]. If you found a problem with the software, please
 create an issue on GitHub. If you are a Greenbone customer you may alternatively
 or additionally forward your issue to the Greenbone Support Portal.
 
 ## Maintainer
 
-This project is maintained by [Greenbone AG][Greenbone Networks]
+This project is maintained by [Greenbone AG][Greenbone AG]
 
 ## Contributing
 
@@ -101,8 +101,8 @@ Copyright (C) 2021-2022 Greenbone AG
 
 Licensed under the GNU Affero General Public License v3.0 or later.
 
-[Greenbone Networks]: https://www.greenbone.net/
+[Greenbone AG]: https://www.greenbone.net/
 [poetry]: https://python-poetry.org/
 [pip]: https://pip.pypa.io/
 [autohooks]: https://github.com/greenbone/autohooks
-[Greenbone Community Portal]: https://community.greenbone.net/
+[Greenbone Community Forum]: https://forum.greenbone.net/
