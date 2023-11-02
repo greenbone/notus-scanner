@@ -27989,7 +27989,6 @@ net-analyzer/squidview-0.86
 net-analyzer/nethogs-0.8.6-r1
 net-analyzer/sshping-0.1.4
 net-analyzer/nfdump-1.6.23
-/mnt/gentoo/var/db/repos/gentoo/skel.ebuild
 sec-policy/selinux-gatekeeper-2.20210203-r1
 sec-policy/selinux-gatekeeper-2.20210908-r1
 sec-policy/selinux-gatekeeper-9999

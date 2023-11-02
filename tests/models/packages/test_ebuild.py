@@ -19,9 +19,9 @@ class EBuildPackageTestCase(TestCase):
         with (currentp / "gentoo_examples.txt").open(
             "r", encoding="utf-8"
         ) as file:
-            fullname = file.readline()
-            if not EBuildPackage.from_full_name(fullname):
-                self.fail(f"{fullname} is not parsable for EBuildPackage.")
+            for fullname in file.readlines():
+                if not EBuildPackage.from_full_name(fullname):
+                    self.fail(f"{fullname} is not parsable for EBuildPackage.")
 
     def test_guard(self):
         self.assertIsNone(EBuildPackage.from_full_name(""))
