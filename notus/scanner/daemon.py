@@ -63,6 +63,8 @@ def hashsum_verificator(
 def run_daemon(
     mqtt_broker_address: str,
     mqtt_broker_port: int,
+    mqtt_broker_username: str,
+    mqtt_broker_password: str,
     products_directory_path: Path,
     disable_hashsum_verification: bool,
 ):
@@ -87,6 +89,9 @@ def run_daemon(
         mqtt_broker_address=mqtt_broker_address,
         mqtt_broker_port=mqtt_broker_port,
     )
+    if mqtt_broker_username and mqtt_broker_password:
+        client.username_pw_set(mqtt_broker_username, mqtt_broker_password)
+
     daemon: MQTTDaemon
     try:
         daemon = MQTTDaemon(client)
@@ -130,6 +135,8 @@ def main():
     run_daemon(
         args.mqtt_broker_address,
         args.mqtt_broker_port,
+        args.mqtt_broker_username,
+        args.mqtt_broker_password,
         args.products_directory,
         args.disable_hashsum_verification,
     )

@@ -42,6 +42,16 @@ _CONFIG = (
         DEFAULT_MQTT_BROKER_ADDRESS,
     ),
     (
+        "mqtt-broker-username",
+        "NOTUS_SCANNER_MQTT_BROKER_USERNAME",
+        None,
+    ),
+    (
+        "mqtt-broker-password",
+        "NOTUS_SCANNER_MQTT_BROKER_PASSWORD",
+        None,
+    ),
+    (
         "mqtt-broker-port",
         "NOTUS_SCANNER_MQTT_BROKER_PORT",
         DEFAULT_MQTT_BROKER_PORT,
