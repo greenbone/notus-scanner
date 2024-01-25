@@ -113,6 +113,25 @@ class CliParser:
             help="Port of the MQTT broker. (default: %(default)s)",
         )
         parser.add_argument(
+            "--mqtt-broker-username",
+            default=None,
+            type=str,
+            help=(
+                "Username to connect to MQTT broker for MQTT communication."
+                "Default %(default)s"
+            ),
+        )
+        parser.add_argument(
+            "--mqtt-broker-password",
+            default=None,
+            type=str,
+            help=(
+                "PASSWORD to connect to MQTT broker for MQTT communication."
+                "Default %(default)s"
+            ),
+        )
+
+        parser.add_argument(
             "--disable-hashsum-verification",
             type=bool,
             default=False,
