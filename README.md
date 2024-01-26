@@ -97,7 +97,7 @@ first.
 
 ## License
 
-Copyright (C) 2021-2022 Greenbone AG
+Copyright (C) 2021-2024 Greenbone AG
 
 Licensed under the GNU Affero General Public License v3.0 or later.
 
