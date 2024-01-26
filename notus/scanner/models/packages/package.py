@@ -172,7 +172,7 @@ class PackageAdvisories:
         default_factory=dict
     )
 
-    is_comparable = (
+    is_comparable = (  # noqa: E731
         lambda a, b: a.compare(  # pylint: disable=unnecessary-lambda-assignment
             b
         )
@@ -211,13 +211,13 @@ class PackageAdvisories:
         if verifier not in self.comparison_map:
             verifier = ">="
         advisories = self.get_package_advisories_for_package(package)
-        is_vulnerable = lambda other: self.comparison_map[  # pylint: disable=unnecessary-lambda-assignment
+        is_vulnerable = lambda other: self.comparison_map[  # pylint: disable=unnecessary-lambda-assignment  # noqa: E731
             verifier
         ](
             package, other
         )
 
-        if not advisory in advisories:
+        if advisory not in advisories:
             advisories[advisory] = set()
 
         advisories[advisory].add(

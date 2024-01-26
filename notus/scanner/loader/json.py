@@ -93,7 +93,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
             return None
 
         for advisory_data in data.get("advisories", []):
-            if not "oid" in advisory_data:
+            if "oid" not in advisory_data:
                 logger.error("No OID found for JSON advisory %s", advisory_data)
                 continue
 
