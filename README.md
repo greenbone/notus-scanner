@@ -79,7 +79,7 @@ For further information about installation and configuration read [install descr
 ## Support
 
 For any question on the usage of Notus Scanner please use the
-[Greenbone Community Portal]. If you found a problem with the software, please
+[Greenbone Community Forum]. If you found a problem with the software, please
 create an issue on GitHub. If you are a Greenbone customer you may alternatively
 or additionally forward your issue to the Greenbone Support Portal.
 
@@ -105,4 +105,4 @@ Licensed under the GNU Affero General Public License v3.0 or later.
 [poetry]: https://python-poetry.org/
 [pip]: https://pip.pypa.io/
 [autohooks]: https://github.com/greenbone/autohooks
-[Greenbone Community Portal]: https://community.greenbone.net/
+[Greenbone Community Forum]: https://forum.greenbone.net/
