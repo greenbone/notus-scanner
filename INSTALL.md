@@ -13,7 +13,7 @@ To retrieve package-lists and publish results Notus needs a MQTT broker running.
 To install a local MQTT-broker on Debian you can execute:
 
 ```
-$ apt-get install mosquitto 
+$ apt-get install mosquitto
 ```
 
 To configure mosquitto please consolidate [man mosquitto.conf](https://mosquitto.org/man/mosquitto-conf-5.html).
@@ -28,7 +28,7 @@ To install notus you can use poetry to create a wheel package
 which you can then use to install it via `pip`:
 
 ```
-> pip install notus_scanner-22.4.0-py3-none-any.whl
+> python3 -m pip install notus_scanner-22.4.0-py3-none-any.whl
 ```
 
 After that you should create a configuration.
@@ -53,15 +53,15 @@ disable-hashsum-verification = false
 Each setting can be overridden via an environment variable or command line
 argument.
 
-|Config|Environment|Default|Description|
-|------|-----------|-------|-----------|
-|log-file|NOTUS_SCANNER_LOG_FILE|syslog|File for log output|
-|log-level|NOTUS_SCANNER_LOG_LEVEL|INFO|Minimum level for log output|
-|mqtt-broker-address|NOTUS_SCANNER_MQTT_BROKER_ADDRESS|localhost|IP or DNS address of the MQTT broker|
-|mqtt-broker-port|NOTUS_SCANNER_MQTT_BROKER_PORT|1883|Port of the MQTT broker|
-|pid-file|NOTUS_SCANNER_PID_FILE|/run/notus-scanner/notus-scanner.pid|File for storing the process ID|
-|products-directory|NOTUS_SCANNER_PRODUCTS_DIRECTORY|/var/lib/notus/products|Directory for loading product advisories|
-|disable-hashsum-verification|NOTUS_DISABLE_HASHSUM_VERIFICATION|false|To disable hashsum verification of products|
+| Config                       | Environment                        | Default                              | Description                                 |
+| ---------------------------- | ---------------------------------- | ------------------------------------ | ------------------------------------------- |
+| log-file                     | NOTUS_SCANNER_LOG_FILE             | syslog                               | File for log output                         |
+| log-level                    | NOTUS_SCANNER_LOG_LEVEL            | INFO                                 | Minimum level for log output                |
+| mqtt-broker-address          | NOTUS_SCANNER_MQTT_BROKER_ADDRESS  | localhost                            | IP or DNS address of the MQTT broker        |
+| mqtt-broker-port             | NOTUS_SCANNER_MQTT_BROKER_PORT     | 1883                                 | Port of the MQTT broker                     |
+| pid-file                     | NOTUS_SCANNER_PID_FILE             | /run/notus-scanner/notus-scanner.pid | File for storing the process ID             |
+| products-directory           | NOTUS_SCANNER_PRODUCTS_DIRECTORY   | /var/lib/notus/products              | Directory for loading product advisories    |
+| disable-hashsum-verification | NOTUS_DISABLE_HASHSUM_VERIFICATION | false                                | To disable hashsum verification of products |
 
 # Starting
 
