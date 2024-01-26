@@ -46,7 +46,7 @@ documentation.
 
 ### Requirements
 
-Python 3.7 and later is supported.
+Python 3.9 and later is supported.
 
 **notus-scanner** uses [poetry] for its own dependency management and build
 process.
