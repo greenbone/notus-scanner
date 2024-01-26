@@ -91,3 +91,8 @@ line_length = 80
 
 [tool.pontos.version]
 version-module-file = "notus/scanner/__version__.py"
+
+[tool.coverage.run]
+branch = true
+omit = ["tests/*", "*/__init__.py"]
+source = ["notus"]
