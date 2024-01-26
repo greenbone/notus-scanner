@@ -1,7 +1,0 @@
-# This file contains the hosts to be tested in the format
-# user:pass@host
-# each host must be on a new dedicated line.
-# The default path is /usr/local/src/notus/hosts.txt
-
-# The configured slackware 15 container within the makefile
-gvm:gvm@nst_slackware
