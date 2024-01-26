@@ -14,8 +14,6 @@ from typing import Optional, Union
 
 import psutil
 
-from .__version__ import __version__
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_SYS_LOG_DEVICE = "/dev/log"

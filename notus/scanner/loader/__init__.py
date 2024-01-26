@@ -4,3 +4,5 @@
 
 from .json import JSONAdvisoriesLoader
 from .loader import AdvisoriesLoader
+
+__all__ = ("JSONAdvisoriesLoader", "AdvisoriesLoader")

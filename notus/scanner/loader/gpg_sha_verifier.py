@@ -103,7 +103,7 @@ def gpg_sha256sums(
         if not verified:
             return None
         result = {}
-        with hash_file.open() as f:
+        with hash_file.open() as f:  # noqa: PLW2901
             for line in f.readlines():
                 hsum, fname = line.split("  ")
                 # the second part can contain a newline
