@@ -12,7 +12,7 @@ readme = "README.md"
 homepage = "https://github.com/greenbone/notus-scanner"
 repository = "https://github.com/greenbone/notus-scanner"
 # Full list: https://pypi.org/pypi?%3Aaction=list_classifiers
-classifiers=[
+classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
   "Intended Audience :: Developers",
@@ -33,7 +33,7 @@ keywords = [
 ]
 
 packages = [
-  { include = "notus"},
+  { include = "notus" },
   { include = "tests", format = "sdist" },
   { include = "poetry.lock", format = "sdist" },
   { include = "poetry.toml", format = "sdist" },
@@ -44,7 +44,7 @@ python = "^3.9"
 paho-mqtt = ">=1.5.1"
 psutil = "^5.9"
 python-gnupg = "^0.5.1"
-tomli = {version = "<3.0.0", python = "<3.11"}
+tomli = { version = "<3.0.0", python = "<3.11" }
 packaging = "<23.3"
 
 [tool.poetry.dev-dependencies]
@@ -79,7 +79,11 @@ exclude = '''
 
 [tool.autohooks]
 mode = "poetry"
-pre-commit = ['autohooks.plugins.black', 'autohooks.plugins.isort', 'autohooks.plugins.pylint']
+pre-commit = [
+  'autohooks.plugins.black',
+  'autohooks.plugins.isort',
+  'autohooks.plugins.pylint',
+]
 
 [tool.isort]
 profile = "black"
