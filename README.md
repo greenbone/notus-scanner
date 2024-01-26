@@ -35,7 +35,6 @@ documentation.
 ## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
-  - [Requirements](#requirements)
 - [Development](#development)
 - [Support](#support)
 - [Maintainer](#maintainer)
@@ -44,9 +43,11 @@ documentation.
 
 ## Installation
 
-### Requirements
-
 Python 3.9 and later is supported.
+
+For further information about installation and configuration read [install description](./INSTALL.md).
+
+## Development
 
 **notus-scanner** uses [poetry] for its own dependency management and build
 process.
@@ -73,8 +74,6 @@ For development activate the git hooks for auto-formatting and linting via
 Validate the activated git hooks by running
 
     poetry run autohooks check
-
-For further information about installation and configuration read [install description](./INSTALL.md).
 
 ## Support
 
