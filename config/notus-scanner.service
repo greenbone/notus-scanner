@@ -6,12 +6,11 @@ Wants=mosquitto.service
 ConditionKernelCommandLine=!recovery
 
 [Service]
-Type=forking
+Type=exec
 User=gvm
 RuntimeDirectory=notus-scanner
 RuntimeDirectoryMode=2775
-PIDFile=/run/notus-scanner/notus-scanner.pid
-ExecStart=/usr/local/bin/notus-scanner
+ExecStart=/usr/local/bin/notus-scanner --foreground
 SuccessExitStatus=SIGKILL
 Restart=always
 RestartSec=60
