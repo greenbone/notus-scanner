@@ -40,7 +40,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-paho-mqtt = ">=1.5.1"
+# use v1.x due to https://github.com/eclipse/paho.mqtt.python/issues/814
+paho-mqtt = "^1.6"
 psutil = "^5.9"
 python-gnupg = "^0.5.1"
 tomli = { version = "<3.0.0", python = "<3.11" }
@@ -53,6 +54,7 @@ autohooks-plugin-black = ">=22.7.0"
 autohooks-plugin-isort = ">=22.8.0"
 autohooks-plugin-ruff = ">=24.1.0"
 pontos = ">=22.7.2"
+autohooks = "^24.1.1"
 
 [tool.poetry.scripts]
 notus-scanner = "notus.scanner.daemon:main"
@@ -77,7 +79,7 @@ exclude = '''
 
 [tool.autohooks]
 mode = "poetry"
-pre-commit = ['autohooks.plugins.black', "autohooks.plugins.ruff"]
+pre-commit = ["autohooks.plugins.black", "autohooks.plugins.ruff"]
 
 [tool.pontos.version]
 version-module-file = "notus/scanner/__version__.py"
