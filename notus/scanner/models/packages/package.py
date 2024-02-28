@@ -180,21 +180,21 @@ class PackageAdvisories:
     )
 
     comparison_map = {
-        ">=": lambda a, b: a > b
-        if PackageAdvisories.is_comparable(a, b)
-        else None,
-        "<=": lambda a, b: a < b
-        if PackageAdvisories.is_comparable(a, b)
-        else None,
-        "=": lambda a, b: a != b
-        if PackageAdvisories.is_comparable(a, b)
-        else None,
-        "<": lambda a, b: a <= b
-        if PackageAdvisories.is_comparable(a, b)
-        else None,
-        ">": lambda a, b: a >= b
-        if PackageAdvisories.is_comparable(a, b)
-        else None,
+        ">=": lambda a, b: (
+            a > b if PackageAdvisories.is_comparable(a, b) else None
+        ),
+        "<=": lambda a, b: (
+            a < b if PackageAdvisories.is_comparable(a, b) else None
+        ),
+        "=": lambda a, b: (
+            a != b if PackageAdvisories.is_comparable(a, b) else None
+        ),
+        "<": lambda a, b: (
+            a <= b if PackageAdvisories.is_comparable(a, b) else None
+        ),
+        ">": lambda a, b: (
+            a >= b if PackageAdvisories.is_comparable(a, b) else None
+        ),
     }
 
     def get_package_advisories_for_package(
