@@ -31,7 +31,11 @@ class MQTTClient(mqtt.Client):
         self._mqtt_broker_address = mqtt_broker_address
         self._mqtt_broker_port = mqtt_broker_port
 
-        super().__init__(client_id=client_id, protocol=mqtt.MQTTv5)
+        super().__init__(
+            mqtt.CallbackAPIVersion.VERSION1,
+            client_id=client_id,
+            protocol=mqtt.MQTTv5,
+        )
 
         self.enable_logger()
 
