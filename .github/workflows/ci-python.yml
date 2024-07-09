@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           packages: notus tests
-          linter: ruff
+          linter: ruff check
 
   test:
     name: Run all tests
