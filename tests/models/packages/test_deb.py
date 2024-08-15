@@ -180,6 +180,17 @@ class DEBPackageTestCase(TestCase):
         self.assertEqual(package.debian_revision, "")
         self.assertEqual(package.full_name, "apport-symptoms-020")
 
+        package = DEBPackage.from_full_name(
+            "mariadb-server-10.6-1:10.6.18+maria~ubu2204"
+        )
+        self.assertEqual(package.name, "mariadb-server-10.6")
+        self.assertEqual(package.epoch, "1")
+        self.assertEqual(package.upstream_version, "10.6.18+maria~ubu2204")
+        self.assertEqual(package.debian_revision, "")
+        self.assertEqual(
+            package.full_name, "mariadb-server-10.6-1:10.6.18+maria~ubu2204"
+        )
+
     def test_from_name_and_full_version(self):
         """it should be possible to create packages from name and full
         version"""

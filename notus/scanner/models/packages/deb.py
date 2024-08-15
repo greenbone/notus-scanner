@@ -12,10 +12,16 @@ from dataclasses import dataclass
 
 from .package import Package, PackageComparison
 
-_deb_compile = re.compile(r"(.*)-(?:(\d*):)?(\d.*)-(.*)")
-_deb_compile_wo_revision = re.compile(r"(.*)-(?:(\d*):)?(\d.*)")
-_deb_compile_version = re.compile(r"(?:(\d*):)?(\d.*)-(.*)")
-_deb_compile_version_wo_revision = re.compile(r"(?:(\d*):)?(\d.*)")
+_deb_compile = re.compile(
+    r"^([a-z0-9](?:[a-z0-9+-.])+)-(?:(\d*):)?(\d[\d\w+-.~]*)(?:-([\d\w+-.~]*))$"
+)
+_deb_compile_wo_revision = re.compile(
+    r"^([a-z0-9](?:[a-z0-9+-.])+)-(?:(\d*):)?(\d[\d\w+.~]*)$"
+)
+_deb_compile_version = re.compile(
+    r"^(?:(\d*):)?(\d[\d\w+-.~]*)(?:-([\d\w+-.~]*))$"
+)
+_deb_compile_version_wo_revision = re.compile(r"^(?:(\d*):)?(\d[\d\w+.~]*)$")
 
 
 logger = logging.getLogger(__name__)
