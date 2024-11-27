@@ -28,7 +28,7 @@ class ResultMessage(Message):
         oid: str,
         value: str,
         port: str = "package",
-        uri: str = None,
+        uri: str = "",
         result_type: ResultType = ResultType.ALARM,
         message_id: Optional[UUID] = None,
         group_id: Optional[UUID] = None,
