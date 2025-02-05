@@ -43,7 +43,7 @@ def hashsum_verificator(
         return lambda _: VerificationResult.SUCCESS
 
     def on_hash_sum_verification_failure(
-        _: Optional[Dict[str, str]]
+        _: Optional[Dict[str, str]],
     ) -> Dict[str, str]:
         raise Sha256SumLoadingError(
             f"Unable to verify signature of {sha_sum_file_path}"
