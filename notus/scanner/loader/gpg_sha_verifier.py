@@ -123,7 +123,7 @@ class VerificationResult(Enum):
 
 
 def create_verify(
-    sha256sums: Callable[[], Dict[str, str]]
+    sha256sums: Callable[[], Dict[str, str]],
 ) -> Callable[[Path], VerificationResult]:
     """
     create_verify is returning a closure based on the sha256sums.

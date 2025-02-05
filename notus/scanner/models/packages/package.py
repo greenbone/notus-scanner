@@ -35,6 +35,7 @@ class PackageComparison(Enum):
 @dataclass
 class Package:
     "Base class for different Package types"
+
     name: str
     full_name: str
     full_version: str
