@@ -9,12 +9,14 @@ from .ebuild import EBuildPackage
 from .package import Package, PackageType
 from .rpm import RPMPackage
 from .slackware import SlackPackage
+from .windows import WindowsPackage
 
 __SWITCHER = {
     PackageType.RPM: RPMPackage,
     PackageType.DEB: DEBPackage,
     PackageType.EBUILD: EBuildPackage,
     PackageType.SLACK: SlackPackage,
+    PackageType.WINDOWS: WindowsPackage,
 }
 
 
