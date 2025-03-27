@@ -16,7 +16,7 @@ __SWITCHER = {
     PackageType.DEB: DEBPackage,
     PackageType.EBUILD: EBuildPackage,
     PackageType.SLACK: SlackPackage,
-    PackageType.WINDOWS: WindowsPackage,
+    PackageType.MSP: WindowsPackage,
 }
 
 

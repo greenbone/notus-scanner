@@ -22,7 +22,7 @@ class PackageType(Enum):
     DEB = "deb"
     EBUILD = "ebuild"
     SLACK = "slack"
-    WINDOWS = "windows"
+    MSP = "msp"
 
 
 class PackageComparison(Enum):
