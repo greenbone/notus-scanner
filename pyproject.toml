@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "notus-scanner"
-version = "22.6.5"
+version = "22.7.0"
 description = "A vulnerability scanner for creating results from local security checks (LSCs) "
 authors = ["Greenbone AG <info@greenbone.net>"]
 license = "AGPL-3.0-or-later"
@@ -53,7 +53,7 @@ autohooks-plugin-black = ">=22.7.0"
 autohooks-plugin-isort = ">=22.8.0"
 autohooks-plugin-ruff = ">=24.1.0"
 pontos = ">=22.7.2"
-autohooks = "^25.2.0"
+autohooks = "^25.3.0"
 
 [tool.poetry.scripts]
 notus-scanner = "notus.scanner.daemon:main"
