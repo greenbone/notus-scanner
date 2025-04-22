@@ -44,7 +44,7 @@ paho-mqtt = ">=1.6,<3.0"
 psutil = "^7.0"
 python-gnupg = "^0.5.4"
 tomli = { version = "<3.0.0", python = "<3.11" }
-packaging = "<24.3"
+packaging = "<25.1"
 
 [tool.poetry.group.dev.dependencies]
 rope = "^1.12.0"
