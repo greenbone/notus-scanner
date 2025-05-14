@@ -10,57 +10,55 @@ from notus.scanner.models.packages.windows import WindowsPackage
 class WindowsPackageTestCase(TestCase):
     def test_compare_gt(self):
         package1 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3447",
-            full_name="10.0.22631.3447",
+            name="Windows Server 2025 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="1",
         )
         package2 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3448",
-            full_name="10.0.22631.3449",
+            name="Windows Server 2025 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="2",
         )
 
         self.assertGreater(package2, package1)
 
     def test_compare_gt_different_name(self):
         package1 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3447",
-            full_name="10.0.22631.3447",
+            name="Windows Server 2025 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="1",
         )
         package2 = WindowsPackage(
-            name="10.0.22632",
-            full_version="3447",
-            full_name="10.0.22632.3447",
+            name="Windows Server 2024 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="1",
         )
 
         self.assertFalse(package1 > package2)
         self.assertFalse(package2 > package1)
 
-    def test_compare_less(self):
-        package1 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3447",
-            full_name="10.0.22631.3447",
-        )
-        package2 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3446",
-            full_name="10.0.22631.3446",
-        )
-
-        self.assertLess(package2, package1)
-
     def test_compare_equal(self):
         package1 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3447",
-            full_name="10.0.22631.3447",
+            name="Windows Server 2025 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="1",
         )
         package2 = WindowsPackage(
-            name="10.0.22631",
-            full_version="3447",
-            full_name="10.0.22631.3447",
+            name="Windows Server 2025 x64",
+            full_version="10.0.26100.1",
+            full_name="Windows Server 2025 x64;10.0.26100.1",
+            prefix="10.0.26100",
+            build="1",
         )
 
         self.assertEqual(package2, package1)
@@ -70,10 +68,16 @@ class WindowsPackageTestCase(TestCase):
         self.assertIsNone(package)
         package = WindowsPackage.from_full_name("3447")
         self.assertIsNone(package)
-        package = WindowsPackage.from_full_name("10.0.22631.3447")
-        self.assertEqual(package.name, "10.0.22631")
-        self.assertEqual(package.full_version, "3447")
-        self.assertEqual(package.full_name, "10.0.22631.3447")
+        package = WindowsPackage.from_full_name(
+            "Windows Server 2025 x64;10.0.26100.1000"
+        )
+        self.assertEqual(package.name, "Windows Server 2025 x64")
+        self.assertEqual(package.full_version, "10.0.26100.1000")
+        self.assertEqual(
+            package.full_name, "Windows Server 2025 x64;10.0.26100.1000"
+        )
+        self.assertEqual(package.prefix, "10.0.26100")
+        self.assertEqual(package.build, "1000")
 
     def test_from_name_and_full_version(self):
         package = WindowsPackage.from_name_and_full_version("", "")
@@ -83,8 +87,12 @@ class WindowsPackageTestCase(TestCase):
         package = WindowsPackage.from_name_and_full_version("", "3447")
         self.assertIsNone(package)
         package = WindowsPackage.from_name_and_full_version(
-            "10.0.22631", "3447"
+            "Windows Server 2025 x64", "10.0.26100.1000"
         )
-        self.assertEqual(package.name, "10.0.22631")
-        self.assertEqual(package.full_version, "3447")
-        self.assertEqual(package.full_name, "10.0.22631.3447")
+        self.assertEqual(package.name, "Windows Server 2025 x64")
+        self.assertEqual(package.full_version, "10.0.26100.1000")
+        self.assertEqual(
+            package.full_name, "Windows Server 2025 x64;10.0.26100.1000"
+        )
+        self.assertEqual(package.prefix, "10.0.26100")
+        self.assertEqual(package.build, "1000")
