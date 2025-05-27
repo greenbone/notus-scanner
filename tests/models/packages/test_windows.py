@@ -18,8 +18,8 @@ class WindowsPackageTestCase(TestCase):
         )
         package2 = WindowsPackage(
             name="Windows Server 2025 x64",
-            full_version="10.0.26100.1",
-            full_name="Windows Server 2025 x64;10.0.26100.1",
+            full_version="10.0.26100.2",
+            full_name="Windows Server 2025 x64;10.0.26100.2",
             prefix="10.0.26100",
             build="2",
         )
