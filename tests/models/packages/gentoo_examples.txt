@@ -1,3 +1,7 @@
+SPDX-FileCopyrightText: 2026 Greenbone AG
+
+SPDX-License-Identifier: GPL-3.0-or-later
+
 dev-haskell/http-client-restricted-0.0.3
 dev-haskell/primitive-addr-0.1.0.2
 dev-haskell/genvalidity-hspec-0.7.0.4
