@@ -43,7 +43,7 @@ documentation.
 
 ## Installation
 
-Python 3.9 and later is supported.
+Python 3.10 and later is supported.
 
 For further information about installation and configuration read [install description](./INSTALL.md).
 
