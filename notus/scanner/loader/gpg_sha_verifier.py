@@ -7,7 +7,7 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Callable, dict, Optional
+from typing import Callable, Optional
 
 from gnupg import GPG
 

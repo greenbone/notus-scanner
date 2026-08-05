@@ -6,7 +6,7 @@ import json
 import logging
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable, dict, Optional
+from typing import Callable, Optional
 
 from ..errors import AdvisoriesLoadingError
 from ..models.packages import package_class_by_type

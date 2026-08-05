@@ -5,7 +5,7 @@
 import argparse
 import logging
 from pathlib import Path
-from typing import Any, dict
+from typing import Any
 
 from ..__version__ import __version__
 from ..config import Config

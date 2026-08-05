@@ -7,7 +7,7 @@ import re
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, dict, Optional, Set
+from typing import Any, Callable, Optional, Set
 
 from ...errors import PackageError
 

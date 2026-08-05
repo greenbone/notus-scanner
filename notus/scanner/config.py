@@ -10,7 +10,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, dict
+from typing import Any
 
 from notus.scanner.errors import ConfigFileError
 
