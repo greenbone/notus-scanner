@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from pathlib import Path
-from typing import dict, Optional
+from typing import Optional
 from unittest import TestCase
 from unittest.mock import Mock, patch
 

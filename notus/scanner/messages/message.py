@@ -5,7 +5,7 @@
 import json
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, dict, Optional, Union
+from typing import Any, Optional, Union
 from uuid import UUID, uuid4
 
 from ..errors import MessageParsingError

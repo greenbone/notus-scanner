@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from datetime import datetime
-from typing import Any, dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 from uuid import UUID
 
 from ..errors import MessageParsingError

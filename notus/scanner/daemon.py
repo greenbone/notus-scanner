@@ -5,7 +5,7 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Callable, dict, Optional
+from typing import Callable, Optional
 
 from .__version__ import __version__
 from .cli import CliParser
