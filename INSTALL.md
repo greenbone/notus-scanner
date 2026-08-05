@@ -1,6 +1,6 @@
 # Installation
 
-To install Notus Python 3.9 and later is required.
+To install Notus Python 3.10 and later is required.
 
 Besides Python Notus Scanner also needs to have
 
