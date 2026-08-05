@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import dict, Optional
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
@@ -20,7 +20,7 @@ class GpgTest(TestCase):
     @patch("gnupg.GPG")
     @patch("pathlib.Path")
     def test_reload(self, gmock, pathmock: Path):
-        def on_failure(_: Optional[Dict[str, str]]) -> Dict[str, str]:
+        def on_failure(_: Optional[dict[str, str]]) -> dict[str, str]:
             raise Exception(  # pylint: disable=broad-exception-raised
                 "verification_failed"
             )

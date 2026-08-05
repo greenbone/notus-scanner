@@ -5,7 +5,7 @@
 import json
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any, dict, Optional, Union
 from uuid import UUID, uuid4
 
 from ..errors import MessageParsingError
@@ -36,7 +36,7 @@ class Message:
         self.created = created if created else datetime.utcnow()
 
     @classmethod
-    def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
+    def _parse(cls, data: dict[str, Union[int, str]]) -> dict[str, Any]:
         try:
             message_type = MessageType(data.get("message_type"))
         except ValueError as e:
@@ -71,7 +71,7 @@ class Message:
             "created": created,
         }
 
-    def serialize(self) -> Dict[str, Union[int, str]]:
+    def serialize(self) -> dict[str, Union[int, str]]:
         return {
             "message_id": str(self.message_id),
             "message_type": (
@@ -82,7 +82,7 @@ class Message:
         }
 
     @classmethod
-    def deserialize(cls, data: Dict[str, Union[int, str]]) -> "Message":
+    def deserialize(cls, data: dict[str, Union[int, str]]) -> "Message":
         kwargs = cls._parse(data)
         return cls(**kwargs)
 

@@ -6,7 +6,7 @@ import json
 import logging
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, Optional
+from typing import Callable, dict, Optional
 
 from ..errors import AdvisoriesLoadingError
 from ..models.packages import package_class_by_type
@@ -30,7 +30,7 @@ class JSONAdvisoriesLoader(AdvisoriesLoader):
         self._advisories_directory_path = advisories_directory_path
         self._verify = verify
 
-    def __load_data(self, operating_system: str) -> Optional[Dict]:
+    def __load_data(self, operating_system: str) -> Optional[dict]:
         os_file_name = _get_operating_system_file_name(operating_system)
         json_file_path = (
             self._advisories_directory_path / f"{os_file_name}.notus"

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, dict, List, Optional, Union
 from uuid import UUID
 
 from ..errors import MessageParsingError
@@ -41,7 +41,7 @@ class ScanStartMessage(Message):
         self.os_release = os_release
         self.package_list = package_list if package_list is not None else []
 
-    def serialize(self) -> Dict[str, Union[int, str, List[str]]]:
+    def serialize(self) -> dict[str, Union[int, str, List[str]]]:
         message = super().serialize()
         message.update(
             {
@@ -55,7 +55,7 @@ class ScanStartMessage(Message):
         return message
 
     @classmethod
-    def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
+    def _parse(cls, data: dict[str, Union[int, str]]) -> dict[str, Any]:
         kwargs = super()._parse(data)
 
         package_list = data.get("package_list")
