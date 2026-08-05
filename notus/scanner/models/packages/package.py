@@ -215,9 +215,7 @@ class PackageAdvisories:
         advisories = self.get_package_advisories_for_package(package)
         is_vulnerable = lambda other: self.comparison_map[  # pylint: disable=unnecessary-lambda-assignment  # noqa: E731
             verifier
-        ](
-            package, other
-        )
+        ](package, other)
 
         if advisory not in advisories:
             advisories[advisory] = set()
