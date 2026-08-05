@@ -99,16 +99,14 @@ class CliParserTestCase(unittest.TestCase):
 
     def test_config_file(self):
         with tempfile.NamedTemporaryFile() as fp:
-            fp.write(
-                b"""[notus-scanner]
+            fp.write(b"""[notus-scanner]
                 mqtt-broker-address="1.2.3.4"
                 mqtt-broker-port="123"
                 products-directory="/tmp"
                 pid-file="foo.bar"
                 log-file="foo.log"
                 log-level="DEBUG"
-                """
-            )
+                """)
             fp.flush()
 
             args = self.parse_args(["-c", fp.name])
