@@ -5,7 +5,7 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Callable, Dict, Optional
+from typing import Callable, dict, Optional
 
 from .__version__ import __version__
 from .cli import CliParser
@@ -43,8 +43,8 @@ def hashsum_verificator(
         return lambda _: VerificationResult.SUCCESS
 
     def on_hash_sum_verification_failure(
-        _: Optional[Dict[str, str]],
-    ) -> Dict[str, str]:
+        _: Optional[dict[str, str]],
+    ) -> dict[str, str]:
         raise Sha256SumLoadingError(
             f"Unable to verify signature of {sha_sum_file_path}"
         )

@@ -5,7 +5,7 @@
 import argparse
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, dict
 
 from ..__version__ import __version__
 from ..config import Config
@@ -29,7 +29,7 @@ def log_level(string: str) -> str:
     return string.upper()
 
 
-def _to_defaults(values: Dict[str, Any]) -> Dict[str, Any]:
+def _to_defaults(values: dict[str, Any]) -> dict[str, Any]:
     defaults = {}
 
     for key, value in values.items():
@@ -142,7 +142,7 @@ class CliParser:
         config_data = self._load_config(configfilename)
         self.parser.set_defaults(**_to_defaults(config_data))
 
-    def _load_config(self, configfile: str) -> Dict[str, Any]:
+    def _load_config(self, configfile: str) -> dict[str, Any]:
         config = Config()
 
         use_default = configfile is None

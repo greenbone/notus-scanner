@@ -10,7 +10,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, dict
 
 from notus.scanner.errors import ConfigFileError
 
@@ -66,7 +66,7 @@ _CONFIG = (
 
 class Config:
     def __init__(self) -> None:
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
 
     def load(self, filepath: Path) -> None:
         try:
@@ -84,7 +84,7 @@ class Config:
 
         self._config = config_data.get("notus-scanner", {})
 
-    def values(self) -> Dict[str, Any]:
+    def values(self) -> dict[str, Any]:
         values = {}
 
         for config_key, env_key, default in _CONFIG:

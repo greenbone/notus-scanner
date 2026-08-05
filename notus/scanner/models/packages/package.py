@@ -7,7 +7,7 @@ import re
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Set
+from typing import Any, Callable, dict, Optional, Set
 
 from ...errors import PackageError
 
@@ -170,7 +170,7 @@ class PackageAdvisories:
     package"""
 
     package_type: PackageType
-    advisories: Dict[str, Dict[str, Set[PackageAdvisory]]] = field(
+    advisories: dict[str, dict[str, Set[PackageAdvisory]]] = field(
         default_factory=dict
     )
 
@@ -201,7 +201,7 @@ class PackageAdvisories:
 
     def get_package_advisories_for_package(
         self, package: Package
-    ) -> Dict[str, Set[PackageAdvisory]]:
+    ) -> dict[str, Set[PackageAdvisory]]:
         return self.advisories.get(package.name) or dict()
 
     def add_advisory_for_package(

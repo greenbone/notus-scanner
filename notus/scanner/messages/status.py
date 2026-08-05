@@ -4,7 +4,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any, dict, Optional, Union
 from uuid import UUID
 
 from .message import Message, MessageType
@@ -42,7 +42,7 @@ class ScanStatusMessage(Message):
         self.host_ip = host_ip
         self.status = status
 
-    def serialize(self) -> Dict[str, Union[int, str]]:
+    def serialize(self) -> dict[str, Union[int, str]]:
         message = super().serialize()
         message.update(
             {
@@ -54,7 +54,7 @@ class ScanStatusMessage(Message):
         return message
 
     @classmethod
-    def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
+    def _parse(cls, data: dict[str, Union[int, str]]) -> dict[str, Any]:
         kwargs = super()._parse(data)
         kwargs.update(
             {

@@ -7,7 +7,7 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Dict, Optional
+from typing import Callable, dict, Optional
 
 from gnupg import GPG
 
@@ -45,16 +45,16 @@ def __default_gpg_home() -> GPG:
 class ReloadConfiguration:
     hash_file: Path
     on_verification_failure: Callable[
-        [Optional[Dict[str, str]]], Dict[str, str]
+        [Optional[dict[str, str]]], dict[str, str]
     ]
     gpg: Optional[GPG] = None
-    cache: Optional[Dict[str, str]] = None
+    cache: Optional[dict[str, str]] = None
     fingerprint: str = ""
 
 
 def reload_sha256sums(
     config: ReloadConfiguration,
-) -> Callable[[], Dict[str, str]]:
+) -> Callable[[], dict[str, str]]:
     """
     reload_sha256sums reloads sha256sums if a threshold has been reached.
     """
@@ -71,7 +71,7 @@ def reload_sha256sums(
                 hasher.update(hash_file_bytes)
         return hasher.hexdigest()
 
-    def internal_reload() -> Dict[str, str]:
+    def internal_reload() -> dict[str, str]:
         fingerprint = create_hash(config.hash_file)
         if not config.cache or config.fingerprint != fingerprint:
             config.fingerprint = fingerprint
@@ -85,7 +85,7 @@ def reload_sha256sums(
 
 def gpg_sha256sums(
     hash_file: Path, gpg: Optional[GPG] = None
-) -> Optional[Dict[str, str]]:
+) -> Optional[dict[str, str]]:
     """
     gpg_sha256sums verifies given hash_file with a asc file
 
@@ -123,7 +123,7 @@ class VerificationResult(Enum):
 
 
 def create_verify(
-    sha256sums: Callable[[], Dict[str, str]],
+    sha256sums: Callable[[], dict[str, str]],
 ) -> Callable[[Path], VerificationResult]:
     """
     create_verify is returning a closure based on the sha256sums.

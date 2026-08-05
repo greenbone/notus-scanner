@@ -4,7 +4,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any, dict, Optional, Union
 from uuid import UUID
 
 from ..errors import MessageParsingError
@@ -46,7 +46,7 @@ class ResultMessage(Message):
         self.uri = uri
         self.result_type = result_type
 
-    def serialize(self) -> Dict[str, Union[int, str]]:
+    def serialize(self) -> dict[str, Union[int, str]]:
         message = super().serialize()
         message.update(
             {
@@ -63,7 +63,7 @@ class ResultMessage(Message):
         return message
 
     @classmethod
-    def _parse(cls, data: Dict[str, Union[int, str]]) -> Dict[str, Any]:
+    def _parse(cls, data: dict[str, Union[int, str]]) -> dict[str, Any]:
         kwargs = super()._parse(data)
         try:
             kwargs.update(
