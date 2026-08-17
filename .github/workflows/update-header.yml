@@ -15,7 +15,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
     - name: Run update header
-      uses: greenbone/actions/update-header@v3.36.13
+      uses: greenbone/actions/update-header@v3.36.15
       with:
         directories: notus tests
         target: main
