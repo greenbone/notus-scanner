@@ -8,16 +8,11 @@ Module to store Notus Scanner configuration settings
 
 import logging
 import os
-import sys
+import tomllib as toml
 from pathlib import Path
 from typing import Any
 
 from notus.scanner.errors import ConfigFileError
-
-if sys.version_info >= (3, 11):
-    import tomllib as toml
-else:
-    import tomli as toml
 
 logger = logging.getLogger(__name__)
 
